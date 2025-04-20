@@ -1,28 +1,33 @@
 [build]
-  command = "npm install"
-  publish = "."
-  functions = "functions"
-
-[functions]
-  external_node_modules = ["express"]
-  node_bundler = "esbuild"
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
+  command = "npm install && npm run build"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
+  NPM_VERSION = "9"
+
+[functions]
+  included_files = ["node_modules/**/*"]
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+  force = true
 
 [[headers]]
   for = "/*"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization, Accept"
-    Content-Security-Policy = "default-src 'self' https://*.topedgeai.com https://api.vapi.ai; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://apis.google.com https://api.vapi.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; connect-src 'self' https://*.topedgeai.com https://api.vapi.ai wss://api.vapi.ai; frame-ancestors 'none';"
+  [headers.values]
     X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()" 
+    Content-Security-Policy = "default-src 'self' https://api.vapi.ai https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://api.vapi.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://api.vapi.ai wss://api.vapi.ai; frame-src 'self' https://www.youtube.com; media-src 'self' https://api.vapi.ai; worker-src 'self' blob:;"
+
+[context.production.environment]
+  NODE_ENV = "production"
+  VAPI_API_KEY = "@vapi_api_key"
+  VAPI_ASSISTANT_ID = "@vapi_assistant_id"
+  EMAIL_USER = "@email_user"
+  EMAIL_PASS = "@email_pass"
+  EMAIL_TO = "@email_to" 
