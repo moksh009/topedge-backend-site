@@ -2,6 +2,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import serverless from 'serverless-http';
 
 dotenv.config();
 
@@ -10,16 +11,8 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-<<<<<<< HEAD
-  origin: ['http://localhost:3000', 'https://topedge-frontend-site.onrender.com'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  credentials: true,
-  maxAge: 86400 // 24 hours
-=======
   origin: ['https://main.dvuabchwge8pz.amplifyapp.com', 'https://topedgeai.com', 'http://localhost:5173', 'https://topedgeai.netlify.app'],
   credentials: true
->>>>>>> ddfea4f90d5f1a645ff400eeb88eba88e84c5d16
 }));
 
 // Handle preflight requests explicitly
@@ -38,10 +31,10 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    pass: process.env.EMAIL_PASS,
   },
   tls: {
-    rejectUnauthorized: false // Only for development
+    rejectUnauthorized: true
   },
   debug: true // Enable debug logging
 });
@@ -1266,6 +1259,9 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
+
+// Export the serverless handler
+export const handler = serverless(app);
 
 // Start server
 app.listen(port, () => {
