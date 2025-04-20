@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "booking-meeting-445311",
+  "private_key_id": "5a86de3aa9b7273ef7edb09ccadd493db9f9a730",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDRgwoqCT5G89Wu\n3nCsJdV/8OyWY4iReZUz940yinHunzeXgiObGGXb8BygOCuiYF16juFI7KU0oVpN\nQrpFKZs9vQu4ppnRZPOwd0a2M5Xf/ueuVqS5SYnMetk9EL/Xmm30WTbbqBJ+rJhi\n5HuFan0KzJ3sr9DvIwxBLBZxojIBGjMqSxNQBePydfRuFwt4eIE0O2+fAMaSiFeV\ne6F1ymP6m22Max+EJHj+xStHMaGKNW7oTPcRan8QT1peUNR9XLKfsStsygRUz+bX\nEL4Bs4vb6TfRnu/9Q2pXOY68eN0WrDlXmeBsbZTlXV3e5i+Z0AI/yVgcurwhfgrA\nlgJGBrlJAgMBAAECggEAGmZKp5VWlZYv/MLmq6pwxphTF3gfQ0VwuYWd8xpi1NCX\nLq4lUmu2mgodcUripKlD3ieW15uKDaGvQUEBO6nMd/EUQwYrJ6ly02+UJ21Em18B\nToR4aSiNBokMSpeLtN0usbV0JiV9fxy8bumfbuZGL1AtLh/RUfC2oJevlE39wwmR\nf94Xwz265dov8htYufvyXyvt2Y5thTip/gXywPMQLvn3rHMXASX2o14wo2DpeXMz\nUMxFUFWUV8fWQSxsJ0DPTvlfyV8XXkGMTFPr/sgoCGZvB0rFzyvV7iGQlLOPuxn6\nckChNY410N+6bMFxJuS1lcOD16VK9WCdyxiUaa7ToQKBgQD9/YDomQFkyIhK75pN\nef/n9vMlpDXvkzHnjyRItWDBHHJSBmu4wFVNa28alskNPOY0nQ8WzWb0o9Wx8RDe\nYZ5/YciwJAv6yt29bZuFX87VtPViR9RUvEC1u2wS9qE6sSm9o5r9ND+EAzcd6Iw6\n5PDihMtykcu/qw6RPGQ/SvC7VQKBgQDTK3A3MpmqZBz5hxC2JAXDPbUBlDwkseSw\n6wA2QGMnLPVhA1bG65Vkc2FZXfY5VgfXZzd8jNYyhuHBcZGjCavEw399vbXErTIh\nC7TS3ic2edUpXxRKeBP4MK52D36WmIuMn0EPDE01rZZOdJaoP+GG8lL5OQ7GEUOK\nwu1j7QkOJQKBgF04zDWS4vYQvCV059eD7a8/7mJkcP9rsSdiXFjraYW3YSZGAQeg\nYC64PeEucsCPF5c8BivCXAVylJ5o8l4MylXKmBQ+Rr9X8ibyseA0GABMGLxnzMEF\nD2MkVThomSinmcBm6h4BLUbQv0wU7FM5cEhToTB93qCMsh4QYmLwqIa5AoGBAL6A\nuoxhTrWj+Wu2yIG4v6YiHhAdnaBxB+H/L0LCFXE7IubxLzDnSO/FEzafCMky7oIJ\nsMng+D++5R0xinQt/lLVF0flhHy4zrd3KxrspS2E/aOEDfccms9Vg54oXkgXuBUV\neojLzT+2qRmAHoYMkzW9mNMTAVv4KRmevrBeH8QtAoGAdUJNMsl4xqy7Ry/2Rte2\nKCZ7J87nmRhzER8q/k7buAuGJGpcldjxV+7J00mlQ45KmdwchTazvwoCMbHBLbmO\nD+mHPjqnf2VItVDgX/wwRI3zJqtECiBeWzETjqjZ06wX0CFSj1E8+tuPzneYJ8aN\nS3sHjf9ri6axa0Op7zSK0B0=\n-----END PRIVATE KEY-----\n",
+  "client_email": "topedge-meeting@booking-meeting-445311.iam.gserviceaccount.com",
+  "client_id": "108468537324175972728",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/topedge-meeting%40booking-meeting-445311.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

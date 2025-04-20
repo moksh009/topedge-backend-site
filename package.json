@@ -1,0 +1,23 @@
+{
+  "name": "topedge-backend",
+  "version": "1.0.0",
+  "description": "TopEdge AI Backend",
+  "main": "functions/api.js",
+  "scripts": {
+    "start": "node functions/api.js",
+    "dev": "nodemon functions/api.js",
+    "build": "netlify-lambda build functions"
+  },
+  "dependencies": {
+    "@netlify/functions": "^2.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "nodemailer": "^6.10.1",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "netlify-lambda": "^2.0.16",
+    "nodemon": "^2.0.22"
+  }
+}
