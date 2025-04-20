@@ -1,13 +1,14 @@
 [build]
   command = "npm install"
   functions = "netlify/functions"
+  publish = "."
 
 [functions]
   node_bundler = "esbuild"
   external_node_modules = ["express"]
 
 [[redirects]]
-  from = "/*"
+  from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
@@ -17,17 +18,19 @@
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization, Accept"
+    Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    Access-Control-Allow-Credentials = "true"
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self' https://api.vapi.ai https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google-analytics.com https://api.vapi.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://api.vapi.ai wss://api.vapi.ai; frame-src 'self' https://www.youtube.com; media-src 'self' https://api.vapi.ai; worker-src 'self' blob:;"
-
-[context.production.environment]
-  NODE_ENV = "production"
-  VAPI_API_KEY = "@vapi_api_key"
-  VAPI_ASSISTANT_ID = "@vapi_assistant_id"
-  EMAIL_USER = "@email_user"
-  EMAIL_PASS = "@email_pass"
-  EMAIL_TO = "@email_to" 
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com https://*.sentry.io;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com https://*.sentry.io wss://*.daily.co;
+      frame-src 'self' https://*.daily.co https://*.firebaseapp.com;
+      media-src 'self' https://*.daily.co;
+    """
