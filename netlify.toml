@@ -1,0 +1,43 @@
+[build]
+  command = "npm install"
+  functions = "netlify/functions"
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["express"]
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://topedgeai.com"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    Access-Control-Allow-Credentials = "true"
+    Access-Control-Max-Age = "600"
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com https://*.sentry.io;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      img-src 'self' data: https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com;
+      connect-src 'self' https://*.daily.co https://*.firebaseapp.com https://*.googleapis.com https://*.sentry.io wss://*.daily.co;
+      frame-src 'self' https://*.daily.co https://*.firebaseapp.com;
+      media-src 'self' https://*.daily.co;
+    """
+
+
+[context.production.environment]
+  EMAIL_USER = "@email_user"
+  EMAIL_PASS = "@email_pass"
+  NODE_ENV = "production"

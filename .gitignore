@@ -1,0 +1,34 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+/dist
+/.netlify
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+.vercel
+booking-meeting-445311-5a86de3aa9b7.json
+# Keep service account credentials out of VCS
+# Add any future JSON credentials here as needed
+*.credentials.json
+*.service-account.json
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local Netlify folder
+.netlify

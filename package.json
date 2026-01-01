@@ -1,0 +1,23 @@
+{
+  "name": "topedge-backend",
+  "version": "1.0.0",
+  "description": "TopEdge AI Backend",
+  "main": "netlify/functions/api.js",
+  "type": "module",
+  "scripts": {
+    "start": "node netlify/functions/api.js",
+    "dev": "nodemon netlify/functions/api.js",
+    "build": "echo 'No build step needed for backend. Functions already in netlify/functions/'"
+  },
+  "dependencies": {
+    "@netlify/functions": "^2.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.1",
+    "serverless-http": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
