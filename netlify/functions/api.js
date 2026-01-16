@@ -10,15 +10,43 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Middleware
+const allowedOrigins = [
+  'https://main.dvuabchwge8pz.amplifyapp.com',
+  'https://topedgeai.com',
+  'http://localhost:5173',
+  'https://topedgeai.netlify.app',
+  'http://localhost:3000',
+  'https://topedge-frontend-site.onrender.com'
+];
+
 app.use(cors({
-  origin: [
-    'https://main.dvuabchwge8pz.amplifyapp.com',
-    'https://topedgeai.com',
-    'http://localhost:5173',
-    'https://topedgeai.netlify.app',
-    'http://localhost:3000',
-    'https://topedge-frontend-site.onrender.com'
-  ],
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    try {
+      const url = new URL(origin);
+      const hostname = url.hostname;
+
+      const hostAllowed =
+        allowedOrigins.includes(origin) ||
+        hostname === 'localhost' ||
+        hostname.endsWith('.netlify.app') ||
+        hostname.endsWith('.amplifyapp.com') ||
+        hostname.endsWith('.onrender.com');
+
+      if (hostAllowed) {
+        return callback(null, true);
+      }
+
+      console.warn('Blocked CORS origin:', origin);
+      return callback(new Error('Not allowed by CORS'));
+    } catch (error) {
+      console.error('Error parsing origin for CORS:', origin, error);
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
@@ -227,6 +255,232 @@ body {
     grid-template-columns: 1fr;
   }
 }`;
+
+// Booking Form - User Email
+app.post('/api/send-user-email', async (req, res) => {
+  try {
+    const { name, email, phone, companyName, date, time, additionalInfo } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Booking Confirmation - TopEdge AI Consultation',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Booking Confirmation - TopEdge AI</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
+                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Booking Confirmed</p>
+              </div>
+              
+              <div class="content">
+                <div class="section">
+                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello ${name},</h2>
+                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                    Thank you for booking a consultation with TopEdge AI. We're looking forward to discussing how we can help transform your business.
+                  </p>
+                  
+                  <div class="premium-box">
+                    <h3 style="color: #0A84FF; font-size: 20px; margin-bottom: 16px;">Your Meeting Details</h3>
+                    <div class="info-grid">
+                      <div class="info-item">
+                        <p class="info-label">Date & Time</p>
+                        <p class="info-value">${date} at ${time}</p>
+                      </div>
+                      <div class="info-item">
+                        <p class="info-label">Company</p>
+                        <p class="info-value">${companyName}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h3 class="section-title">What to Expect</h3>
+                  <div style="background: #F9FAFB; padding: 24px; border-radius: 12px;">
+                    <ol style="margin: 0; padding-left: 24px; color: #4B5563;">
+                      <li style="margin-bottom: 16px; padding-left: 8px;">
+                        <strong style="color: #1F2937;">Meeting Link</strong>
+                        <p style="margin-top: 4px; color: #6B7280;">We'll send you a Google Meet link shortly</p>
+                      </li>
+                      <li style="margin-bottom: 16px; padding-left: 8px;">
+                        <strong style="color: #1F2937;">Duration</strong>
+                        <p style="margin-top: 4px; color: #6B7280;">The consultation typically lasts 30-45 minutes</p>
+                      </li>
+                      <li style="padding-left: 8px;">
+                        <strong style="color: #1F2937;">Preparation</strong>
+                        <p style="margin-top: 4px; color: #6B7280;">Please bring any specific questions or requirements</p>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
+                <div class="section" style="text-align: center;">
+                  <h3 style="color: #1F2937; font-size: 20px; margin-bottom: 16px;">
+                    Need to Reschedule?
+                  </h3>
+                  <p style="color: #4B5563; margin-bottom: 24px;">
+                    If you need to change your appointment time, please reply to this email.
+                  </p>
+                </div>
+
+                <div class="footer">
+                  <p style="margin-bottom: 12px;">Best regards,</p>
+                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
+// Booking Form - Admin Email
+app.post('/api/send-admin-email', async (req, res) => {
+  try {
+    const { name, email, phone, companyName, date, time, additionalInfo } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: 'acctopedge@gmail.com',
+      subject: `New Booking Request: ${companyName} - ${name}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Booking Request - TopEdge</title>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 20px;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #fff;
+                border-radius: 16px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                overflow: hidden;
+              }
+              .header {
+                text-align: center;
+                padding: 40px 20px;
+                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
+                color: white;
+              }
+              .content {
+                padding: 40px 30px;
+              }
+              .section {
+                background-color: #F9FAFB;
+                border-radius: 12px;
+                padding: 25px;
+                margin-bottom: 30px;
+              }
+              .section-title {
+                color: #0A84FF;
+                font-size: 20px;
+                margin: 0 0 15px 0;
+                font-weight: 600;
+              }
+              .info-item {
+                margin-bottom: 15px;
+              }
+              .info-label {
+                color: #6B7280;
+                font-size: 14px;
+                margin: 0;
+              }
+              .info-value {
+                color: #1F2937;
+                font-size: 16px;
+                font-weight: 500;
+                margin: 5px 0 0 0;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
+                <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">New Booking Request</p>
+              </div>
+              
+              <div class="content">
+                <div class="section">
+                  <h3 class="section-title">Client Information</h3>
+                  <div class="info-item">
+                    <p class="info-label">Name</p>
+                    <p class="info-value">${name}</p>
+                  </div>
+                  <div class="info-item">
+                    <p class="info-label">Company</p>
+                    <p class="info-value">${companyName}</p>
+                  </div>
+                  <div class="info-item">
+                    <p class="info-label">Email</p>
+                    <p class="info-value"><a href="mailto:${email}" style="color: #0A84FF;">${email}</a></p>
+                  </div>
+                  <div class="info-item">
+                    <p class="info-label">Phone</p>
+                    <p class="info-value"><a href="tel:${phone}" style="color: #0A84FF;">${phone}</a></p>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <h3 class="section-title">Meeting Details</h3>
+                  <div class="info-item">
+                    <p class="info-label">Date</p>
+                    <p class="info-value">${date}</p>
+                  </div>
+                  <div class="info-item">
+                    <p class="info-label">Time</p>
+                    <p class="info-value">${time}</p>
+                  </div>
+                  ${additionalInfo ? `
+                  <div class="info-item">
+                    <p class="info-label">Additional Info</p>
+                    <p class="info-value">${additionalInfo}</p>
+                  </div>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
 
 // Maintenance Form - User Email template update
 app.post('/api/send-maintenance-user-email', async (req, res) => {
