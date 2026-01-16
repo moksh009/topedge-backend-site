@@ -3,11 +3,13 @@ import nodemailer from 'nodemailer';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
+import crypto from 'crypto';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+const OTP_SECRET = process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod';
 
 // Middleware
 const allowedOrigins = [
@@ -1573,6 +1575,113 @@ app.post('/api/send-admin-email', async (req, res) => {
       details: error.response || null,
       stack: error.stack || null
     });
+  }
+});
+
+// OTP Generation Endpoint
+app.post('/api/generate-otp', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    // Generate 4-digit OTP
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    
+    // Create hash for verification
+    const ttl = 10 * 60 * 1000; // 10 minutes
+    const expires = Date.now() + ttl;
+    const data = `${email}.${otp}.${expires}`;
+    const hash = crypto.createHmac('sha256', OTP_SECRET).update(data).digest('hex');
+    const fullHash = `${hash}.${expires}`;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Your Verification Code - TopEdge AI Community',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Verification Code - TopEdge AI</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
+                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Verify Your Identity</p>
+              </div>
+              
+              <div class="content">
+                <div class="section">
+                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello,</h2>
+                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                    Please use the following verification code to complete your sign-in request. This code will expire in 10 minutes.
+                  </p>
+                  
+                  <div style="background: #F3F4F6; padding: 24px; border-radius: 12px; text-align: center; margin: 24px 0;">
+                    <span style="font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #1F2937;">${otp}</span>
+                  </div>
+
+                  <p style="color: #6B7280; font-size: 14px; text-align: center;">
+                    If you didn't request this code, you can safely ignore this email.
+                  </p>
+                </div>
+
+                <div class="footer">
+                  <p style="margin-bottom: 12px;">Best regards,</p>
+                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'OTP sent successfully', hash: fullHash, email });
+  } catch (error) {
+    console.error('Error sending OTP:', error);
+    res.status(500).json({ message: 'Failed to send OTP', error: error.message });
+  }
+});
+
+// OTP Verification Endpoint
+app.post('/api/verify-otp', (req, res) => {
+  try {
+    const { email, otp, hash } = req.body;
+    if (!email || !otp || !hash) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const [hashValue, expires] = hash.split('.');
+    if (!hashValue || !expires) {
+      return res.status(400).json({ message: 'Invalid hash format' });
+    }
+
+    if (Date.now() > parseInt(expires)) {
+      return res.status(400).json({ message: 'OTP has expired. Please request a new one.' });
+    }
+
+    const data = `${email}.${otp}.${expires}`;
+    const validHash = crypto.createHmac('sha256', OTP_SECRET).update(data).digest('hex');
+
+    if (hashValue === validHash) {
+      res.status(200).json({ success: true, message: 'OTP Verified' });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ message: 'Verification failed', error: error.message });
   }
 });
 
