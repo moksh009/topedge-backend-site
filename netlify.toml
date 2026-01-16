@@ -35,9 +35,3 @@
       frame-src 'self' https://*.daily.co https://*.firebaseapp.com;
       media-src 'self' https://*.daily.co;
     """
-
-
-[context.production.environment]
-  EMAIL_USER = "@email_user"
-  EMAIL_PASS = "@email_pass"
-  NODE_ENV = "production"

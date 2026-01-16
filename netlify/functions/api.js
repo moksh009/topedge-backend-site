@@ -11,11 +11,12 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 const allowedOrigins = [
-  'https://main.dvuabchwge8pz.amplifyapp.com',
   'https://topedgeai.com',
+  'https://www.topedgeai.com',
   'http://localhost:5173',
-  'https://topedgeai.netlify.app',
   'http://localhost:3000',
+  'https://topedgeai.netlify.app',
+  'https://main.dvuabchwge8pz.amplifyapp.com',
   'https://topedge-frontend-site.onrender.com'
 ];
 
@@ -30,20 +31,27 @@ app.use(cors({
       const hostname = url.hostname;
 
       const hostAllowed =
-        allowedOrigins.includes(origin) ||
+        allowedOrigins.some(o => {
+          try {
+            const allowedUrl = new URL(o);
+            return allowedUrl.hostname === hostname && allowedUrl.protocol === url.protocol;
+          } catch { return false; }
+        }) ||
         hostname === 'localhost' ||
         hostname.endsWith('.netlify.app') ||
         hostname.endsWith('.amplifyapp.com') ||
-        hostname.endsWith('.onrender.com');
+        hostname.endsWith('.onrender.com') ||
+        hostname === 'topedgeai.com' ||
+        hostname === 'www.topedgeai.com';
 
       if (hostAllowed) {
         return callback(null, true);
       }
 
-      console.warn('Blocked CORS origin:', origin);
+      console.warn('[CORS] Blocked origin:', origin, 'hostname:', hostname);
       return callback(new Error('Not allowed by CORS'));
     } catch (error) {
-      console.error('Error parsing origin for CORS:', origin, error);
+      console.error('[CORS] Error parsing origin:', origin, error);
       return callback(new Error('Not allowed by CORS'));
     }
   },
@@ -59,18 +67,49 @@ app.options('*', cors());
 
 app.use(express.json());
 
-// Create transporter with more robust configuration
+// Request logging middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin || 'n/a';
+  console.log(`[REQ] ${new Date().toISOString()} ${req.method} ${req.originalUrl} origin=${origin}`);
+  if (req.method === 'POST') {
+    try {
+      const keys = Object.keys(req.body || {});
+      console.log('[REQ] body keys:', keys);
+    } catch {}
+  }
+  next();
+});
+
+// Environment validation
+const hasEmailUser = !!process.env.EMAIL_USER && process.env.EMAIL_USER.trim().length > 0;
+const hasEmailPass = !!process.env.EMAIL_PASS && process.env.EMAIL_PASS.trim().length > 0;
+console.log('[ENV] EMAIL_USER present:', hasEmailUser, 'EMAIL_PASS present:', hasEmailPass);
+
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'topedge-backend' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+// Create transporter with explicit SMTP configuration
+const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+const smtpPort = Number(process.env.SMTP_PORT || 465);
+const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true;
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: smtpHost,
+  port: smtpPort,
+  secure: smtpSecure,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
   tls: {
-    rejectUnauthorized: false // Allow self-signed certificates
+    rejectUnauthorized: false
   },
-  debug: true,
-  pool: true, // Use connection pooling
+  pool: true,
   maxConnections: 5,
   maxMessages: 100
 });
@@ -78,28 +117,37 @@ const transporter = nodemailer.createTransport({
 // Verify email configuration
 transporter.verify((error, success) => {
   if (error) {
-    console.error('Error verifying email configuration:', error);
+    console.error('[MAIL] verify error:', error?.message || error, error?.code, error?.response);
   } else {
-    console.log('Server is ready to send emails');
+    console.log('[MAIL] transport verified, ready to send emails');
   }
 });
 
 // Unified email sending function with retry logic
 const sendEmail = async (mailOptions, retries = 3) => {
+  if (!hasEmailUser || !hasEmailPass) {
+    throw new Error('Email credentials missing. Configure EMAIL_USER and EMAIL_PASS.');
+  }
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`Attempt ${i + 1} to send email with options:`, {
+      console.log(`[MAIL] Attempt ${i + 1} send with options:`, {
         ...mailOptions,
         auth: { user: process.env.EMAIL_USER }
       });
       
       const info = await transporter.sendMail(mailOptions);
-      console.log('Email sent successfully:', info.response);
+      console.log('[MAIL] sent:', info.response);
       return { success: true, message: 'Email sent successfully' };
     } catch (error) {
-      console.error(`Error sending email (attempt ${i + 1}):`, error);
+      const msg = error?.message || String(error);
+      const code = error?.code || '';
+      const resp = error?.response || '';
+      console.error(`[MAIL] send error attempt ${i + 1}:`, msg, code, resp);
+      if (/Username and Password not accepted/i.test(msg) || /EAUTH/i.test(code)) {
+        throw new Error('Invalid Gmail credentials. Use a Google App Password (requires 2-Step Verification).');
+      }
       if (i === retries - 1) {
-        throw new Error(`Failed to send email after ${retries} attempts: ${error.message}`);
+        throw new Error(`Failed to send email after ${retries} attempts: ${msg}`);
       }
       // Wait before retrying
       await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
