@@ -1960,9 +1960,33 @@ app.post('/api/get-protected-resource-link', async (req, res) => {
     const isCreator = resource.userId === uid;
     const isAdmin = ADMIN_EMAILS.includes(email);
     const purchasers = Array.isArray(resource.purchasers) ? resource.purchasers : [];
-    const isPurchaser = purchasers.includes(uid);
+    let isPurchaser = purchasers.includes(uid);
+
+    let isApprovedBuyer = false;
 
     if (!isCreator && !isAdmin && !isPurchaser) {
+      const requestsRef = db.collection('resource_access_requests');
+      const approvedSnap = await requestsRef
+        .where('resourceId', '==', resourceId)
+        .where('buyerId', '==', uid)
+        .where('status', '==', 'approved')
+        .limit(1)
+        .get();
+
+      if (!approvedSnap.empty) {
+        isApprovedBuyer = true;
+        try {
+          await resourceRef.update({
+            purchasers: admin.firestore.FieldValue.arrayUnion(uid)
+          });
+          isPurchaser = true;
+        } catch (e) {
+          console.error('[PROTECTED_LINK] Failed to backfill purchasers array:', e);
+        }
+      }
+    }
+
+    if (!isCreator && !isAdmin && !isPurchaser && !isApprovedBuyer) {
       return res.status(403).json({ message: 'Not authorized to access this resource' });
     }
 
