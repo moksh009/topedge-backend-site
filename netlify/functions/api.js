@@ -1214,6 +1214,199 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
   }
 });
 
+app.post('/api/access-request-user-email', async (req, res) => {
+  try {
+    const { buyerName, buyerEmail, resourceTitle } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: buyerEmail,
+      subject: 'We received your access request',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Access request received</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
+                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Access request received</p>
+              </div>
+              <div class="content">
+                <div class="section">
+                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${buyerName || 'there'},</h2>
+                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
+                    Your request for access to <strong>${resourceTitle || 'a paid resource'}</strong> has been sent to the creator.
+                    Complete payment with the creator. You will receive access only after the creator approves your request.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending access request user email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
+app.post('/api/access-request-creator-email', async (req, res) => {
+  try {
+    const { creatorName, creatorEmail, buyerName, buyerEmail, resourceTitle, priceText, approvalUrl } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: creatorEmail,
+      subject: 'New paid resource access request',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Access request pending</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
+                <p style="margin-top:8px;font-size:18px;opacity:0.9;">New access request</p>
+              </div>
+              <div class="content">
+                <div class="section">
+                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${creatorName || 'Creator'},</h2>
+                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
+                    ${buyerName || 'A user'} (${buyerEmail || 'no email provided'}) requested access to
+                    <strong>${resourceTitle || 'your paid resource'}</strong>.
+                  </p>
+                  ${priceText ? `<p style="color:#4B5563;font-size:15px;">Price: <strong>${priceText}</strong></p>` : ''}
+                  <p style="color:#4B5563;font-size:15px;margin-top:16px;">
+                    To review and approve or reject this request, open the approval page:
+                  </p>
+                  <p style="margin-top:8px;">
+                    <a href="${approvalUrl}" class="button" style="display:inline-block;padding:10px 18px;border-radius:999px;background:#111827;color:#FFFFFF;text-decoration:none;font-weight:600;">
+                      Review access request
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending access request creator email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
+app.post('/api/access-approved-user-email', async (req, res) => {
+  try {
+    const { buyerName, buyerEmail, resourceTitle, priceText } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: buyerEmail,
+      subject: 'Your paid resource access has been approved',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Access approved</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
+                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Access approved</p>
+              </div>
+              <div class="content">
+                <div class="section">
+                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Good news, ${buyerName || 'there'}!</h2>
+                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
+                    Your access request for <strong>${resourceTitle || 'a paid resource'}</strong> has been approved.
+                  </p>
+                  ${priceText ? `<p style="color:#4B5563;font-size:15px;">Price: <strong>${priceText}</strong></p>` : ''}
+                  <p style="color:#4B5563;font-size:15px;margin-top:16px;">
+                    You can now access this resource directly from your TopEdge AI community account.
+                    Sign in and open the resource page; it will be unlocked for your account.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending access approved user email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
+app.post('/api/access-approved-creator-email', async (req, res) => {
+  try {
+    const { creatorName, creatorEmail, buyerEmail, resourceTitle } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: creatorEmail,
+      subject: 'You approved a paid resource access request',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Access approved confirmation</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
+                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Approval confirmed</p>
+              </div>
+              <div class="content">
+                <div class="section">
+                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${creatorName || 'Creator'},</h2>
+                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
+                    You approved access for <strong>${buyerEmail || 'a buyer'}</strong> to
+                    <strong>${resourceTitle || 'your paid resource'}</strong>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending access approved creator email:', error);
+    res.status(500).json({ message: 'Failed to send email', error: error.message });
+  }
+});
+
 // Booking - User Email
 app.post('/api/send-user-email', async (req, res) => {
   try {
