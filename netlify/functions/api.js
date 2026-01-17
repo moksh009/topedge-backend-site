@@ -4,12 +4,50 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import crypto from 'crypto';
+import admin from 'firebase-admin';
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001;
 const OTP_SECRET = process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod';
+
+let firebaseInitialized = false;
+
+try {
+  if (!admin.apps.length) {
+    const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+    if (serviceAccountJson) {
+      const serviceAccount = JSON.parse(serviceAccountJson);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+      firebaseInitialized = true;
+      console.log('[FIREBASE] Admin initialized with service account');
+    } else {
+      console.warn('[FIREBASE] FIREBASE_SERVICE_ACCOUNT_KEY not set. Protected resource APIs will be disabled.');
+    }
+  } else {
+    firebaseInitialized = true;
+  }
+} catch (error) {
+  firebaseInitialized = false;
+  console.error('[FIREBASE] Failed to initialize admin SDK:', error);
+}
+
+const firestore = () => {
+  if (!firebaseInitialized) {
+    throw new Error('Firebase admin not initialized');
+  }
+  return admin.firestore();
+};
+
+const authAdmin = () => {
+  if (!firebaseInitialized) {
+    throw new Error('Firebase admin not initialized');
+  }
+  return admin.auth();
+};
 
 // Middleware
 const allowedOrigins = [
@@ -1682,6 +1720,89 @@ app.post('/api/verify-otp', (req, res) => {
   } catch (error) {
     console.error('Error verifying OTP:', error);
     res.status(500).json({ message: 'Verification failed', error: error.message });
+  }
+});
+
+const ADMIN_EMAILS = [
+  'acctopedge@gmail.com',
+  'moksh2031@gmail.com',
+  'smittilva2006@gmail.com',
+  'team@topedgeai.com'
+];
+
+app.post('/api/get-protected-resource-link', async (req, res) => {
+  try {
+    if (!firebaseInitialized) {
+      return res.status(500).json({ message: 'Protected resource service unavailable' });
+    }
+
+    const authHeader = req.headers.authorization || '';
+    const tokenFromHeader = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
+    const { idToken: tokenFromBody, resourceId } = req.body || {};
+    const idToken = tokenFromHeader || tokenFromBody;
+
+    if (!idToken) {
+      return res.status(401).json({ message: 'Missing authentication token' });
+    }
+
+    if (!resourceId || typeof resourceId !== 'string') {
+      return res.status(400).json({ message: 'resourceId is required' });
+    }
+
+    const decoded = await authAdmin().verifyIdToken(idToken);
+    const uid = decoded.uid;
+    const email = decoded.email || '';
+
+    const db = firestore();
+
+    const resourceRef = db.collection('community_resources').doc(resourceId);
+    const resourceSnap = await resourceRef.get();
+
+    if (!resourceSnap.exists) {
+      return res.status(404).json({ message: 'Resource not found' });
+    }
+
+    const resource = resourceSnap.data() || {};
+
+    const isCreator = resource.userId === uid;
+    const isAdmin = ADMIN_EMAILS.includes(email);
+    const purchasers = Array.isArray(resource.purchasers) ? resource.purchasers : [];
+    const isPurchaser = purchasers.includes(uid);
+
+    if (!isCreator && !isAdmin && !isPurchaser) {
+      return res.status(403).json({ message: 'Not authorized to access this resource' });
+    }
+
+    const protectedRef = db.collection('protected_resource_links').doc(resourceId);
+    const protectedSnap = await protectedRef.get();
+
+    if (!protectedSnap.exists) {
+      return res.status(404).json({ message: 'Protected link not configured for this resource' });
+    }
+
+    const protectedData = protectedSnap.data() || {};
+    const privateUrl = protectedData.privateUrl;
+
+    if (!privateUrl || typeof privateUrl !== 'string') {
+      return res.status(404).json({ message: 'Protected link missing for this resource' });
+    }
+
+    try {
+      await db.collection('resource_access_audit_logs').add({
+        resourceId,
+        buyerId: isPurchaser ? uid : null,
+        action: 'link_fetched',
+        performedBy: uid,
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (e) {
+      console.error('[PROTECTED_LINK] Failed to write access audit log (link_fetched):', e);
+    }
+
+    return res.status(200).json({ url: privateUrl });
+  } catch (error) {
+    console.error('[PROTECTED_LINK] Error fetching protected link:', error);
+    return res.status(500).json({ message: 'Failed to fetch protected link' });
   }
 });
 

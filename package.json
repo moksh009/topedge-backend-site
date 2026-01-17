@@ -10,6 +10,7 @@
     "build": "echo 'No build step needed for backend. Functions already in netlify/functions/'"
   },
   "dependencies": {
+    "firebase-admin": "^12.0.0",
     "@netlify/functions": "^2.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
