@@ -217,19 +217,19 @@ app.post('/api/send-user-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Booking Confirmed</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Booking Confirmed</p>
               </div>
               
               <div class="content">
                 <div class="section">
-                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello ${name},</h2>
-                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                  <h2 class="section-title">Hello ${name},</h2>
+                  <p class="text-regular">
                     Thank you for booking a consultation with TopEdge AI. We're looking forward to discussing how we can help transform your business.
                   </p>
                   
                   <div class="premium-box">
-                    <h3 style="color: #0A84FF; font-size: 20px; margin-bottom: 16px;">Your Meeting Details</h3>
+                    <h3 style="color: #818CF8; font-size: 20px; margin-bottom: 16px;">Your Meeting Details</h3>
                     <div class="info-grid">
                       <div class="info-item">
                         <p class="info-label">Date & Time</p>
@@ -245,38 +245,38 @@ app.post('/api/send-user-email', async (req, res) => {
 
                 <div class="section">
                   <h3 class="section-title">What to Expect</h3>
-                  <div style="background: #F9FAFB; padding: 24px; border-radius: 12px;">
-                    <ol style="margin: 0; padding-left: 24px; color: #4B5563;">
+                  <div style="background: rgba(30, 41, 59, 0.5); padding: 24px; border-radius: 12px; border: 1px solid #334155;">
+                    <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
                       <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Meeting Link</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">We'll send you a Google Meet link shortly</p>
+                        <strong style="color: #F8FAFC;">Meeting Link</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">We'll send you a Google Meet link shortly</p>
                       </li>
                       <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Duration</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">The consultation typically lasts 30-45 minutes</p>
+                        <strong style="color: #F8FAFC;">Duration</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">The consultation typically lasts 30-45 minutes</p>
                       </li>
                       <li style="padding-left: 8px;">
-                        <strong style="color: #1F2937;">Preparation</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">Please bring any specific questions or requirements</p>
+                        <strong style="color: #F8FAFC;">Preparation</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">Please bring any specific questions or requirements</p>
                       </li>
                     </ol>
                   </div>
                 </div>
 
                 <div class="section" style="text-align: center;">
-                  <h3 style="color: #1F2937; font-size: 20px; margin-bottom: 16px;">
+                  <h3 class="section-title">
                     Need to Reschedule?
                   </h3>
-                  <p style="color: #4B5563; margin-bottom: 24px;">
+                  <p class="text-regular">
                     If you need to change your appointment time, please reply to this email.
                   </p>
                 </div>
 
                 <div class="footer">
-                  <p style="margin-bottom: 12px;">Best regards,</p>
-                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
                   <div style="margin-top: 24px;">
-                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
                   </div>
                 </div>
               </div>
@@ -375,7 +375,11 @@ app.post('/api/send-admin-email', async (req, res) => {
                 </div>
 
                 <div class="footer">
-                  <p>© 2024 TopEdge AI. All rights reserved.</p>
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -403,10 +407,6 @@ app.post('/api/send-maintenance-user-email', async (req, res) => {
 
     const isChatbot = plan.toLowerCase().includes('chatbot');
     const planType = isChatbot ? 'Chatbot' : 'AI Voice Agent';
-    const planColor = isChatbot ? '#4D07E3' : '#0A84FF';
-    const planGradient = isChatbot 
-      ? 'linear-gradient(135deg, #4D07E3 0%, #7A0BC0 100%)'
-      : 'linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%)';
 
     await sendEmail({
       from: process.env.EMAIL_USER,
@@ -424,24 +424,24 @@ app.post('/api/send-maintenance-user-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Transform Your Business with AI</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Transform Your Business with AI</p>
               </div>
               
               <div class="content">
                 <div class="section">
-                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello ${name},</h2>
-                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                  <h2 class="section-title">Hello ${name},</h2>
+                  <p class="text-regular">
                     Thank you for choosing TopEdge AI's ${planType} solution. We're excited to help you revolutionize your business operations!
                   </p>
                   
                   <div class="premium-box">
-                    <h3 style="color: ${planColor}; font-size: 20px; margin-bottom: 16px;">Your Selected Plan</h3>
-                    <p style="color: #1F2937; font-size: 18px; font-weight: 600;">${plan}</p>
+                    <h3 style="color: #818CF8; font-size: 20px; margin-bottom: 16px;">Your Selected Plan</h3>
+                    <p style="color: #F8FAFC; font-size: 24px; font-weight: 700;">${plan}</p>
                   </div>
                 </div>
 
-                <div class="section" style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%);">
+                <div class="section">
                   <h3 class="section-title">Discover Your ROI Potential</h3>
                   <div class="stats-grid">
                     <div class="stat-item">
@@ -458,9 +458,9 @@ app.post('/api/send-maintenance-user-email', async (req, res) => {
                     </div>
                   </div>
                   
-                  <div style="text-align: center; margin-top: 24px;">
-                    <p style="color: #1F2937; font-size: 16px; margin-bottom: 20px;">
-                      <strong>Calculate your specific ROI based on your business metrics</strong>
+                  <div style="text-align: center; margin-top: 32px;">
+                    <p class="text-regular" style="margin-bottom: 24px;">
+                      Calculate your specific ROI based on your business metrics
                     </p>
                     <a href="https://topedgeai.com/roi" class="button">Calculate Your ROI Now →</a>
                   </div>
@@ -470,65 +470,63 @@ app.post('/api/send-maintenance-user-email', async (req, res) => {
                   <h3 class="section-title">Key Benefits</h3>
                   <div class="info-grid">
                     <div class="info-item">
-                      <div style="font-size: 24px; margin-bottom: 8px;">💰</div>
-                      <h4 style="color: #1F2937; margin-bottom: 8px;">Revenue Growth</h4>
-                      <p style="color: #6B7280; font-size: 14px;">Recover $10,000+ in missed opportunities within 45 days</p>
+                      <div style="font-size: 24px; margin-bottom: 12px;">💰</div>
+                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-weight: 600;">Revenue Growth</h4>
+                      <p class="text-muted">Recover $10,000+ in missed opportunities within 45 days</p>
                     </div>
                     <div class="info-item">
-                      <div style="font-size: 24px; margin-bottom: 8px;">📈</div>
-                      <h4 style="color: #1F2937; margin-bottom: 8px;">Booking Rate</h4>
-                      <p style="color: #6B7280; font-size: 14px;">Increase appointment bookings by up to 2.5x</p>
+                      <div style="font-size: 24px; margin-bottom: 12px;">📈</div>
+                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-weight: 600;">Booking Rate</h4>
+                      <p class="text-muted">Increase appointment bookings by up to 2.5x</p>
                     </div>
                     <div class="info-item">
-                      <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
-                      <h4 style="color: #1F2937; margin-bottom: 8px;">Efficiency</h4>
-                      <p style="color: #6B7280; font-size: 14px;">Save 30+ hours per week in manual work</p>
+                      <div style="font-size: 24px; margin-bottom: 12px;">⚡</div>
+                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-weight: 600;">Efficiency</h4>
+                      <p class="text-muted">Save 30+ hours per week in manual work</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="section">
                   <h3 class="section-title">Next Steps</h3>
-                  <div style="background: #F9FAFB; padding: 24px; border-radius: 12px;">
-                    <ol style="margin: 0; padding-left: 24px; color: #4B5563;">
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Initial Contact</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">Our team will reach out within 24 hours</p>
+                  <div style="background: #1E293B; padding: 32px; border-radius: 16px; border: 1px solid #334155;">
+                    <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Initial Contact</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">Our team will reach out within 24 hours</p>
                       </li>
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Requirements Analysis</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">We'll understand your specific needs</p>
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Requirements Analysis</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">We'll understand your specific needs</p>
                       </li>
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Solution Design</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">Get your customized implementation plan</p>
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Solution Design</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">Get your customized implementation plan</p>
                       </li>
                       <li style="padding-left: 8px;">
-                        <strong style="color: #1F2937;">Demo Session</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">See your tailored solution in action</p>
+                        <strong style="color: #F8FAFC;">Demo Session</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">See your tailored solution in action</p>
                       </li>
                     </ol>
                   </div>
                 </div>
 
                 <div class="section" style="text-align: center;">
-                  <h3 style="color: #1F2937; font-size: 20px; margin-bottom: 16px;">
-                    Ready to Transform Your Business?
-                  </h3>
-                  <p style="color: #4B5563; margin-bottom: 24px;">
+                  <h3 class="section-title">Ready to Transform Your Business?</h3>
+                  <p class="text-regular">
                     Reply with "Tell me more" to unlock exclusive insights and success stories!
                   </p>
                   <div class="divider"></div>
-                  <p style="color: ${planColor}; font-weight: 600; margin-top: 24px;">
+                  <p style="color: #818CF8; font-weight: 600; margin-top: 24px;">
                     P.S. Most of our clients achieve positive ROI within the first month!
                   </p>
                 </div>
 
                 <div class="footer">
-                  <p style="margin-bottom: 12px;">Best regards,</p>
-                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <p>Best regards,</p>
+                  <p style="font-weight: 600; color: #F8FAFC;">Team TopEdge AI</p>
                   <div style="margin-top: 24px;">
-                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
                   </div>
                 </div>
               </div>
@@ -583,9 +581,11 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
               </div>
               
               <div class="content">
-                <div class="section" style="text-align: center; background: ${planGradient}; border-radius: 12px; margin: 24px 32px; padding: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                  <h3 style="color: white; margin-bottom: 8px; font-size: 24px; font-weight: 700;">${plan}</h3>
-                  <p style="color: rgba(255,255,255,0.9); font-size: 16px;">${planType} Inquiry</p>
+                <div class="section">
+                  <div style="text-align: center; background: ${planGradient}; border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                    <h3 style="color: white; margin-bottom: 8px; font-size: 24px; font-weight: 700;">${plan}</h3>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 16px;">${planType} Inquiry</p>
+                  </div>
                 </div>
                 
                 <div class="section">
@@ -614,21 +614,27 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
                   </div>
                 </div>
 
-                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
-                  <h3 class="section-title" style="color: #F87171;">Action Required</h3>
-                  <div style="color: #CBD5E1;">
-                    <p>Please take the following actions:</p>
-                    <ol style="margin: 15px 0 0 20px;">
-                      <li style="margin-bottom: 10px;">Review the client's requirements</li>
-                      <li style="margin-bottom: 10px;">Prepare a customized solution proposal</li>
-                      <li style="margin-bottom: 10px;">Schedule a demo call</li>
-                      <li>Respond within 24 hours</li>
-                    </ol>
+                <div class="section">
+                  <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 16px; padding: 24px;">
+                    <h3 class="section-title" style="color: #F87171; margin-bottom: 16px;">Action Required</h3>
+                    <div style="color: #E2E8F0;">
+                      <p style="margin-bottom: 12px;">Please take the following actions:</p>
+                      <ol style="margin: 0; padding-left: 20px; color: #94A3B8;">
+                        <li style="margin-bottom: 10px;">Review the client's requirements</li>
+                        <li style="margin-bottom: 10px;">Prepare a customized solution proposal</li>
+                        <li style="margin-bottom: 10px;">Schedule a demo call</li>
+                        <li>Respond within 24 hours</li>
+                      </ol>
+                    </div>
                   </div>
                 </div>
                 
                 <div class="footer">
-                  <p>© 2024 TopEdge AI. All rights reserved.</p>
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -670,31 +676,31 @@ app.post('/api/send-contact-user-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Thank You for Reaching Out!</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Thank You for Reaching Out!</p>
               </div>
               
               <div class="content">
                 <div class="section">
-                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello ${name},</h2>
-                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                  <h2 class="section-title">Hello ${name},</h2>
+                  <p class="text-regular">
                     Thank you for contacting TopEdge AI. We're excited to help you explore how AI can transform your business operations.
                   </p>
                   
                   <div class="premium-box">
-                    <h3 style="color: #0A84FF; font-size: 20px; margin-bottom: 16px;">Your Message Details</h3>
+                    <h3 style="color: #818CF8; font-size: 20px; margin-bottom: 16px;">Your Message Details</h3>
                     <div style="margin-bottom: 16px;">
-                      <p style="color: #6B7280; font-size: 14px; margin-bottom: 4px;">Subject</p>
-                      <p style="color: #1F2937; font-size: 16px; font-weight: 500;">${subject}</p>
+                      <p style="color: #94A3B8; font-size: 14px; margin-bottom: 4px;">Subject</p>
+                      <p style="color: #F8FAFC; font-size: 16px; font-weight: 500;">${subject}</p>
                     </div>
                     <div>
-                      <p style="color: #6B7280; font-size: 14px; margin-bottom: 4px;">Message</p>
-                      <p style="color: #1F2937; font-size: 16px;">${message}</p>
+                      <p style="color: #94A3B8; font-size: 14px; margin-bottom: 4px;">Message</p>
+                      <p style="color: #F8FAFC; font-size: 16px;">${message}</p>
                     </div>
                   </div>
                 </div>
 
-                <div class="section" style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.04) 0%, rgba(59, 130, 246, 0.04) 100%);">
+                <div class="section">
                   <h3 class="section-title">Why Businesses Choose TopEdge AI</h3>
                   <div class="stats-grid">
                     <div class="stat-item">
@@ -711,9 +717,9 @@ app.post('/api/send-contact-user-email', async (req, res) => {
                     </div>
                   </div>
                   
-                  <div style="text-align: center; margin-top: 24px;">
-                    <p style="color: #1F2937; font-size: 16px; margin-bottom: 20px;">
-                      <strong>See what these numbers mean for your business</strong>
+                  <div style="text-align: center; margin-top: 32px;">
+                    <p class="text-regular" style="margin-bottom: 24px;">
+                      See what these numbers mean for your business
                     </p>
                     <a href="https://topedgeai.com/roi" class="button">Calculate Your ROI →</a>
                   </div>
@@ -721,43 +727,41 @@ app.post('/api/send-contact-user-email', async (req, res) => {
 
                 <div class="section">
                   <h3 class="section-title">What Happens Next?</h3>
-                  <div style="background: #F9FAFB; padding: 24px; border-radius: 12px;">
-                    <ol style="margin: 0; padding-left: 24px; color: #4B5563;">
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Message Review</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">Our team is analyzing your requirements</p>
+                  <div style="background: #1E293B; padding: 32px; border-radius: 16px; border: 1px solid #334155;">
+                    <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Message Review</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">Our team is analyzing your requirements</p>
                       </li>
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Solution Preparation</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">We're crafting the perfect solution for you</p>
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Solution Preparation</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">We're crafting the perfect solution for you</p>
                       </li>
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #1F2937;">Quick Response</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">Expect to hear from us within 24 hours</p>
+                      <li style="margin-bottom: 20px; padding-left: 8px;">
+                        <strong style="color: #F8FAFC;">Quick Response</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">Expect to hear from us within 24 hours</p>
                       </li>
                       <li style="padding-left: 8px;">
-                        <strong style="color: #1F2937;">Strategy Discussion</strong>
-                        <p style="margin-top: 4px; color: #6B7280;">We'll schedule a call to discuss next steps</p>
+                        <strong style="color: #F8FAFC;">Strategy Discussion</strong>
+                        <p style="margin-top: 4px; color: #94A3B8;">We'll schedule a call to discuss next steps</p>
                       </li>
                     </ol>
                   </div>
                 </div>
 
                 <div class="section" style="text-align: center;">
-                  <h3 style="color: #1F2937; font-size: 20px; margin-bottom: 16px;">
-                    While You Wait...
-                  </h3>
-                  <p style="color: #4B5563; margin-bottom: 24px;">
+                  <h3 class="section-title">While You Wait...</h3>
+                  <p class="text-regular" style="margin-bottom: 24px;">
                     Explore our success stories and see how other businesses have transformed with TopEdge AI
                   </p>
                   <a href="https://topedgeai.com/case-studies" class="button">View Success Stories →</a>
                 </div>
 
                 <div class="footer">
-                  <p style="margin-bottom: 12px;">Best regards,</p>
-                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <p>Best regards,</p>
+                  <p style="font-weight: 600; color: #F8FAFC;">Team TopEdge AI</p>
                   <div style="margin-top: 24px;">
-                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
                   </div>
                 </div>
               </div>
@@ -800,9 +804,11 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
               </div>
               
               <div class="content">
-                <div class="section" style="text-align: center; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; margin: 24px 32px;">
-                  <h3 class="section-title" style="color: #818CF8; margin-bottom: 8px;">New Message</h3>
-                  <p class="text-muted" style="font-size: 16px; color: #F8FAFC;">${subject}</p>
+                <div class="section">
+                  <div style="text-align: center; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 16px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                    <h3 style="color: #818CF8; margin-bottom: 8px; font-size: 24px; font-weight: 700;">New Message</h3>
+                    <p style="font-size: 16px; color: #F8FAFC;">${subject}</p>
+                  </div>
                 </div>
 
                 <div class="section">
@@ -843,26 +849,32 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
 
                 <div class="section">
                   <h3 class="section-title">Message Content</h3>
-                  <div style="background: #0F172A; border-radius: 8px; padding: 20px; border: 1px solid #334155;">
-                    <p style="color: #E2E8F0; white-space: pre-wrap; margin: 0;">${message}</p>
+                  <div style="background: #1E293B; border-radius: 12px; padding: 24px; border: 1px solid #334155;">
+                    <p style="color: #E2E8F0; white-space: pre-wrap; margin: 0; line-height: 1.6;">${message}</p>
                   </div>
                 </div>
 
-                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
-                  <h3 class="section-title" style="color: #F87171;">Action Required</h3>
-                  <div style="color: #CBD5E1;">
-                    <p>Please take the following actions:</p>
-                    <ol style="margin: 15px 0 0 20px;">
-                      <li style="margin-bottom: 10px;">Review the inquiry details</li>
-                      <li style="margin-bottom: 10px;">Prepare a response</li>
-                      <li style="margin-bottom: 10px;">Respond within 24-48 hours</li>
-                      <li>Update the CRM if necessary</li>
-                    </ol>
+                <div class="section">
+                  <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 16px; padding: 24px;">
+                    <h3 class="section-title" style="color: #F87171; margin-bottom: 16px;">Action Required</h3>
+                    <div style="color: #E2E8F0;">
+                      <p style="margin-bottom: 12px;">Please take the following actions:</p>
+                      <ol style="margin: 0; padding-left: 20px; color: #94A3B8;">
+                        <li style="margin-bottom: 10px;">Review the inquiry details</li>
+                        <li style="margin-bottom: 10px;">Prepare a response</li>
+                        <li style="margin-bottom: 10px;">Respond within 24-48 hours</li>
+                        <li>Update the CRM if necessary</li>
+                      </ol>
+                    </div>
                   </div>
                 </div>
 
                 <div class="footer">
-                  <p>© 2024 TopEdge AI. All rights reserved.</p>
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -903,16 +915,27 @@ app.post('/api/access-request-user-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
-                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Access request received</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Access Request Received</p>
               </div>
               <div class="content">
                 <div class="section">
-                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${buyerName || 'there'},</h2>
-                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
-                    Your request for access to <strong>${resourceTitle || 'a paid resource'}</strong> has been sent to the creator.
-                    Complete payment with the creator. You will receive access only after the creator approves your request.
+                  <h2 class="section-title">Hello ${buyerName || 'there'},</h2>
+                  <p class="text-regular">
+                    Your request for access to <strong style="color: #F8FAFC;">${resourceTitle || 'a paid resource'}</strong> has been sent to the creator.
                   </p>
+                  <div class="premium-box">
+                    <p class="text-regular" style="margin-bottom: 0;">
+                      Complete payment with the creator. You will receive access only after the creator approves your request.
+                    </p>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -948,25 +971,32 @@ app.post('/api/access-request-creator-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
-                <p style="margin-top:8px;font-size:18px;opacity:0.9;">New access request</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">New Access Request</p>
               </div>
               <div class="content">
                 <div class="section">
-                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${creatorName || 'Creator'},</h2>
-                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
-                    ${buyerName || 'A user'} (${buyerEmail || 'no email provided'}) requested access to
-                    <strong>${resourceTitle || 'your paid resource'}</strong>.
+                  <h2 class="section-title">Hello ${creatorName || 'Creator'},</h2>
+                  <p class="text-regular">
+                    <strong style="color: #F8FAFC;">${buyerName || 'A user'}</strong> (${buyerEmail || 'no email provided'}) requested access to
+                    <strong style="color: #F8FAFC;">${resourceTitle || 'your paid resource'}</strong>.
                   </p>
-                  ${priceText ? `<p style="color:#4B5563;font-size:15px;">Price: <strong>${priceText}</strong></p>` : ''}
-                  <p style="color:#4B5563;font-size:15px;margin-top:16px;">
-                    To review and approve or reject this request, open the approval page:
+                  ${priceText ? `<div class="premium-box" style="margin: 24px 0;"><p class="text-regular" style="margin: 0;">Price: <strong style="color: #818CF8;">${priceText}</strong></p></div>` : ''}
+                  <p class="text-regular">
+                    To review and approve or reject this request, please proceed to the approval page.
                   </p>
-                  <p style="margin-top:8px;">
-                    <a href="${approvalUrl}" class="button" style="display:inline-block;padding:10px 18px;border-radius:999px;background:#111827;color:#FFFFFF;text-decoration:none;font-weight:600;">
-                      Review access request
+                  <div style="text-align: center; margin-top: 32px;">
+                    <a href="${approvalUrl}" class="button">
+                      Review Access Request
                     </a>
-                  </p>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1002,20 +1032,29 @@ app.post('/api/access-approved-user-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
-                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Access approved</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Access Approved</p>
               </div>
               <div class="content">
                 <div class="section">
-                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Good news, ${buyerName || 'there'}!</h2>
-                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
-                    Your access request for <strong>${resourceTitle || 'a paid resource'}</strong> has been approved.
+                  <h2 class="section-title">Good news, ${buyerName || 'there'}!</h2>
+                  <p class="text-regular">
+                    Your access request for <strong style="color: #F8FAFC;">${resourceTitle || 'a paid resource'}</strong> has been approved.
                   </p>
-                  ${priceText ? `<p style="color:#4B5563;font-size:15px;">Price: <strong>${priceText}</strong></p>` : ''}
-                  <p style="color:#4B5563;font-size:15px;margin-top:16px;">
-                    You can now access this resource directly from your TopEdge AI community account.
-                    Sign in and open the resource page; it will be unlocked for your account.
-                  </p>
+                  ${priceText ? `<div class="premium-box" style="margin: 24px 0;"><p class="text-regular" style="margin: 0;">Price: <strong style="color: #818CF8;">${priceText}</strong></p></div>` : ''}
+                  <div class="premium-box">
+                    <p class="text-regular" style="margin: 0;">
+                      You can now access this resource directly from your TopEdge AI community account.
+                      Sign in and open the resource page; it will be unlocked for your account.
+                    </p>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1051,16 +1090,23 @@ app.post('/api/access-approved-creator-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin:0;font-size:28px;font-weight:700;">TopEdge AI</h1>
-                <p style="margin-top:8px;font-size:18px;opacity:0.9;">Approval confirmed</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Approval Confirmed</p>
               </div>
               <div class="content">
                 <div class="section">
-                  <h2 style="color:#1F2937;font-size:20px;margin-bottom:12px;">Hello ${creatorName || 'Creator'},</h2>
-                  <p style="color:#4B5563;font-size:15px;line-height:1.7;">
-                    You approved access for <strong>${buyerEmail || 'a buyer'}</strong> to
-                    <strong>${resourceTitle || 'your paid resource'}</strong>.
+                  <h2 class="section-title">Hello ${creatorName || 'Creator'},</h2>
+                  <p class="text-regular">
+                    You approved access for <strong style="color: #F8FAFC;">${buyerEmail || 'a buyer'}</strong> to
+                    <strong style="color: #F8FAFC;">${resourceTitle || 'your paid resource'}</strong>.
                   </p>
+                </div>
+                <div class="footer">
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1115,31 +1161,31 @@ app.post('/api/generate-otp', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 32px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 12px; font-size: 20px; opacity: 0.9;">Verify Your Identity</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">Verify Your Identity</p>
               </div>
               
               <div class="content">
                 <div class="section">
-                  <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 16px;">Hello,</h2>
-                  <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
+                  <h2 class="section-title">Hello,</h2>
+                  <p class="text-regular">
                     Please use the following verification code to complete your sign-in request. This code will expire in 10 minutes.
                   </p>
                   
-                  <div style="background: #F3F4F6; padding: 24px; border-radius: 12px; text-align: center; margin: 24px 0;">
-                    <span style="font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #1F2937;">${otp}</span>
+                  <div class="otp-box">
+                    <span class="otp-code">${otp}</span>
                   </div>
 
-                  <p style="color: #6B7280; font-size: 14px; text-align: center;">
+                  <p class="text-muted" style="text-align: center;">
                     If you didn't request this code, you can safely ignore this email.
                   </p>
                 </div>
 
                 <div class="footer">
-                  <p style="margin-bottom: 12px;">Best regards,</p>
-                  <p style="font-weight: 600; color: #1F2937;">Team TopEdge AI</p>
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
                   <div style="margin-top: 24px;">
-                    <p style="color: #9CA3AF; font-size: 12px;">© 2024 TopEdge AI. All rights reserved.</p>
+                    <p>© 2026 TopEdge AI. All rights reserved.</p>
                   </div>
                 </div>
               </div>
@@ -1341,22 +1387,22 @@ app.post('/api/send-welcome-email', async (req, res) => {
           <body>
             <div class="container">
               <div class="header">
-                <div class="logo-text">TopEdge AI</div>
+                <span class="logo-text">TopEdge AI</span>
                 <p class="header-subtitle">Welcome to the Future of Automation</p>
               </div>
               
               <div class="content">
                 <div class="section">
                   <h2 class="section-title">Hello ${name || 'Builder'},</h2>
-                  <p class="text-muted">
+                  <p class="text-regular">
                     Welcome to the TopEdge AI Community! We are thrilled to have you on board. This is an exclusive space for AI enthusiasts, developers, and founders to collaborate, share resources, and grow together.
                   </p>
                   
                   <div class="premium-box">
                     <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 16px; font-weight: 600;">Get Started Immediately</h3>
-                    <p style="color: #CBD5E1; margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
+                    <p class="text-regular" style="margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
                     
-                    <a href="https://topedgeai.com/community/profile" class="button" style="display: block; width: 100%;">Create Your Profile</a>
+                    <a href="https://topedgeai.com/community/profile" class="button" style="display: block; width: 100%; box-sizing: border-box;">Create Your Profile</a>
                     
                     <div style="text-align: center; margin-top: 16px;">
                       <a href="https://topedgeai.com/community" style="color: #818CF8; text-decoration: none; font-size: 14px; font-weight: 500;">Explore Resources &rarr;</a>
@@ -1372,23 +1418,24 @@ app.post('/api/send-welcome-email', async (req, res) => {
                     <div class="info-item">
                       <div style="font-size: 24px; margin-bottom: 12px;">🚀</div>
                       <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Share & Grow</h4>
-                      <p style="color: #94A3B8; font-size: 13px; line-height: 1.5;">Upload your AI agents and templates to gain visibility.</p>
+                      <p class="text-muted" style="font-size: 13px; margin: 0;">Upload your AI agents and templates to gain visibility.</p>
                     </div>
                     <div class="info-item">
                       <div style="font-size: 24px; margin-bottom: 12px;">🤝</div>
                       <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Connect</h4>
-                      <p style="color: #94A3B8; font-size: 13px; line-height: 1.5;">Network with other top AI talent and founders.</p>
+                      <p class="text-muted" style="font-size: 13px; margin: 0;">Network with other top AI talent and founders.</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="footer">
-                  <p style="margin-bottom: 12px;">Best regards,</p>
-                  <p style="font-weight: 600; color: #F8FAFC;">Team TopEdge AI</p>
-                  <div style="margin-top: 24px;">
+                  <p>Best regards,</p>
+                  <p style="color: #F8FAFC; font-weight: 600; margin-bottom: 24px;">Team TopEdge AI</p>
+                  <div>
                     <a href="https://topedgeai.com" style="margin: 0 12px;">Website</a>
                     <a href="https://topedgeai.com/community" style="margin: 0 12px;">Community</a>
                   </div>
+                  <p style="margin-top: 24px;">© 2026 TopEdge AI. All rights reserved.</p>
                 </div>
               </div>
             </div>
@@ -1427,6 +1474,196 @@ app.post('/api/send-automation-email', async (req, res) => {
   }
 });
 
+// 1.6 Profile Reminder Email
+app.post('/api/send-profile-reminder', async (req, res) => {
+  try {
+    const { email, name, daysAgo } = req.body;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Action Required</title>
+        <style>${commonEmailStyles}</style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <span class="logo-text">TopEdge AI</span>
+            <p class="header-subtitle">Pending Action</p>
+          </div>
+          <div class="content">
+            <div class="section">
+              <h2 class="section-title">Don't Stay Anonymous, ${name}! 👀</h2>
+              <p class="text-regular">
+                We noticed you joined ${daysAgo} days ago but haven't completed your profile yet. An incomplete profile is like a ghost town—nobody visits!
+              </p>
+              <div class="premium-box">
+                <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Why complete it?</h3>
+                <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
+                  <li style="margin-bottom: 8px;">Get discovered by potential clients</li>
+                  <li style="margin-bottom: 8px;">Unlock exclusive community resources</li>
+                  <li>Earn trust badges on your profile</li>
+                </ul>
+              </div>
+              <div style="text-align: center; margin-top: 24px;">
+                <a href="https://topedgeai.com/community/profile/edit" class="button">Complete Profile Now</a>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Best regards,</p>
+              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+              <div style="margin-top: 24px;">
+                <p>© 2026 TopEdge AI. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: `Don't Stay Anonymous, ${name}! 👀`,
+      html: html
+    });
+
+    res.status(200).json({ success: true, message: 'Profile reminder email sent' });
+  } catch (error) {
+    console.error('Error sending profile reminder email:', error);
+    res.status(500).json({ message: 'Failed to send profile reminder email', error: error.message });
+  }
+});
+
+// 1.7 Resource Nudge Email
+app.post('/api/send-resource-nudge', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Contribution Opportunity</title>
+        <style>${commonEmailStyles}</style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <span class="logo-text">TopEdge AI</span>
+            <p class="header-subtitle">Contribution Opportunity</p>
+          </div>
+          <div class="content">
+            <div class="section">
+              <h2 class="section-title">Turn Your Knowledge into Income 💰</h2>
+              <p class="text-regular">
+                Hey ${name}, your profile looks great! Now it's time to showcase your expertise.
+              </p>
+              <p class="text-regular">
+                Did you know you can upload your automation scripts, templates, and workflows to our marketplace? You can offer them for free to build reputation or sell them to earn revenue.
+              </p>
+              <div class="premium-box">
+                <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Top Earnings:</h3>
+                <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
+                  <li style="margin-bottom: 8px;">Chatbot Templates</li>
+                  <li style="margin-bottom: 8px;">Automation Workflows</li>
+                  <li>AI Agent Configs</li>
+                </ul>
+              </div>
+              <div style="text-align: center; margin-top: 24px;">
+                <a href="https://topedgeai.com/community/upload" class="button">Upload Your First Resource</a>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Best regards,</p>
+              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+              <div style="margin-top: 24px;">
+                <p>© 2026 TopEdge AI. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Turn Your Knowledge into Income 💰',
+      html: html
+    });
+
+    res.status(200).json({ success: true, message: 'Resource nudge email sent' });
+  } catch (error) {
+    console.error('Error sending resource nudge email:', error);
+    res.status(500).json({ message: 'Failed to send resource nudge email', error: error.message });
+  }
+});
+
+// 1.8 Community Update Email
+app.post('/api/send-community-update', async (req, res) => {
+  try {
+    const { email, title, content, ctaText, ctaLink } = req.body;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Community Update</title>
+        <style>${commonEmailStyles}</style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <span class="logo-text">TopEdge AI</span>
+            <p class="header-subtitle">Community Update</p>
+          </div>
+          <div class="content">
+            <div class="section">
+              <h2 class="section-title">${title}</h2>
+              <p class="text-regular">
+                ${content.replace(/\n/g, '<br>')}
+              </p>
+              <div style="text-align: center; margin-top: 32px;">
+                <a href="${ctaLink}" class="button">${ctaText}</a>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Best regards,</p>
+              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+              <div style="margin-top: 24px;">
+                <p>© 2026 TopEdge AI. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: title,
+      html: html
+    });
+
+    res.status(200).json({ success: true, message: 'Community update email sent' });
+  } catch (error) {
+    console.error('Error sending community update email:', error);
+    res.status(500).json({ message: 'Failed to send community update email', error: error.message });
+  }
+});
+
 // 2. Broadcast: Community Live (One-Time / Manual)
 app.post('/api/admin/broadcast-live', async (req, res) => {
   try {
@@ -1459,13 +1696,13 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
 
         if (hasProfile) {
           content = `
-            <p class="text-muted">The TopEdge AI Community is officially LIVE!</p>
-            <p class="text-muted">You are one of our founding members. Thank you for setting up your profile early.</p>
+            <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
+            <p class="text-regular">You are one of our founding members. Thank you for setting up your profile early.</p>
             <div class="premium-box">
-              <h3 style="color: #F8FAFC; margin-bottom: 12px;">What's New:</h3>
-              <ul style="color: #CBD5E1; padding-left: 20px;">
-                 <li style="margin-bottom: 8px;">Browse the new <strong>Automation Hub</strong> for AI agents.</li>
-                 <li style="margin-bottom: 8px;">Check out the <strong>Request Board</strong> for opportunities.</li>
+              <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">What's New:</h3>
+              <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
+                 <li style="margin-bottom: 8px;">Browse the new <strong style="color: #818CF8;">Automation Hub</strong> for AI agents.</li>
+                 <li style="margin-bottom: 8px;">Check out the <strong style="color: #818CF8;">Request Board</strong> for opportunities.</li>
                  <li>Connect with other members.</li>
               </ul>
             </div>
@@ -1475,11 +1712,11 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
           `;
         } else {
           content = `
-            <p class="text-muted">The TopEdge AI Community is officially LIVE!</p>
-            <p class="text-muted">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
+            <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
+            <p class="text-regular">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
             <div class="premium-box">
-              <h3 style="color: #F8FAFC; margin-bottom: 12px;">Why Create a Profile?</h3>
-              <ul style="color: #CBD5E1; padding-left: 20px;">
+              <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Why Create a Profile?</h3>
+              <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
                  <li style="margin-bottom: 8px;">Get discovered by clients and collaborators.</li>
                  <li style="margin-bottom: 8px;">Showcase your AI skills and portfolio.</li>
                  <li>Access exclusive community resources.</li>
@@ -1499,12 +1736,15 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
             <!DOCTYPE html>
             <html>
               <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Community Launch</title>
                 <style>${commonEmailStyles}</style>
               </head>
               <body>
                 <div class="container">
                   <div class="header">
-                    <div class="logo-text">TopEdge AI</div>
+                    <span class="logo-text">TopEdge AI</span>
                     <p class="header-subtitle">Community Launch 🚀</p>
                   </div>
                   <div class="content">
@@ -1513,7 +1753,11 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
                       ${content}
                     </div>
                     <div class="footer">
-                      <p>Best regards,<br>Team TopEdge AI</p>
+                      <p>Best regards,</p>
+                      <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                      <div style="margin-top: 24px;">
+                        <p>© 2026 TopEdge AI. All rights reserved.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1598,22 +1842,27 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                             html: `
                                 <!DOCTYPE html>
                                 <html>
-                                <head><style>${commonEmailStyles}</style></head>
+                                <head>
+                                    <meta charset="utf-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <title>Action Required</title>
+                                    <style>${commonEmailStyles}</style>
+                                </head>
                                 <body>
                                     <div class="container">
                                     <div class="header">
-                                        <div class="logo-text">TopEdge AI</div>
+                                        <span class="logo-text">TopEdge AI</span>
                                         <p class="header-subtitle">Pending Action</p>
                                     </div>
                                     <div class="content">
                                         <div class="section">
                                         <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
-                                        <p class="text-muted">It's been 2 days since you joined, but your profile is incomplete. You are missing out on visibility within the community.</p>
+                                        <p class="text-regular">It's been 2 days since you joined, but your profile is incomplete. You are missing out on visibility within the community.</p>
                                         <div class="premium-box">
-                                            <h3 style="color: #F8FAFC; margin-bottom: 12px;">Unlock Benefits:</h3>
-                                            <ul style="color: #CBD5E1; padding-left: 20px;">
-                                                <li>Showcase your skills</li>
-                                                <li>Connect with clients</li>
+                                            <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Unlock Benefits:</h3>
+                                            <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
+                                                <li style="margin-bottom: 8px;">Showcase your skills</li>
+                                                <li style="margin-bottom: 8px;">Connect with clients</li>
                                                 <li>Access premium resources</li>
                                             </ul>
                                         </div>
@@ -1621,7 +1870,13 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                             <a href="https://topedgeai.com/community/profile" class="button">Complete Profile Now</a>
                                         </div>
                                         </div>
-                                        <div class="footer"><p>Team TopEdge AI</p></div>
+                                        <div class="footer">
+                                          <p>Best regards,</p>
+                                          <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                                          <div style="margin-top: 24px;">
+                                            <p>© 2026 TopEdge AI. All rights reserved.</p>
+                                          </div>
+                                        </div>
                                     </div>
                                     </div>
                                 </body>
@@ -1641,22 +1896,33 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                            html: `
                                <!DOCTYPE html>
                                <html>
-                               <head><style>${commonEmailStyles}</style></head>
+                               <head>
+                                   <meta charset="utf-8">
+                                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                   <title>Final Reminder</title>
+                                   <style>${commonEmailStyles}</style>
+                               </head>
                                <body>
                                    <div class="container">
                                    <div class="header">
-                                       <div class="logo-text">TopEdge AI</div>
+                                       <span class="logo-text">TopEdge AI</span>
                                        <p class="header-subtitle">Final Reminder</p>
                                    </div>
                                    <div class="content">
                                        <div class="section">
                                        <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
-                                       <p class="text-muted">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
+                                       <p class="text-regular">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
                                        <div style="text-align: center; margin-top: 24px;">
                                            <a href="https://topedgeai.com/community/profile" class="button">Finish Setup</a>
                                        </div>
                                        </div>
-                                       <div class="footer"><p>Team TopEdge AI</p></div>
+                                       <div class="footer">
+                                         <p>Best regards,</p>
+                                         <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                                         <div style="margin-top: 24px;">
+                                           <p>© 2026 TopEdge AI. All rights reserved.</p>
+                                         </div>
+                                       </div>
                                    </div>
                                    </div>
                                </body>
@@ -1689,25 +1955,36 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                         html: `
                                             <!DOCTYPE html>
                                             <html>
-                                            <head><style>${commonEmailStyles}</style></head>
+                                            <head>
+                                                <meta charset="utf-8">
+                                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                                <title>Contribution Opportunity</title>
+                                                <style>${commonEmailStyles}</style>
+                                            </head>
                                             <body>
                                                 <div class="container">
                                                 <div class="header">
-                                                    <div class="logo-text">TopEdge AI</div>
+                                                    <span class="logo-text">TopEdge AI</span>
                                                     <p class="header-subtitle">Contribution Opportunity</p>
                                                 </div>
                                                 <div class="content">
                                                     <div class="section">
                                                     <h2 class="section-title">Hello ${userData.fullName || 'Member'},</h2>
-                                                    <p class="text-muted">You've set up your profile - great job! Now it's time to showcase your expertise.</p>
+                                                    <p class="text-regular">You've set up your profile - great job! Now it's time to showcase your expertise.</p>
                                                     <div class="premium-box">
-                                                        <p style="color: #CBD5E1;">Upload your first AI agent, template, or tool to the community.</p>
+                                                        <p class="text-regular" style="margin: 0;">Upload your first AI agent, template, or tool to the community.</p>
                                                     </div>
                                                     <div style="text-align: center; margin-top: 24px;">
                                                         <a href="https://topedgeai.com/community/submit-resource" class="button">Upload Resource</a>
                                                     </div>
                                                     </div>
-                                                    <div class="footer"><p>Team TopEdge AI</p></div>
+                                                    <div class="footer">
+                                                      <p>Best regards,</p>
+                                                      <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                                                      <div style="margin-top: 24px;">
+                                                        <p>© 2026 TopEdge AI. All rights reserved.</p>
+                                                      </div>
+                                                    </div>
                                                 </div>
                                                 </div>
                                             </body>
@@ -1758,27 +2035,38 @@ app.post('/api/send-resource-notification', async (req, res) => {
                  html: `
                     <!DOCTYPE html>
                     <html>
-                    <head><style>${commonEmailStyles}</style></head>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>New Resource Alert</title>
+                        <style>${commonEmailStyles}</style>
+                    </head>
                     <body>
                         <div class="container">
                         <div class="header">
-                            <div class="logo-text">TopEdge AI</div>
+                            <span class="logo-text">TopEdge AI</span>
                             <p class="header-subtitle">New Community Drop</p>
                         </div>
                         <div class="content">
                             <div class="section">
                             <h2 class="section-title">New Resource Alert</h2>
-                            <p class="text-muted">
-                                <strong>${authorName}</strong> just uploaded a new resource to the community.
+                            <p class="text-regular">
+                                <strong style="color: #F8FAFC;">${authorName}</strong> just uploaded a new resource to the community.
                             </p>
                             <div class="premium-box">
-                                <h3 style="color: #F8FAFC; font-size: 20px; margin-bottom: 12px;">${resourceTitle}</h3>
+                                <h3 class="section-title" style="font-size: 20px; margin-bottom: 12px;">${resourceTitle}</h3>
                                 <div style="text-align: center;">
                                     <a href="https://topedgeai.com/community/resource/${resourceId}" class="button">View Resource</a>
                                 </div>
                             </div>
                             </div>
-                            <div class="footer"><p>Team TopEdge AI</p></div>
+                            <div class="footer">
+                              <p>Best regards,</p>
+                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                              <div style="margin-top: 24px;">
+                                <p>© 2026 TopEdge AI. All rights reserved.</p>
+                              </div>
+                            </div>
                         </div>
                         </div>
                     </body>
@@ -1822,29 +2110,40 @@ app.post('/api/send-request-notification', async (req, res) => {
                  html: `
                     <!DOCTYPE html>
                     <html>
-                    <head><style>${commonEmailStyles}</style></head>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Opportunity Alert</title>
+                        <style>${commonEmailStyles}</style>
+                    </head>
                     <body>
                         <div class="container">
                         <div class="header">
-                            <div class="logo-text">TopEdge AI</div>
+                            <span class="logo-text">TopEdge AI</span>
                             <p class="header-subtitle">New Community Request</p>
                         </div>
                         <div class="content">
                             <div class="section">
                             <h2 class="section-title">Opportunity Alert</h2>
-                            <p class="text-muted">
-                                <strong>${requesterName}</strong> is looking for something. Can you help?
+                            <p class="text-regular">
+                                <strong style="color: #F8FAFC;">${requesterName}</strong> is looking for something. Can you help?
                             </p>
                             <div class="premium-box">
-                                <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 8px;">"${finalTitle}"</h3>
+                                <h3 class="section-title" style="font-size: 18px; margin-bottom: 8px;">"${finalTitle}"</h3>
                                 ${budget ? `<p style="color: #818CF8; font-weight: 600; margin-bottom: 12px;">Budget: ${budget}</p>` : ''}
-                                ${description ? `<p style="color: #94A3B8; font-size: 14px; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${description}</p>` : ''}
+                                ${description ? `<p class="text-muted" style="margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${description}</p>` : ''}
                                 <div style="text-align: center;">
                                     <a href="https://topedgeai.com/community/requests" class="button">View Request</a>
                                 </div>
                             </div>
                             </div>
-                            <div class="footer"><p>Team TopEdge AI</p></div>
+                            <div class="footer">
+                              <p>Best regards,</p>
+                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                              <div style="margin-top: 24px;">
+                                <p>© 2026 TopEdge AI. All rights reserved.</p>
+                              </div>
+                            </div>
                         </div>
                         </div>
                     </body>
@@ -1885,26 +2184,37 @@ app.post('/api/admin/announcement', async (req, res) => {
                  html: `
                     <!DOCTYPE html>
                     <html>
-                    <head><style>${commonEmailStyles}</style></head>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>Community Announcement</title>
+                        <style>${commonEmailStyles}</style>
+                    </head>
                     <body>
                         <div class="container">
                         <div class="header">
-                            <div class="logo-text">TopEdge AI</div>
+                            <span class="logo-text">TopEdge AI</span>
                             <p class="header-subtitle">Community Announcement</p>
                         </div>
                         <div class="content">
                             <div class="section">
                             <h2 class="section-title">${subject}</h2>
-                            <div class="text-muted" style="margin-bottom: 24px;">
+                            <div class="text-regular" style="margin-bottom: 24px;">
                                 ${message}
                             </div>
                             ${actionUrl ? `
-                            <div style="text-align: center;">
+                            <div style="text-align: center; margin-top: 32px;">
                                 <a href="${actionUrl}" class="button">${actionText || 'Learn More'}</a>
                             </div>
                             ` : ''}
                             </div>
-                            <div class="footer"><p>Team TopEdge AI</p></div>
+                            <div class="footer">
+                              <p>Best regards,</p>
+                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                              <div style="margin-top: 24px;">
+                                <p>© 2026 TopEdge AI. All rights reserved.</p>
+                              </div>
+                            </div>
                         </div>
                         </div>
                     </body>
