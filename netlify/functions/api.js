@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import serverless from 'serverless-http';
 import crypto from 'crypto';
 import admin from 'firebase-admin';
+import { commonEmailStyles } from '../../lib/emailStyles.js';
 
 dotenv.config();
 
@@ -195,155 +196,6 @@ const sendEmail = async (mailOptions, retries = 3) => {
   }
 };
 
-// Common email styles to be used across all templates
-const commonEmailStyles = `
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body {
-  font-family: 'Arial', sans-serif;
-  line-height: 1.6;
-  color: #1F2937;
-  background-color: #f4f4f4;
-  width: 100%;
-  -webkit-font-smoothing: antialiased;
-}
-.container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #fff;
-  overflow: hidden;
-}
-.header {
-  text-align: center;
-  padding: 40px 0;
-  background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-  color: white;
-}
-.content {
-  padding: 0;
-  background: #fff;
-}
-.section {
-  margin-bottom: 24px;
-  padding: 24px 20px;
-  background-color: #fff;
-}
-.section-title {
-  color: #0A84FF;
-  font-size: 22px;
-  margin-bottom: 16px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.section-content {
-  background-color: #fff;
-  padding: 0;
-}
-.premium-box {
-  background: linear-gradient(135deg, rgba(10, 132, 255, 0.08) 0%, rgba(59, 130, 246, 0.08) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  border-radius: 12px;
-  padding: 24px;
-  margin: 24px 0;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  margin: 20px 0;
-}
-.stat-item {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  text-align: center;
-}
-.stat-number {
-  font-size: 24px;
-  font-weight: 700;
-  color: #0A84FF;
-  margin-bottom: 8px;
-}
-.stat-label {
-  color: #4B5563;
-  font-size: 14px;
-}
-.button {
-  display: inline-block;
-  padding: 16px 32px;
-  background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
-  margin: 8px 0;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(10, 132, 255, 0.12);
-}
-.button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(10, 132, 255, 0.2);
-}
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 20px 0;
-}
-.info-item {
-  background: #F9FAFB;
-  padding: 16px;
-  border-radius: 8px;
-}
-.info-label {
-  color: #6B7280;
-  font-size: 13px;
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.info-value {
-  color: #1F2937;
-  font-size: 16px;
-  font-weight: 500;
-}
-.divider {
-  height: 1px;
-  background: #E5E7EB;
-  margin: 24px 0;
-}
-.footer {
-  text-align: center;
-  color: #6B7280;
-  font-size: 14px;
-  padding: 24px;
-  background: #F9FAFB;
-}
-@media screen and (max-width: 600px) {
-  .container {
-    width: 100%;
-    margin: 0;
-  }
-  .section {
-    padding: 20px 16px;
-  }
-  .premium-box {
-    padding: 20px 16px;
-  }
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  .info-grid {
-    grid-template-columns: 1fr;
-  }
-}`;
-
 // Booking Form - User Email
 app.post('/api/send-user-email', async (req, res) => {
   try {
@@ -441,7 +293,7 @@ app.post('/api/send-user-email', async (req, res) => {
   }
 });
 
-// Booking Form - Admin Email
+// Booking - Admin Email
 app.post('/api/send-admin-email', async (req, res) => {
   try {
     const { name, email, phone, companyName, date, time, additionalInfo } = req.body;
@@ -449,7 +301,7 @@ app.post('/api/send-admin-email', async (req, res) => {
     await sendEmail({
       from: process.env.EMAIL_USER,
       to: 'acctopedge@gmail.com',
-      subject: `New Booking Request: ${companyName} - ${name}`,
+      subject: `New Booking Request: ${companyName || ''} - ${name}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -457,104 +309,73 @@ app.post('/api/send-admin-email', async (req, res) => {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>New Booking Request - TopEdge</title>
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 20px;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #fff;
-                border-radius: 16px;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                overflow: hidden;
-              }
-              .header {
-                text-align: center;
-                padding: 40px 20px;
-                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-                color: white;
-              }
-              .content {
-                padding: 40px 30px;
-              }
-              .section {
-                background-color: #F9FAFB;
-                border-radius: 12px;
-                padding: 25px;
-                margin-bottom: 30px;
-              }
-              .section-title {
-                color: #0A84FF;
-                font-size: 20px;
-                margin: 0 0 15px 0;
-                font-weight: 600;
-              }
-              .info-item {
-                margin-bottom: 15px;
-              }
-              .info-label {
-                color: #6B7280;
-                font-size: 14px;
-                margin: 0;
-              }
-              .info-value {
-                color: #1F2937;
-                font-size: 16px;
-                font-weight: 500;
-                margin: 5px 0 0 0;
-              }
-            </style>
+            <style>${commonEmailStyles}</style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">New Booking Request</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">New Consultation Booking</p>
               </div>
               
               <div class="content">
-                <div class="section">
-                  <h3 class="section-title">Client Information</h3>
-                  <div class="info-item">
-                    <p class="info-label">Name</p>
-                    <p class="info-value">${name}</p>
-                  </div>
-                  <div class="info-item">
-                    <p class="info-label">Company</p>
-                    <p class="info-value">${companyName}</p>
-                  </div>
-                  <div class="info-item">
-                    <p class="info-label">Email</p>
-                    <p class="info-value"><a href="mailto:${email}" style="color: #0A84FF;">${email}</a></p>
-                  </div>
-                  <div class="info-item">
-                    <p class="info-label">Phone</p>
-                    <p class="info-value"><a href="tel:${phone}" style="color: #0A84FF;">${phone}</a></p>
-                  </div>
+                <div class="section" style="text-align: center; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; margin: 24px 32px;">
+                  <h3 class="section-title" style="color: #818CF8; margin-bottom: 8px;">New Booking Alert</h3>
+                  <p class="text-muted" style="font-size: 18px; color: #F8FAFC;">${date} at ${time}</p>
                 </div>
 
                 <div class="section">
-                  <h3 class="section-title">Meeting Details</h3>
-                  <div class="info-item">
-                    <p class="info-label">Date</p>
-                    <p class="info-value">${date}</p>
+                  <h3 class="section-title">Client Information</h3>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <p class="info-label">Name</p>
+                      <p class="info-value">${name}</p>
+                    </div>
+                    <div class="info-item">
+                      <p class="info-label">Email</p>
+                      <p class="info-value">
+                        <a href="mailto:${email}" style="color: #818CF8; text-decoration: none;">${email}</a>
+                      </p>
+                    </div>
+                    ${phone ? `
+                    <div class="info-item">
+                      <p class="info-label">Phone</p>
+                      <p class="info-value">
+                        <a href="tel:${phone}" style="color: #818CF8; text-decoration: none;">${phone}</a>
+                      </p>
+                    </div>
+                    ` : ''}
+                    ${companyName ? `
+                    <div class="info-item">
+                      <p class="info-label">Company</p>
+                      <p class="info-value">${companyName}</p>
+                    </div>
+                    ` : ''}
+                    ${additionalInfo ? `
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                      <p class="info-label">Additional Notes</p>
+                      <p class="info-value">${additionalInfo}</p>
+                    </div>
+                    ` : ''}
                   </div>
-                  <div class="info-item">
-                    <p class="info-label">Time</p>
-                    <p class="info-value">${time}</p>
+                </div>
+
+                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
+                  <h3 class="section-title" style="color: #F87171;">Required Actions</h3>
+                  <div style="color: #CBD5E1;">
+                    <p>Please complete the following tasks:</p>
+                    <ol style="margin: 15px 0 0 20px;">
+                      <li style="margin-bottom: 10px;">Add the meeting to your calendar</li>
+                      <li style="margin-bottom: 10px;">Send a calendar invite with meeting link to the client</li>
+                      <li style="margin-bottom: 10px;">Review any additional notes or requirements</li>
+                      <li style="margin-bottom: 10px;">Prepare consultation materials</li>
+                      <li>Update CRM with booking details</li>
+                    </ol>
                   </div>
-                  ${additionalInfo ? `
-                  <div class="info-item">
-                    <p class="info-label">Additional Info</p>
-                    <p class="info-value">${additionalInfo}</p>
-                  </div>
-                  ` : ''}
+                </div>
+
+                <div class="footer">
+                  <p>© 2024 TopEdge AI. All rights reserved.</p>
                 </div>
               </div>
             </div>
@@ -563,10 +384,15 @@ app.post('/api/send-admin-email', async (req, res) => {
       `
     });
 
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({ message: 'Admin notification sent successfully' });
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send email', error: error.message });
+    console.error('Error sending admin notification:', error, error?.message, error?.response, error?.stack);
+    res.status(500).json({
+      message: 'Failed to send admin notification',
+      error: error.message,
+      details: error.response || null,
+      stack: error.stack || null
+    });
   }
 });
 
@@ -747,109 +573,24 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
             <meta charset="utf-8">
             <title>New ${planType} Inquiry - TopEdge</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 20px;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                background-color: #fff;
-                border-radius: 16px;
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-                overflow: hidden;
-              }
-              .header {
-                text-align: center;
-                padding: 40px 20px;
-                background: ${planGradient};
-                color: white;
-              }
-              .content {
-                padding: 40px 30px;
-              }
-              .section {
-                background-color: #F9FAFB;
-                border-radius: 12px;
-                padding: 25px;
-                margin-bottom: 30px;
-              }
-              .section-title {
-                color: ${planColor};
-                font-size: 20px;
-                margin: 0 0 15px 0;
-                font-weight: 600;
-              }
-              .section-content {
-                background-color: #fff;
-                border-radius: 8px;
-                padding: 20px;
-                border: 1px solid #E5E7EB;
-              }
-              .info-item {
-                margin-bottom: 15px;
-              }
-              .info-label {
-                color: #6B7280;
-                font-size: 14px;
-                margin: 0;
-              }
-              .info-value {
-                color: #1F2937;
-                font-size: 16px;
-                font-weight: 500;
-                margin: 5px 0 0 0;
-              }
-              .action-section {
-                background-color: #FEF2F2;
-                border-radius: 12px;
-                padding: 25px;
-              }
-              .action-title {
-                color: #DC2626;
-                font-size: 20px;
-                margin: 0 0 15px 0;
-              }
-              .action-content {
-                background-color: #fff;
-                border-radius: 8px;
-                padding: 20px;
-                border: 1px solid #FCA5A5;
-              }
-              @media (max-width: 480px) {
-                .content {
-                  padding: 20px 15px;
-                }
-                .section {
-                  padding: 15px;
-                }
-                .section-content {
-                  padding: 15px;
-                }
-              }
-            </style>
+            <style>${commonEmailStyles}</style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">New ${planType} Inquiry</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">New ${planType} Inquiry</p>
               </div>
               
               <div class="content">
-                <div style="margin-bottom: 30px;">
-                  <h2 style="color: #1F2937; font-size: 24px; margin: 0 0 15px 0;">New Inquiry Received</h2>
-                  <p style="color: #4B5563; font-size: 16px; margin: 0;">A new ${planType} inquiry has been submitted. Here are the details:</p>
+                <div class="section" style="text-align: center; background: ${planGradient}; border-radius: 12px; margin: 24px 32px; padding: 32px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                  <h3 style="color: white; margin-bottom: 8px; font-size: 24px; font-weight: 700;">${plan}</h3>
+                  <p style="color: rgba(255,255,255,0.9); font-size: 16px;">${planType} Inquiry</p>
                 </div>
                 
                 <div class="section">
                   <h3 class="section-title">Client Information</h3>
-                  <div class="section-content">
+                  <div class="info-grid">
                     <div class="info-item">
                       <p class="info-label">Name</p>
                       <p class="info-value">${name}</p>
@@ -857,27 +598,27 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
                     <div class="info-item">
                       <p class="info-label">Email</p>
                       <p class="info-value">
-                        <a href="mailto:${email}" style="color: ${planColor}; text-decoration: none;">${email}</a>
+                        <a href="mailto:${email}" style="color: #818CF8; text-decoration: none;">${email}</a>
                       </p>
                     </div>
                     <div class="info-item">
                       <p class="info-label">Phone</p>
                       <p class="info-value">
-                        <a href="tel:${phone}" style="color: ${planColor}; text-decoration: none;">${phone}</a>
+                        <a href="tel:${phone}" style="color: #818CF8; text-decoration: none;">${phone}</a>
                       </p>
                     </div>
                     <div class="info-item">
                       <p class="info-label">Selected Plan</p>
-                      <p class="info-value">${plan}</p>
+                      <p class="info-value" style="color: #818CF8;">${plan}</p>
                     </div>
                   </div>
                 </div>
 
-                <div class="action-section">
-                  <h3 class="action-title">Action Required</h3>
-                  <div class="action-content">
-                    <p style="margin: 0 0 15px 0; color: #4B5563;">Please take the following actions:</p>
-                    <ol style="margin: 0; padding-left: 20px; color: #4B5563;">
+                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
+                  <h3 class="section-title" style="color: #F87171;">Action Required</h3>
+                  <div style="color: #CBD5E1;">
+                    <p>Please take the following actions:</p>
+                    <ol style="margin: 15px 0 0 20px;">
                       <li style="margin-bottom: 10px;">Review the client's requirements</li>
                       <li style="margin-bottom: 10px;">Prepare a customized solution proposal</li>
                       <li style="margin-bottom: 10px;">Schedule a demo call</li>
@@ -886,10 +627,8 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
                   </div>
                 </div>
                 
-                <div style="text-align: center; color: #6B7280; font-size: 14px; margin-top: 40px;">
-                  <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #E5E7EB;">
-                    <p style="margin: 0;">© 2024 TopEdge AI. All rights reserved.</p>
-                  </div>
+                <div class="footer">
+                  <p>© 2024 TopEdge AI. All rights reserved.</p>
                 </div>
               </div>
             </div>
@@ -1051,93 +790,24 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>New Contact Form Submission - TopEdge</title>
-            <style>
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-              body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f4f4f4;
-                width: 100%;
-              }
-              .container {
-                width: 100%;
-                background-color: #fff;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-              }
-              .header {
-                text-align: center;
-                padding: 40px 0;
-                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-                color: white;
-              }
-              .content {
-                padding: 40px 20px;
-                background: #fff;
-              }
-              .section {
-                background-color: #F9FAFB;
-                margin-bottom: 30px;
-                padding: 25px 20px;
-                border-radius: 12px;
-              }
-              .section-title {
-                color: #0A84FF;
-                font-size: 20px;
-                margin-bottom: 15px;
-                font-weight: 600;
-              }
-              .section-content {
-                background-color: #fff;
-                padding: 20px;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
-              }
-              .info-item {
-                margin-bottom: 15px;
-              }
-              .info-label {
-                color: #6B7280;
-                font-size: 14px;
-                margin-bottom: 5px;
-              }
-              .info-value {
-                color: #1F2937;
-                font-size: 16px;
-                font-weight: 500;
-              }
-              .footer {
-                text-align: center;
-                color: #6B7280;
-                font-size: 14px;
-                padding: 20px;
-                border-top: 1px solid #E5E7EB;
-              }
-              @media screen and (min-width: 600px) {
-                .container {
-                  max-width: 600px;
-                  margin: 0 auto;
-                }
-              }
-            </style>
+            <style>${commonEmailStyles}</style>
           </head>
           <body>
             <div class="container">
               <div class="header">
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 10px; font-size: 18px;">New Contact Form Submission</p>
+                <span class="logo-text">TopEdge AI</span>
+                <p class="header-subtitle">New Contact Form Submission</p>
               </div>
               
               <div class="content">
+                <div class="section" style="text-align: center; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; margin: 24px 32px;">
+                  <h3 class="section-title" style="color: #818CF8; margin-bottom: 8px;">New Message</h3>
+                  <p class="text-muted" style="font-size: 16px; color: #F8FAFC;">${subject}</p>
+                </div>
+
                 <div class="section">
-                  <h3 class="section-title">Contact Information</h3>
-                  <div class="section-content">
+                  <h3 class="section-title">Contact Details</h3>
+                  <div class="info-grid">
                     <div class="info-item">
                       <p class="info-label">Name</p>
                       <p class="info-value">${name}</p>
@@ -1145,14 +815,14 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
                     <div class="info-item">
                       <p class="info-label">Email</p>
                       <p class="info-value">
-                        <a href="mailto:${email}" style="color: #0A84FF; text-decoration: none;">${email}</a>
+                        <a href="mailto:${email}" style="color: #818CF8; text-decoration: none;">${email}</a>
                       </p>
                     </div>
                     ${phone ? `
                     <div class="info-item">
                       <p class="info-label">Phone</p>
                       <p class="info-value">
-                        <a href="tel:${phone}" style="color: #0A84FF; text-decoration: none;">${phone}</a>
+                        <a href="tel:${phone}" style="color: #818CF8; text-decoration: none;">${phone}</a>
                       </p>
                     </div>
                     ` : ''}
@@ -1164,26 +834,25 @@ app.post('/api/send-contact-admin-email', async (req, res) => {
                     ` : ''}
                     ${queries ? `
                     <div class="info-item">
-                      <p class="info-label">Monthly Queries (Calls + Text Combined)</p>
+                      <p class="info-label">Monthly Queries</p>
                       <p class="info-value">${queries}</p>
                     </div>
                     ` : ''}
-                    <div class="info-item">
-                      <p class="info-label">Subject</p>
-                      <p class="info-value">${subject}</p>
-                    </div>
-                    <div class="info-item">
-                      <p class="info-label">Message</p>
-                      <p class="info-value">${message}</p>
-                    </div>
                   </div>
                 </div>
 
-                <div class="section" style="background-color: #FEF2F2;">
-                  <h3 class="section-title" style="color: #DC2626;">Action Required</h3>
-                  <div class="section-content" style="border-color: #FCA5A5;">
-                    <p style="color: #4B5563;">Please take the following actions:</p>
-                    <ol style="margin: 15px 0 0 20px; color: #4B5563;">
+                <div class="section">
+                  <h3 class="section-title">Message Content</h3>
+                  <div style="background: #0F172A; border-radius: 8px; padding: 20px; border: 1px solid #334155;">
+                    <p style="color: #E2E8F0; white-space: pre-wrap; margin: 0;">${message}</p>
+                  </div>
+                </div>
+
+                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
+                  <h3 class="section-title" style="color: #F87171;">Action Required</h3>
+                  <div style="color: #CBD5E1;">
+                    <p>Please take the following actions:</p>
+                    <ol style="margin: 15px 0 0 20px;">
                       <li style="margin-bottom: 10px;">Review the inquiry details</li>
                       <li style="margin-bottom: 10px;">Prepare a response</li>
                       <li style="margin-bottom: 10px;">Respond within 24-48 hours</li>
@@ -1407,407 +1076,9 @@ app.post('/api/access-approved-creator-email', async (req, res) => {
   }
 });
 
-// Booking - User Email
-app.post('/api/send-user-email', async (req, res) => {
-  try {
-    const { name, email, date, time, additionalInfo, phone, companyName } = req.body;
 
-    await sendEmail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Your Consultation Booking Confirmation - TopEdge AI',
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Booking Confirmation - TopEdge AI</title>
-            <style>
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-              body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f4f4f4;
-                width: 100%;
-              }
-              .container {
-                width: 100%;
-                background-color: #fff;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-              }
-              .header {
-                text-align: center;
-                padding: 40px 0;
-                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-                color: white;
-              }
-              .content {
-                padding: 40px 20px;
-                background: #fff;
-              }
-              .section {
-                background-color: #F9FAFB;
-                margin-bottom: 30px;
-                padding: 25px 20px;
-                border-radius: 12px;
-              }
-              .section-title {
-                color: #0A84FF;
-                font-size: 20px;
-                margin-bottom: 15px;
-                font-weight: 600;
-              }
-              .section-content {
-                background-color: #fff;
-                padding: 20px;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
-              }
-              .info-item {
-                margin-bottom: 15px;
-              }
-              .info-label {
-                color: #6B7280;
-                font-size: 14px;
-                margin-bottom: 5px;
-              }
-              .info-value {
-                color: #1F2937;
-                font-size: 16px;
-                font-weight: 500;
-              }
-              .highlight-box {
-                background: linear-gradient(135deg, rgba(10, 132, 255, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-                border-radius: 12px;
-                padding: 20px;
-                margin: 30px 0;
-                text-align: center;
-              }
-              .button {
-                display: inline-block;
-                padding: 16px 32px;
-                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-                color: white;
-                text-decoration: none;
-                border-radius: 8px;
-                font-weight: 600;
-                margin-top: 20px;
-              }
-              .footer {
-                text-align: center;
-                color: #6B7280;
-                font-size: 14px;
-                padding: 20px;
-                border-top: 1px solid #E5E7EB;
-              }
-              @media screen and (min-width: 600px) {
-                .container {
-                  max-width: 600px;
-                  margin: 0 auto;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 10px; font-size: 18px;">Booking Confirmation</p>
-              </div>
-              
-              <div class="content">
-                <h2 style="color: #1F2937; font-size: 24px; margin-bottom: 15px;">Hello ${name},</h2>
-                <p style="color: #4B5563; font-size: 16px; line-height: 1.8;">
-                  Thank you for booking a consultation with TopEdge AI. Your meeting has been confirmed for the following time:
-                </p>
 
-                <div class="highlight-box">
-                  <h3 style="color: #0A84FF; font-size: 18px; margin-bottom: 10px;">Consultation Details</h3>
-                  <p style="color: #1F2937; font-size: 20px; font-weight: 600;">
-                    ${date}
-                  </p>
-                </div>
 
-                <div class="section">
-                  <h3 class="section-title">Your Information</h3>
-                  <div class="section-content">
-                    <div class="info-item">
-                      <p class="info-label">Name</p>
-                      <p class="info-value">${name}</p>
-                    </div>
-                    <div class="info-item">
-                      <p class="info-label">Email</p>
-                      <p class="info-value">${email}</p>
-                    </div>
-                    ${phone ? `
-                    <div class="info-item">
-                      <p class="info-label">Phone</p>
-                      <p class="info-value">${phone}</p>
-                    </div>
-                    ` : ''}
-                    ${companyName ? `
-                    <div class="info-item">
-                      <p class="info-label">Company</p>
-                      <p class="info-value">${companyName}</p>
-                    </div>
-                    ` : ''}
-                    ${additionalInfo ? `
-                    <div class="info-item">
-                      <p class="info-label">Additional Notes</p>
-                      <p class="info-value">${additionalInfo}</p>
-                    </div>
-                    ` : ''}
-                  </div>
-                </div>
-
-                <div class="section" style="background: linear-gradient(135deg, rgba(10, 132, 255, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);">
-                  <h3 class="section-title">Prepare for Your Consultation</h3>
-                  <div class="section-content" style="text-align: center;">
-                    <p style="color: #4B5563; margin-bottom: 20px; font-size: 16px;">
-                      <strong>Get the most out of our upcoming meeting!</strong>
-                    </p>
-                    <p style="color: #4B5563; margin-bottom: 25px;">
-                      Take 2 minutes to calculate your potential ROI and come prepared with questions about how we can help you achieve these numbers.
-                    </p>
-                    <div style="background: #F9FAFB; padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
-                      <p style="color: #1F2937; font-weight: 600; margin-bottom: 10px;">What You'll Learn:</p>
-                      <ul style="list-style: none; padding: 0;">
-                        <li style="margin-bottom: 8px; color: #4B5563;">💡 Your potential monthly revenue increase</li>
-                        <li style="margin-bottom: 8px; color: #4B5563;">⏱️ Hours saved through automation</li>
-                        <li style="color: #4B5563;">📊 Expected ROI timeline</li>
-                      </ul>
-                    </div>
-                    <div class="button-container">
-                      <a href="https://topedgeai.com/roi" class="button">Calculate Your ROI Now →</a>
-                      <a href="https://topedgeai.com/roi#case-studies" class="button-secondary">View Success Stories</a>
-                    </div>
-                  </div>
-                </div>
-
-                <div style="text-align: center; margin: 30px 0;">
-                  <p style="color: #1F2937; font-size: 18px; margin-bottom: 15px;">
-                    Need to make changes?
-                  </p>
-                  <p style="color: #4B5563;">
-                    Contact us at <a href="mailto:team@topedgeai.com" style="color: #0A84FF; text-decoration: none;">team@topedgeai.com</a>
-                  </p>
-                </div>
-
-                <div class="footer">
-                  <p style="margin-bottom: 10px;">Looking forward to meeting with you!</p>
-                  <p>© 2024 TopEdge AI. All rights reserved.</p>
-                </div>
-              </div>
-            </div>
-          </body>
-        </html>
-      `
-    });
-
-    res.status(200).json({ message: 'Booking confirmation sent successfully' });
-  } catch (error) {
-    console.error('Error sending booking confirmation:', error, error?.message, error?.response, error?.stack);
-    res.status(500).json({
-      message: 'Failed to send booking confirmation',
-      error: error.message,
-      details: error.response || null,
-      stack: error.stack || null
-    });
-  }
-});
-
-// Booking - Admin Email
-app.post('/api/send-admin-email', async (req, res) => {
-  try {
-    const { name, email, phone, companyName, date, time, additionalInfo } = req.body;
-
-    await sendEmail({
-      from: process.env.EMAIL_USER,
-      to: 'acctopedge@gmail.com',
-      subject: `New Consultation Booking: ${name}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>New Booking - TopEdge</title>
-            <style>
-              * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-              }
-              body {
-                font-family: Arial, sans-serif;
-                line-height: 1.6;
-                color: #333;
-                background-color: #f4f4f4;
-                width: 100%;
-              }
-              .container {
-                width: 100%;
-                background-color: #fff;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-              }
-              .header {
-                text-align: center;
-                padding: 40px 0;
-                background: linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%);
-                color: white;
-              }
-              .content {
-                padding: 40px 20px;
-                background: #fff;
-              }
-              .section {
-                background-color: #F9FAFB;
-                margin-bottom: 30px;
-                padding: 25px 20px;
-                border-radius: 12px;
-              }
-              .section-title {
-                color: #0A84FF;
-                font-size: 20px;
-                margin-bottom: 15px;
-                font-weight: 600;
-              }
-              .section-content {
-                background-color: #fff;
-                padding: 20px;
-                border: 1px solid #E5E7EB;
-                border-radius: 8px;
-              }
-              .info-item {
-                margin-bottom: 15px;
-              }
-              .info-label {
-                color: #6B7280;
-                font-size: 14px;
-                margin-bottom: 5px;
-              }
-              .info-value {
-                color: #1F2937;
-                font-size: 16px;
-                font-weight: 500;
-              }
-              .highlight-box {
-                background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(252, 165, 165, 0.1) 100%);
-                border-radius: 12px;
-                padding: 20px;
-                margin: 30px 0;
-              }
-              .footer {
-                text-align: center;
-                color: #6B7280;
-                font-size: 14px;
-                padding: 20px;
-                border-top: 1px solid #E5E7EB;
-              }
-              @media screen and (min-width: 600px) {
-                .container {
-                  max-width: 600px;
-                  margin: 0 auto;
-                }
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0; font-size: 28px; font-weight: 700;">TopEdge AI</h1>
-                <p style="margin-top: 10px; font-size: 18px;">New Consultation Booking</p>
-              </div>
-              
-              <div class="content">
-                <div class="highlight-box">
-                  <h3 style="color: #DC2626; font-size: 18px; margin-bottom: 10px;">New Booking Alert</h3>
-                  <p style="color: #1F2937; font-size: 20px; font-weight: 600;">
-                    ${date}
-                  </p>
-                </div>
-
-                <div class="section">
-                  <h3 class="section-title">Client Information</h3>
-                  <div class="section-content">
-                    <div class="info-item">
-                      <p class="info-label">Name</p>
-                      <p class="info-value">${name}</p>
-                    </div>
-                    <div class="info-item">
-                      <p class="info-label">Email</p>
-                      <p class="info-value">
-                        <a href="mailto:${email}" style="color: #0A84FF; text-decoration: none;">${email}</a>
-                      </p>
-                    </div>
-                    ${phone ? `
-                    <div class="info-item">
-                      <p class="info-label">Phone</p>
-                      <p class="info-value">
-                        <a href="tel:${phone}" style="color: #0A84FF; text-decoration: none;">${phone}</a>
-                      </p>
-                    </div>
-                    ` : ''}
-                    ${companyName ? `
-                    <div class="info-item">
-                      <p class="info-label">Company</p>
-                      <p class="info-value">${companyName}</p>
-                    </div>
-                    ` : ''}
-                    ${additionalInfo ? `
-                    <div class="info-item">
-                      <p class="info-label">Additional Notes</p>
-                      <p class="info-value">${additionalInfo}</p>
-                    </div>
-                    ` : ''}
-                  </div>
-                </div>
-
-                <div class="section" style="background-color: #FEF2F2;">
-                  <h3 class="section-title" style="color: #DC2626;">Required Actions</h3>
-                  <div class="section-content" style="border-color: #FCA5A5;">
-                    <p style="color: #4B5563;">Please complete the following tasks:</p>
-                    <ol style="margin: 15px 0 0 20px; color: #4B5563;">
-                      <li style="margin-bottom: 10px;">Add the meeting to your calendar</li>
-                      <li style="margin-bottom: 10px;">Send a calendar invite with meeting link to the client</li>
-                      <li style="margin-bottom: 10px;">Review any additional notes or requirements</li>
-                      <li style="margin-bottom: 10px;">Prepare consultation materials</li>
-                      <li>Update CRM with booking details</li>
-                    </ol>
-                  </div>
-                </div>
-
-                <div class="footer">
-                  <p>© 2024 TopEdge AI. All rights reserved.</p>
-                </div>
-              </div>
-            </div>
-          </body>
-        </html>
-      `
-    });
-
-    res.status(200).json({ message: 'Admin notification sent successfully' });
-  } catch (error) {
-    console.error('Error sending admin notification:', error, error?.message, error?.response, error?.stack);
-    res.status(500).json({
-      message: 'Failed to send admin notification',
-      error: error.message,
-      details: error.response || null,
-      stack: error.stack || null
-    });
-  }
-});
 
 // OTP Generation Endpoint
 app.post('/api/generate-otp', async (req, res) => {
@@ -2045,6 +1316,611 @@ app.use((err, req, res, next) => {
     message: err.message,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
   });
+});
+
+// --- NEW ENDPOINTS FOR COMMUNITY (Updated with Premium UI & Enhanced Logic) ---
+
+// 1. Welcome Email (Immediate upon Signup)
+app.post('/api/send-welcome-email', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Welcome to TopEdge AI Community! 🚀',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Welcome to TopEdge AI Community</title>
+            <style>${commonEmailStyles}</style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <div class="logo-text">TopEdge AI</div>
+                <p class="header-subtitle">Welcome to the Future of Automation</p>
+              </div>
+              
+              <div class="content">
+                <div class="section">
+                  <h2 class="section-title">Hello ${name || 'Builder'},</h2>
+                  <p class="text-muted">
+                    Welcome to the TopEdge AI Community! We are thrilled to have you on board. This is an exclusive space for AI enthusiasts, developers, and founders to collaborate, share resources, and grow together.
+                  </p>
+                  
+                  <div class="premium-box">
+                    <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 16px; font-weight: 600;">Get Started Immediately</h3>
+                    <p style="color: #CBD5E1; margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
+                    
+                    <a href="https://topedgeai.com/community/profile" class="button" style="display: block; width: 100%;">Create Your Profile</a>
+                    
+                    <div style="text-align: center; margin-top: 16px;">
+                      <a href="https://topedgeai.com/community" style="color: #818CF8; text-decoration: none; font-size: 14px; font-weight: 500;">Explore Resources &rarr;</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="section">
+                  <h3 class="section-title">Community Highlights</h3>
+                  <div class="info-grid">
+                    <div class="info-item">
+                      <div style="font-size: 24px; margin-bottom: 12px;">🚀</div>
+                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Share & Grow</h4>
+                      <p style="color: #94A3B8; font-size: 13px; line-height: 1.5;">Upload your AI agents and templates to gain visibility.</p>
+                    </div>
+                    <div class="info-item">
+                      <div style="font-size: 24px; margin-bottom: 12px;">🤝</div>
+                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Connect</h4>
+                      <p style="color: #94A3B8; font-size: 13px; line-height: 1.5;">Network with other top AI talent and founders.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="footer">
+                  <p style="margin-bottom: 12px;">Best regards,</p>
+                  <p style="font-weight: 600; color: #F8FAFC;">Team TopEdge AI</p>
+                  <div style="margin-top: 24px;">
+                    <a href="https://topedgeai.com" style="margin: 0 12px;">Website</a>
+                    <a href="https://topedgeai.com/community" style="margin: 0 12px;">Community</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    res.status(200).json({ success: true, message: 'Welcome email sent' });
+  } catch (error) {
+    console.error('Error sending welcome email:', error);
+    res.status(500).json({ message: 'Failed to send welcome email', error: error.message });
+  }
+});
+
+// 1.5 Generic Automation Email
+app.post('/api/send-automation-email', async (req, res) => {
+  try {
+    const { email, subject, html } = req.body;
+
+    if (!email || !html) {
+      return res.status(400).json({ message: 'Missing email or html content' });
+    }
+
+    await sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: subject || 'Notification from TopEdge AI',
+      html: html
+    });
+
+    res.status(200).json({ success: true, message: 'Automation email sent' });
+  } catch (error) {
+    console.error('Error sending automation email:', error);
+    res.status(500).json({ message: 'Failed to send automation email', error: error.message });
+  }
+});
+
+// 2. Broadcast: Community Live (One-Time / Manual)
+app.post('/api/admin/broadcast-live', async (req, res) => {
+  try {
+    const { secret } = req.body;
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    if (!firebaseInitialized) {
+       return res.status(500).json({ message: 'Firebase not initialized' });
+    }
+
+    const listUsersResult = await authAdmin().listUsers(1000);
+    const users = listUsersResult.users;
+    let sentCount = 0;
+    let errors = [];
+
+    console.log(`[BROADCAST] Found ${users.length} users. Starting broadcast...`);
+
+    for (const user of users) {
+      if (!user.email) continue;
+
+      try {
+        const profileDoc = await firestore().collection('users').doc(user.uid).get();
+        const hasProfile = profileDoc.exists;
+        const name = user.displayName || (hasProfile ? profileDoc.data().fullName : 'Member');
+
+        let subject = 'TopEdge AI Community is LIVE! 🚀';
+        let content = '';
+
+        if (hasProfile) {
+          content = `
+            <p class="text-muted">The TopEdge AI Community is officially LIVE!</p>
+            <p class="text-muted">You are one of our founding members. Thank you for setting up your profile early.</p>
+            <div class="premium-box">
+              <h3 style="color: #F8FAFC; margin-bottom: 12px;">What's New:</h3>
+              <ul style="color: #CBD5E1; padding-left: 20px;">
+                 <li style="margin-bottom: 8px;">Browse the new <strong>Automation Hub</strong> for AI agents.</li>
+                 <li style="margin-bottom: 8px;">Check out the <strong>Request Board</strong> for opportunities.</li>
+                 <li>Connect with other members.</li>
+              </ul>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+               <a href="https://topedgeai.com/community" class="button">Visit Community</a>
+            </div>
+          `;
+        } else {
+          content = `
+            <p class="text-muted">The TopEdge AI Community is officially LIVE!</p>
+            <p class="text-muted">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
+            <div class="premium-box">
+              <h3 style="color: #F8FAFC; margin-bottom: 12px;">Why Create a Profile?</h3>
+              <ul style="color: #CBD5E1; padding-left: 20px;">
+                 <li style="margin-bottom: 8px;">Get discovered by clients and collaborators.</li>
+                 <li style="margin-bottom: 8px;">Showcase your AI skills and portfolio.</li>
+                 <li>Access exclusive community resources.</li>
+              </ul>
+            </div>
+            <div style="text-align: center; margin-top: 24px;">
+               <a href="https://topedgeai.com/community/profile" class="button">Create Profile Now</a>
+            </div>
+          `;
+        }
+
+        await sendEmail({
+          from: process.env.EMAIL_USER,
+          to: user.email,
+          subject: subject,
+          html: `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <style>${commonEmailStyles}</style>
+              </head>
+              <body>
+                <div class="container">
+                  <div class="header">
+                    <div class="logo-text">TopEdge AI</div>
+                    <p class="header-subtitle">Community Launch 🚀</p>
+                  </div>
+                  <div class="content">
+                    <div class="section">
+                      <h2 class="section-title">Hello ${name},</h2>
+                      ${content}
+                    </div>
+                    <div class="footer">
+                      <p>Best regards,<br>Team TopEdge AI</p>
+                    </div>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `
+        });
+        sentCount++;
+        await new Promise(r => setTimeout(r, 500)); // Rate limit protection
+
+      } catch (err) {
+        console.error(`[BROADCAST] Failed to send to ${user.email}:`, err);
+        errors.push({ email: user.email, error: err.message });
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Broadcast completed. Sent to ${sentCount} users.`,
+      errors: errors
+    });
+
+  } catch (error) {
+    console.error('Broadcast error:', error);
+    res.status(500).json({ message: 'Broadcast failed', error: error.message });
+  }
+});
+
+// 3. Engagement Check (Daily Cron Job)
+// Logic: 
+// - If no profile after 2 days: Nudge 1
+// - If no profile after 4 days: Nudge 2 (Final)
+// - If profile exists but no resources after 2 days: Nudge Resource (One-time)
+app.post('/api/cron/engagement-check', async (req, res) => {
+    try {
+        const { secret } = req.body;
+        if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+             return res.status(403).json({ message: 'Unauthorized' });
+        }
+
+        if (!firebaseInitialized) {
+            return res.status(500).json({ message: 'Firebase not initialized' });
+        }
+
+        const now = new Date();
+        const twoDays = 2 * 24 * 60 * 60 * 1000;
+        const threeDays = 3 * 24 * 60 * 60 * 1000;
+        const fourDays = 4 * 24 * 60 * 60 * 1000;
+        const fiveDays = 5 * 24 * 60 * 60 * 1000;
+
+        let sentCount = 0;
+        let emailsSent = [];
+        let nextPageToken;
+        let processedCount = 0;
+
+        // Pagination loop to fetch all users
+        do {
+            const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+            const users = listUsersResult.users;
+            nextPageToken = listUsersResult.pageToken;
+            processedCount += users.length;
+
+            console.log(`[CRON] Processing batch of ${users.length} users...`);
+
+            for (const user of users) {
+                if (!user.email) continue;
+
+                try {
+                    const creationTime = new Date(user.metadata.creationTime);
+                    const diffTime = now.getTime() - creationTime.getTime();
+
+                    // Fetch profile
+                    const profileDoc = await firestore().collection('users').doc(user.uid).get();
+                    const hasProfile = profileDoc.exists;
+
+                    // --- Logic 1: Profile Nudge (Day 2) ---
+                    if (!hasProfile && diffTime >= twoDays && diffTime < threeDays) {
+                         await sendEmail({
+                            from: process.env.EMAIL_USER,
+                            to: user.email,
+                            subject: 'Action Required: Complete Your Profile ⚠️',
+                            html: `
+                                <!DOCTYPE html>
+                                <html>
+                                <head><style>${commonEmailStyles}</style></head>
+                                <body>
+                                    <div class="container">
+                                    <div class="header">
+                                        <div class="logo-text">TopEdge AI</div>
+                                        <p class="header-subtitle">Pending Action</p>
+                                    </div>
+                                    <div class="content">
+                                        <div class="section">
+                                        <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
+                                        <p class="text-muted">It's been 2 days since you joined, but your profile is incomplete. You are missing out on visibility within the community.</p>
+                                        <div class="premium-box">
+                                            <h3 style="color: #F8FAFC; margin-bottom: 12px;">Unlock Benefits:</h3>
+                                            <ul style="color: #CBD5E1; padding-left: 20px;">
+                                                <li>Showcase your skills</li>
+                                                <li>Connect with clients</li>
+                                                <li>Access premium resources</li>
+                                            </ul>
+                                        </div>
+                                        <div style="text-align: center; margin-top: 24px;">
+                                            <a href="https://topedgeai.com/community/profile" class="button">Complete Profile Now</a>
+                                        </div>
+                                        </div>
+                                        <div class="footer"><p>Team TopEdge AI</p></div>
+                                    </div>
+                                    </div>
+                                </body>
+                                </html>
+                            `
+                        });
+                        sentCount++;
+                        emailsSent.push({ email: user.email, type: 'Profile Nudge 1' });
+                    }
+
+                    // --- Logic 2: Profile Nudge (Day 4 - Final) ---
+                    else if (!hasProfile && diffTime >= fourDays && diffTime < fiveDays) {
+                        await sendEmail({
+                           from: process.env.EMAIL_USER,
+                           to: user.email,
+                           subject: 'Last Reminder: Your Profile is Incomplete ⏳',
+                           html: `
+                               <!DOCTYPE html>
+                               <html>
+                               <head><style>${commonEmailStyles}</style></head>
+                               <body>
+                                   <div class="container">
+                                   <div class="header">
+                                       <div class="logo-text">TopEdge AI</div>
+                                       <p class="header-subtitle">Final Reminder</p>
+                                   </div>
+                                   <div class="content">
+                                       <div class="section">
+                                       <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
+                                       <p class="text-muted">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
+                                       <div style="text-align: center; margin-top: 24px;">
+                                           <a href="https://topedgeai.com/community/profile" class="button">Finish Setup</a>
+                                       </div>
+                                       </div>
+                                       <div class="footer"><p>Team TopEdge AI</p></div>
+                                   </div>
+                                   </div>
+                               </body>
+                               </html>
+                           `
+                       });
+                       sentCount++;
+                       emailsSent.push({ email: user.email, type: 'Profile Nudge 2' });
+                   }
+
+                   // --- Logic 3: Resource Nudge (Day 2 after Profile Creation) ---
+                   else if (hasProfile) {
+                       // Check if we should send resource nudge
+                       // 1. Check if already sent
+                       const userData = profileDoc.data();
+                       if (!userData.resourceNudgeSent) {
+                           // 2. Check time since profile creation (fallback to user creation if not stored)
+                           const profileCreatedAt = userData.createdAt ? new Date(userData.createdAt.toDate()) : creationTime;
+                           const profileDiff = now.getTime() - profileCreatedAt.getTime();
+
+                           if (profileDiff >= twoDays && profileDiff < threeDays) {
+                               // 3. Check if they have resources
+                               const resourcesSnap = await firestore().collection('resources').where('userId', '==', user.uid).limit(1).get();
+                               if (resourcesSnap.empty) {
+                                   // Send Nudge
+                                   await sendEmail({
+                                        from: process.env.EMAIL_USER,
+                                        to: user.email,
+                                        subject: 'Share Your First Resource! 🌟',
+                                        html: `
+                                            <!DOCTYPE html>
+                                            <html>
+                                            <head><style>${commonEmailStyles}</style></head>
+                                            <body>
+                                                <div class="container">
+                                                <div class="header">
+                                                    <div class="logo-text">TopEdge AI</div>
+                                                    <p class="header-subtitle">Contribution Opportunity</p>
+                                                </div>
+                                                <div class="content">
+                                                    <div class="section">
+                                                    <h2 class="section-title">Hello ${userData.fullName || 'Member'},</h2>
+                                                    <p class="text-muted">You've set up your profile - great job! Now it's time to showcase your expertise.</p>
+                                                    <div class="premium-box">
+                                                        <p style="color: #CBD5E1;">Upload your first AI agent, template, or tool to the community.</p>
+                                                    </div>
+                                                    <div style="text-align: center; margin-top: 24px;">
+                                                        <a href="https://topedgeai.com/community/submit-resource" class="button">Upload Resource</a>
+                                                    </div>
+                                                    </div>
+                                                    <div class="footer"><p>Team TopEdge AI</p></div>
+                                                </div>
+                                                </div>
+                                            </body>
+                                            </html>
+                                        `
+                                    });
+                                    // Mark as sent
+                                    await firestore().collection('users').doc(user.uid).update({ resourceNudgeSent: true });
+                                    sentCount++;
+                                    emailsSent.push({ email: user.email, type: 'Resource Nudge' });
+                               }
+                           }
+                       }
+                   }
+                } catch (err) {
+                    console.error(`[CRON] Error processing user ${user.email}:`, err);
+                }
+            }
+        } while (nextPageToken);
+
+        res.status(200).json({ success: true, processed: processedCount, sent: sentCount, details: emailsSent });
+
+    } catch (error) {
+        console.error('Engagement check error:', error);
+        res.status(500).json({ message: 'Failed', error: error.message });
+    }
+});
+
+// 4. New Resource Notification (Broadcast)
+app.post('/api/send-resource-notification', async (req, res) => {
+    try {
+         const { secret, resourceTitle, authorName, resourceId } = req.body;
+         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+             return res.status(403).json({ message: 'Unauthorized' });
+         }
+
+         const listUsersResult = await authAdmin().listUsers(1000);
+         const users = listUsersResult.users;
+         
+         let count = 0;
+         for (const user of users) {
+             if (!user.email) continue;
+             
+             await sendEmail({
+                 from: process.env.EMAIL_USER,
+                 to: user.email,
+                 subject: `New Resource: ${resourceTitle} 🚨`,
+                 html: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head><style>${commonEmailStyles}</style></head>
+                    <body>
+                        <div class="container">
+                        <div class="header">
+                            <div class="logo-text">TopEdge AI</div>
+                            <p class="header-subtitle">New Community Drop</p>
+                        </div>
+                        <div class="content">
+                            <div class="section">
+                            <h2 class="section-title">New Resource Alert</h2>
+                            <p class="text-muted">
+                                <strong>${authorName}</strong> just uploaded a new resource to the community.
+                            </p>
+                            <div class="premium-box">
+                                <h3 style="color: #F8FAFC; font-size: 20px; margin-bottom: 12px;">${resourceTitle}</h3>
+                                <div style="text-align: center;">
+                                    <a href="https://topedgeai.com/community/resource/${resourceId}" class="button">View Resource</a>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="footer"><p>Team TopEdge AI</p></div>
+                        </div>
+                        </div>
+                    </body>
+                    </html>
+                 `
+             });
+             count++;
+             // Rate limiting check - 100ms
+             await new Promise(r => setTimeout(r, 100));
+         }
+         
+         res.status(200).json({ success: true, sent: count });
+
+    } catch (error) {
+        console.error('Resource notification error:', error);
+        res.status(500).json({ message: 'Failed', error: error.message });
+    }
+});
+
+// 5. New Request Notification (Broadcast)
+app.post('/api/send-request-notification', async (req, res) => {
+    try {
+         const { secret, title, requestTitle, requesterName, requestId, description, budget } = req.body;
+         const finalTitle = title || requestTitle;
+
+         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+             return res.status(403).json({ message: 'Unauthorized' });
+         }
+
+         const listUsersResult = await authAdmin().listUsers(1000);
+         const users = listUsersResult.users;
+         
+         let count = 0;
+         for (const user of users) {
+             if (!user.email) continue;
+             
+             await sendEmail({
+                 from: process.env.EMAIL_USER,
+                 to: user.email,
+                 subject: `New Request: ${finalTitle} 💡`,
+                 html: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head><style>${commonEmailStyles}</style></head>
+                    <body>
+                        <div class="container">
+                        <div class="header">
+                            <div class="logo-text">TopEdge AI</div>
+                            <p class="header-subtitle">New Community Request</p>
+                        </div>
+                        <div class="content">
+                            <div class="section">
+                            <h2 class="section-title">Opportunity Alert</h2>
+                            <p class="text-muted">
+                                <strong>${requesterName}</strong> is looking for something. Can you help?
+                            </p>
+                            <div class="premium-box">
+                                <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 8px;">"${finalTitle}"</h3>
+                                ${budget ? `<p style="color: #818CF8; font-weight: 600; margin-bottom: 12px;">Budget: ${budget}</p>` : ''}
+                                ${description ? `<p style="color: #94A3B8; font-size: 14px; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${description}</p>` : ''}
+                                <div style="text-align: center;">
+                                    <a href="https://topedgeai.com/community/requests" class="button">View Request</a>
+                                </div>
+                            </div>
+                            </div>
+                            <div class="footer"><p>Team TopEdge AI</p></div>
+                        </div>
+                        </div>
+                    </body>
+                    </html>
+                 `
+             });
+             count++;
+             await new Promise(r => setTimeout(r, 100));
+         }
+         
+         res.status(200).json({ success: true, sent: count });
+
+    } catch (error) {
+        console.error('Request notification error:', error);
+        res.status(500).json({ message: 'Failed', error: error.message });
+    }
+});
+
+// 6. Admin Announcement (Manual Broadcast)
+app.post('/api/admin/announcement', async (req, res) => {
+    try {
+         const { secret, subject, message, actionUrl, actionText } = req.body;
+         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+             return res.status(403).json({ message: 'Unauthorized' });
+         }
+
+         const listUsersResult = await authAdmin().listUsers(1000);
+         const users = listUsersResult.users;
+         
+         let count = 0;
+         for (const user of users) {
+             if (!user.email) continue;
+             
+             await sendEmail({
+                 from: process.env.EMAIL_USER,
+                 to: user.email,
+                 subject: subject || 'Announcement from TopEdge AI 📢',
+                 html: `
+                    <!DOCTYPE html>
+                    <html>
+                    <head><style>${commonEmailStyles}</style></head>
+                    <body>
+                        <div class="container">
+                        <div class="header">
+                            <div class="logo-text">TopEdge AI</div>
+                            <p class="header-subtitle">Community Announcement</p>
+                        </div>
+                        <div class="content">
+                            <div class="section">
+                            <h2 class="section-title">${subject}</h2>
+                            <div class="text-muted" style="margin-bottom: 24px;">
+                                ${message}
+                            </div>
+                            ${actionUrl ? `
+                            <div style="text-align: center;">
+                                <a href="${actionUrl}" class="button">${actionText || 'Learn More'}</a>
+                            </div>
+                            ` : ''}
+                            </div>
+                            <div class="footer"><p>Team TopEdge AI</p></div>
+                        </div>
+                        </div>
+                    </body>
+                    </html>
+                 `
+             });
+             count++;
+             await new Promise(r => setTimeout(r, 100));
+         }
+         
+         res.status(200).json({ success: true, sent: count });
+
+    } catch (error) {
+        console.error('Announcement error:', error);
+        res.status(500).json({ message: 'Failed', error: error.message });
+    }
 });
 
 // Add request logging middleware
