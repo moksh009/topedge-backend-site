@@ -1151,47 +1151,87 @@ app.post('/api/generate-otp', async (req, res) => {
       subject: 'Your Verification Code - TopEdge AI Community',
       html: `
         <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Verification Code - TopEdge AI</title>
-            <style>${commonEmailStyles}</style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <span class="logo-text">TopEdge AI</span>
-                <p class="header-subtitle">Verify Your Identity</p>
-              </div>
-              
-              <div class="content">
-                <div class="section">
-                  <h2 class="section-title">Hello,</h2>
-                  <p class="text-regular">
-                    Please use the following verification code to complete your sign-in request. This code will expire in 10 minutes.
-                  </p>
-                  
-                  <div class="otp-box">
-                    <span class="otp-code">${otp}</span>
-                  </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Code | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 64px 0; }
+      .container { max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+      
+      /* Header: Secure & Minimal */
+      .header { padding: 48px 48px 32px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 8px; }
+      .security-label { font-size: 11px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; }
+      
+      /* Content */
+      .content { padding: 48px; text-align: center; }
+      .headline { font-size: 24px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1px; margin-bottom: 16px; }
+      .instruction { font-size: 15px; color: #64748b; line-height: 1.6; margin-bottom: 40px; }
+      
+      /* OTP Box: High Contrast Cinematic Look */
+      .otp-container { 
+        background-color: #0f172a; 
+        border-radius: 20px; 
+        padding: 32px; 
+        margin-bottom: 32px; 
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); 
+      }
+      .otp-code { 
+        font-family: 'Courier New', Courier, monospace; 
+        font-size: 42px; 
+        font-weight: 800; 
+        color: #ffffff; 
+        letter-spacing: 8px; 
+        display: block; 
+      }
+      .expiry-tag { font-size: 12px; color: #94a3b8; margin-top: 16px; display: block; font-weight: 500; }
 
-                  <p class="text-muted" style="text-align: center;">
-                    If you didn't request this code, you can safely ignore this email.
-                  </p>
-                </div>
+      /* Footer */
+      .footer { padding: 40px; text-align: center; background-color: #fafbfc; border-top: 1px solid #f1f5f9; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 8px; display: block; }
+      .legal-muted { font-size: 11px; color: #94a3b8; line-height: 1.6; max-width: 300px; margin: 0 auto; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="logo">TopEdge AI</span>
+          <span class="security-label">Two-Factor Authentication</span>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">Verify your identity.</h1>
+          <p class="instruction">
+            Use the secure code below to finalize your access to the TopEdge community dashboard.
+          </p>
+          
+          <div class="otp-container">
+            <span class="otp-code">${otp}</span>
+            <span class="expiry-tag">Valid for the next 10 minutes</span>
+          </div>
+          
+          <p style="font-size: 13px; color: #94a3b8; margin: 0;">
+            If you did not request this, please ignore this email.
+          </p>
+        </div>
 
-                <div class="footer">
-                  <p>Best regards,</p>
-                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                  <div style="margin-top: 24px;">
-                    <p>© 2026 TopEdge AI. All rights reserved.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </body>
-        </html>
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <p class="legal-muted">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Secure verification for @topedge_ai members.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
       `
     });
 
