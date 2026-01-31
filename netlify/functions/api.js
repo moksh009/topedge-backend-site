@@ -1402,7 +1402,7 @@ app.post('/api/send-welcome-email', async (req, res) => {
                     <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 16px; font-weight: 600;">Get Started Immediately</h3>
                     <p class="text-regular" style="margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
                     
-                    <a href="https://topedgeai.com/community/profile" class="button" style="display: block; width: 100%; box-sizing: border-box;">Create Your Profile</a>
+                    <a href="https://topedgeai.com/community/promote-profile" class="button" style="display: block; width: 100%; box-sizing: border-box;">Create Your Profile</a>
                     
                     <div style="text-align: center; margin-top: 16px;">
                       <a href="https://topedgeai.com/community" style="color: #818CF8; text-decoration: none; font-size: 14px; font-weight: 500;">Explore Resources &rarr;</a>
@@ -1723,7 +1723,7 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
               </ul>
             </div>
             <div style="text-align: center; margin-top: 24px;">
-               <a href="https://topedgeai.com/community/profile" class="button">Create Profile Now</a>
+               <a href="https://topedgeai.com/community/promote-profile" class="button">Create Profile Now</a>
             </div>
           `;
         }
@@ -1867,7 +1867,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                             </ul>
                                         </div>
                                         <div style="text-align: center; margin-top: 24px;">
-                                            <a href="https://topedgeai.com/community/profile" class="button">Complete Profile Now</a>
+                                            <a href="https://topedgeai.com/community/promote-profile" class="button">Complete Profile Now</a>
                                         </div>
                                         </div>
                                         <div class="footer">
@@ -1913,7 +1913,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                        <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
                                        <p class="text-regular">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
                                        <div style="text-align: center; margin-top: 24px;">
-                                           <a href="https://topedgeai.com/community/profile" class="button">Finish Setup</a>
+                                           <a href="https://topedgeai.com/community/promote-profile" class="button">Finish Setup</a>
                                        </div>
                                        </div>
                                        <div class="footer">
