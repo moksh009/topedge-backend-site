@@ -1377,70 +1377,126 @@ app.post('/api/send-welcome-email', async (req, res) => {
       subject: 'Welcome to TopEdge AI Community! 🚀',
       html: `
         <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Welcome to TopEdge AI Community</title>
-            <style>${commonEmailStyles}</style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <span class="logo-text">TopEdge AI</span>
-                <p class="header-subtitle">Welcome to the Future of Automation</p>
-              </div>
-              
-              <div class="content">
-                <div class="section">
-                  <h2 class="section-title">Hello ${name || 'Builder'},</h2>
-                  <p class="text-regular">
-                    Welcome to the TopEdge AI Community! We are thrilled to have you on board. This is an exclusive space for AI enthusiasts, developers, and founders to collaborate, share resources, and grow together.
-                  </p>
-                  
-                  <div class="premium-box">
-                    <h3 class="subtitle">Get Started Immediately</h3>
-                    <p class="text-regular" style="margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
-                    
-                    <a href="https://topedgeai.com/community/promote-profile" class="button" style="display: block; width: 100%; box-sizing: border-box;">Create Your Profile</a>
-                    
-                    <div class="text-center" style="margin-top: 16px;">
-                      <a href="https://topedgeai.com/community" style="color: #818CF8; text-decoration: none; font-size: 14px; font-weight: 500;">Explore Resources &rarr;</a>
-                    </div>
-                  </div>
-                </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to TopEdge AI</title>
+    <style>
+      /* Base Resets */
+      body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+      table { border-collapse: collapse; width: 100%; }
+      img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+      
+      /* Container */
+      .email-wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding-bottom: 40px; }
+      .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; overflow: hidden; margin-top: 40px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
 
-                <div class="divider"></div>
+      /* Header */
+      .header { padding: 40px 40px 20px 40px; text-align: left; }
+      .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #0f172a; text-transform: uppercase; }
+      
+      /* Content */
+      .content { padding: 0 40px 40px 40px; }
+      .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
+      .text-regular { font-size: 16px; line-height: 1.6; color: #475569; margin-bottom: 24px; }
 
-                <div class="section">
-                  <h3 class="section-title">Community Highlights</h3>
-                  <div class="info-grid">
-                    <div class="info-item">
-                      <div style="font-size: 24px; margin-bottom: 12px;">🚀</div>
-                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Share & Grow</h4>
-                      <p class="text-muted" style="font-size: 13px; margin: 0;">Upload your AI agents and templates to gain visibility.</p>
-                    </div>
-                    <div class="info-item">
-                      <div style="font-size: 24px; margin-bottom: 12px;">🤝</div>
-                      <h4 style="color: #F8FAFC; margin-bottom: 8px; font-size: 16px;">Connect</h4>
-                      <p class="text-muted" style="font-size: 13px; margin: 0;">Network with other top AI talent and founders.</p>
-                    </div>
-                  </div>
-                </div>
+      /* The Premium Card */
+      .cta-card { 
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+        border-radius: 20px; 
+        padding: 32px; 
+        color: #ffffff; 
+        text-align: center; 
+        box-shadow: 0 15px 30px rgba(15, 23, 42, 0.15);
+      }
+      .cta-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #f8fafc; }
+      .cta-text { font-size: 14px; color: #94a3b8; margin-bottom: 24px; }
+      
+      /* Button */
+      .button { 
+        display: inline-block; 
+        background-color: #ffffff; 
+        color: #0f172a !important; 
+        padding: 14px 32px; 
+        border-radius: 12px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 15px; 
+        transition: all 0.3s ease; 
+      }
 
-                <div class="footer">
-                  <p>Best regards,</p>
-                  <p style="color: #F8FAFC; font-weight: 600; margin-bottom: 24px;">Team TopEdge AI</p>
-                  <div>
-                    <a href="https://topedgeai.com" style="margin: 0 12px;">Website</a>
-                    <a href="https://topedgeai.com/community" style="margin: 0 12px;">Community</a>
-                  </div>
-                  <p style="margin-top: 24px;">© 2026 TopEdge AI. All rights reserved.</p>
-                </div>
-              </div>
+      /* Grid Section */
+      .feature-grid { padding: 32px 0; }
+      .feature-item { padding: 0 0 24px 0; }
+      .feature-icon { font-size: 24px; margin-bottom: 8px; }
+      .feature-heading { font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 4px 0; }
+      .feature-desc { font-size: 14px; color: #64748b; margin: 0; }
+
+      /* Footer */
+      .footer { padding: 40px; text-align: center; border-top: 1px solid #f1f5f9; background-color: #fafafa; }
+      .footer-text { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-weight: 600; margin: 0 10px; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-container">
+        
+        <div class="header">
+          <span class="logo-text">TopEdge AI</span>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">Welcome to the inner circle, ${name || 'Builder'}.</h1>
+          <p class="text-regular">
+            You've just joined an exclusive ecosystem of AI developers, founders, and automation experts. We’re here to help you deploy faster and connect with the best in the industry.
+          </p>
+          
+          <div class="cta-card">
+            <h3 class="cta-title">Activate Your Presence</h3>
+            <p class="cta-text">Set up your public profile to showcase your stack and start receiving outreach from founders.</p>
+            <a href="https://topedgeai.com/community/promote-profile" class="button">Create My Profile</a>
+            <div style="margin-top: 20px;">
+                <a href="https://topedgeai.com/community" style="color: #818cf8; text-decoration: none; font-size: 13px; font-weight: 600;">Browse the Directory &rarr;</a>
             </div>
-          </body>
-        </html>
+          </div>
+
+          <div class="feature-grid">
+            <table role="presentation">
+              <tr>
+                <td class="feature-item">
+                  <div class="feature-icon">🚀</div>
+                  <h4 class="feature-heading">Ship Your Agents</h4>
+                  <p class="feature-desc">Upload templates and tools to gain visibility and establish your authority.</p>
+                </td>
+              </tr>
+              <tr>
+                <td class="feature-item">
+                  <div class="feature-icon">🤝</div>
+                  <h4 class="feature-heading">Elite Networking</h4>
+                  <p class="feature-desc">Connect with verified builders and founders building the future of AI.</p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p class="footer-text" style="color: #0f172a; font-weight: 700; margin-bottom: 8px;">Team TopEdge AI</p>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Website</a>
+            <a href="https://topedgeai.com/community">Community</a>
+          </div>
+          <p class="footer-text" style="margin-top: 24px;">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            The future of automation starts here.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
       `
     });
 
@@ -1481,48 +1537,79 @@ app.post('/api/send-profile-reminder', async (req, res) => {
 
     const html = `
       <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Action Required</title>
-        <style>${commonEmailStyles}</style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <span class="logo-text">TopEdge AI</span>
-            <p class="header-subtitle">Pending Action</p>
-          </div>
-          <div class="content">
-            <div class="section">
-              <h2 class="section-title">Don't Stay Anonymous, ${name}! 👀</h2>
-              <p class="text-regular">
-                We noticed you joined ${daysAgo} days ago but haven't completed your profile yet. An incomplete profile is like a ghost town—nobody visits!
-              </p>
-              <div class="premium-box">
-                <h3 class="subtitle">Why complete it?</h3>
-                <ul class="premium-list">
-                  <li>Get discovered by potential clients</li>
-                  <li>Unlock exclusive community resources</li>
-                  <li>Earn trust badges on your profile</li>
-                </ul>
-              </div>
-              <div class="text-center mt-24">
-                <a href="https://topedgeai.com/community/profile/edit" class="button">Complete Profile Now</a>
-              </div>
-            </div>
-            <div class="footer">
-              <p>Best regards,</p>
-              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-              <div style="margin-top: 24px;">
-                <p>© 2026 TopEdge AI. All rights reserved.</p>
-              </div>
-            </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Your Visibility | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 40px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 28px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+      
+      /* Header */
+      .header { padding: 40px 40px 0; text-align: left; }
+      .logo { font-size: 18px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; }
+      
+      /* Content */
+      .content { padding: 40px; }
+      .title { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -0.8px; margin-bottom: 20px; }
+      .description { font-size: 16px; color: #64748b; line-height: 1.6; margin-bottom: 32px; }
+      
+      /* Dark Premium Card */
+      .status-card { background: #0f172a; border-radius: 24px; padding: 32px; color: #ffffff; position: relative; overflow: hidden; }
+      .status-label { font-size: 12px; font-weight: 700; color: #818cf8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: block; }
+      .status-headline { font-size: 18px; font-weight: 600; margin-bottom: 24px; display: block; }
+      
+      /* Bullet List */
+      .benefit-item { display: flex; align-items: center; margin-bottom: 16px; font-size: 14px; color: #cbd5e1; }
+      .bullet { color: #818cf8; margin-right: 12px; font-weight: bold; }
+      
+      /* Button */
+      .button { display: inline-block; background: #ffffff; color: #0f172a !important; padding: 16px 32px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 15px; margin-top: 12px; transition: transform 0.2s; }
+      
+      /* Footer */
+      .footer { padding: 40px; border-top: 1px solid #f1f5f9; text-align: center; }
+      .footer-text { font-size: 12px; color: #94a3b8; line-height: 1.8; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 16px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="title">Your profile is currently hidden from the community.</h1>
+          <p class="description">
+            It’s been ${daysAgo} days since you joined the ranks. Right now, founders and fellow builders cannot see your expertise or reach out for collaborations.
+          </p>
+          
+          <div class="status-card">
+            <span class="status-label">Setup Pending</span>
+            <span class="status-headline">Complete these to go live:</span>
+            
+            <div class="benefit-item"><span class="bullet">→</span> Get discovered by potential clients</div>
+            <div class="benefit-item"><span class="bullet">→</span> Unlock exclusive resource access</div>
+            <div class="benefit-item"><span class="bullet">→</span> Earn the "Early Adopter" trust badge</div>
+            
+            <a href="https://topedgeai.com/community/promote-profile" class="button">Setup My Profile</a>
           </div>
         </div>
-      </body>
-      </html>
+        
+        <div class="footer">
+          <div class="footer-brand">Team TopEdge AI</div>
+          <p class="footer-text">
+            You are receiving this because you are a registered member of the TopEdge AI Community.<br>
+            © 2026 TopEdge AI. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
     `;
 
     await sendEmail({
@@ -1546,51 +1633,84 @@ app.post('/api/send-resource-nudge', async (req, res) => {
 
     const html = `
       <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Contribution Opportunity</title>
-        <style>${commonEmailStyles}</style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <span class="logo-text">TopEdge AI</span>
-            <p class="header-subtitle">Contribution Opportunity</p>
-          </div>
-          <div class="content">
-            <div class="section">
-              <h2 class="section-title">Turn Your Knowledge into Income 💰</h2>
-              <p class="text-regular">
-                Hey ${name}, your profile looks great! Now it's time to showcase your expertise.
-              </p>
-              <p class="text-regular">
-                Did you know you can upload your automation scripts, templates, and workflows to our marketplace? You can offer them for free to build reputation or sell them to earn revenue.
-              </p>
-              <div class="premium-box">
-                <h3 class="subtitle">Top Earnings:</h3>
-                <ul class="premium-list">
-                  <li>Chatbot Templates</li>
-                  <li>Automation Workflows</li>
-                  <li>AI Agent Configs</li>
-                </ul>
-              </div>
-              <div class="text-center mt-24">
-                <a href="https://topedgeai.com/community/upload" class="button">Upload Your First Resource</a>
-              </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monetize Your Expertise | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f4f7f9; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f4f7f9; padding: 40px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); border: 1px solid #eef2f6; }
+      
+      /* Header */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .logo { font-size: 16px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
+      
+      /* Content */
+      .content { padding: 48px; }
+      .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.2px; margin-bottom: 24px; }
+      .description { font-size: 16px; color: #475569; line-height: 1.7; margin-bottom: 32px; }
+      
+      /* The Earnings Card */
+      .market-card { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); border-radius: 24px; padding: 40px; color: #ffffff; }
+      .market-label { font-size: 12px; font-weight: 700; color: #c7d2fe; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; display: block; }
+      .market-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 16px; }
+      
+      /* Grid Items */
+      .asset-list { margin-bottom: 32px; }
+      .asset-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 15px; font-weight: 500; }
+      .dot { height: 6px; width: 6px; background-color: #ffffff; border-radius: 50%; margin-right: 12px; opacity: 0.6; }
+      
+      /* Button */
+      .button { display: inline-block; background: #ffffff; color: #4f46e5 !important; padding: 18px 36px; border-radius: 16px; text-decoration: none; font-weight: 800; font-size: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+      
+      /* Footer */
+      .footer { padding: 48px; text-align: center; background-color: #fafbfc; border-top: 1px solid #f1f5f9; }
+      .footer-links a { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="header">
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">Transform your workflows into digital assets.</h1>
+          <p class="description">
+            Hey ${name}, your profile is already standing out. Now, leverage the TopEdge Marketplace to build your reputation as a top-tier builder—or generate recurring revenue from your scripts and templates.
+          </p>
+          
+          <div class="market-card">
+            <span class="market-label">Marketplace Opportunity</span>
+            <span class="market-title">High-demand categories:</span>
+            
+            <div class="asset-list">
+              <div class="asset-item"><span class="dot"></span> Custom AI Agent Configs</div>
+              <div class="asset-item"><span class="dot"></span> SaaS Automation Workflows</div>
+              <div class="asset-item"><span class="dot"></span> Niche Chatbot Blueprints</div>
             </div>
-            <div class="footer">
-              <p>Best regards,</p>
-              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-              <div style="margin-top: 24px;">
-                <p>© 2026 TopEdge AI. All rights reserved.</p>
-              </div>
-            </div>
+            
+            <a href="https://topedgeai.com/community/upload" class="button">Publish Your First Asset</a>
           </div>
         </div>
-      </body>
-      </html>
+        
+        <div class="footer">
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Website</a>
+            <a href="https://topedgeai.com/community">Marketplace</a>
+          </div>
+          <p style="font-size: 12px; color: #94a3b8; margin-top: 24px;">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Empowering the next generation of AI Builders.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
     `;
 
     await sendEmail({
@@ -1614,40 +1734,93 @@ app.post('/api/send-community-update', async (req, res) => {
 
     const html = `
       <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Community Update</title>
-        <style>${commonEmailStyles}</style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <span class="logo-text">TopEdge AI</span>
-            <p class="header-subtitle">Community Update</p>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title} | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 48px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+      
+      /* Header: Minimal & Brand-focused */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
+      .update-label { font-size: 13px; font-weight: 500; color: #94a3b8; }
+      
+      /* Content: Editorial Typography */
+      .content { padding: 40px 48px 48px; }
+      .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
+      .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
+      
+      /* Dynamic Action Section */
+      .action-area { 
+        background-color: #f8fafc; 
+        border: 1px solid #f1f5f9; 
+        border-radius: 24px; 
+        padding: 32px; 
+        text-align: center; 
+      }
+      .button { 
+        display: inline-block; 
+        background-color: #0f172a; 
+        color: #ffffff !important; 
+        padding: 16px 36px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 15px; 
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2); 
+      }
+
+      /* Footer: Professional & Muted */
+      .footer { padding: 48px; border-top: 1px solid #f1f5f9; background-color: #fafbfc; text-align: center; }
+      .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+      .footer-legal { font-size: 12px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="brand">TopEdge AI</span>
+          <span class="update-label">Community Bulletin • 2026</span>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">${title}</h1>
+          
+          <div class="body-text">
+            ${content.replace(/\n/g, '<br>')}
           </div>
-          <div class="content">
-            <div class="section">
-              <h2 class="section-title">${title}</h2>
-              <p class="text-regular">
-                ${content.replace(/\n/g, '<br>')}
-              </p>
-              <div class="text-center" style="margin-top: 32px;">
-                <a href="${ctaLink}" class="button">${ctaText}</a>
-              </div>
-            </div>
-            <div class="footer">
-              <p>Best regards,</p>
-              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-              <div style="margin-top: 24px;">
-                <p>© 2026 TopEdge AI. All rights reserved.</p>
-              </div>
-            </div>
+          
+          <div class="action-area">
+            <a href="${ctaLink}" class="button">${ctaText}</a>
+            <p style="margin-top: 16px; font-size: 13px; color: #94a3b8;">
+              Clicking will redirect you to the community dashboard.
+            </p>
           </div>
         </div>
-      </body>
-      </html>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Main Website</a>
+            <a href="https://topedgeai.com/community">Builder Directory</a>
+          </div>
+          <p class="footer-legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Sent with care to our verified AI Builder community.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
     `;
 
     await sendEmail({
@@ -1841,46 +2014,88 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                             subject: 'Action Required: Complete Your Profile ⚠️',
                             html: `
                                 <!DOCTYPE html>
-                                <html>
-                                <head>
-                                    <meta charset="utf-8">
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <title>Action Required</title>
-                                    <style>${commonEmailStyles}</style>
-                                </head>
-                                <body>
-                                    <div class="container">
-                                    <div class="header">
-                                        <span class="logo-text">TopEdge AI</span>
-                                        <p class="header-subtitle">Pending Action</p>
-                                    </div>
-                                    <div class="content">
-                                        <div class="section">
-                                        <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
-                                        <p class="text-regular">It's been 2 days since you joined, but your profile is incomplete. You are missing out on visibility within the community.</p>
-                                        <div class="premium-box">
-                                            <h3 class="subtitle">Unlock Benefits:</h3>
-                                            <ul class="premium-list">
-                                                <li>Showcase your skills</li>
-                                                <li>Connect with clients</li>
-                                                <li>Access premium resources</li>
-                                            </ul>
-                                        </div>
-                                        <div class="text-center mt-24">
-                                            <a href="https://topedgeai.com/community/promote-profile" class="button">Complete Profile Now</a>
-                                        </div>
-                                        </div>
-                                        <div class="footer">
-                                          <p>Best regards,</p>
-                                          <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                                          <div style="margin-top: 24px;">
-                                            <p>© 2026 TopEdge AI. All rights reserved.</p>
-                                          </div>
-                                        </div>
-                                    </div>
-                                    </div>
-                                </body>
-                                </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Action Required | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f9fafb; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f9fafb; padding: 48px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 28px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+      
+      /* Header */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .brand-accent { height: 4px; width: 40px; background-color: #6366f1; border-radius: 2px; margin-bottom: 24px; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
+      
+      /* Content */
+      .content { padding: 48px; }
+      .headline { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1px; margin-bottom: 24px; }
+      .subtext { font-size: 16px; color: #4b5563; line-height: 1.7; margin-bottom: 32px; }
+      
+      /* Professional Status Box */
+      .status-container { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 24px; padding: 32px; margin-bottom: 32px; }
+      .status-header { display: flex; align-items: center; margin-bottom: 20px; }
+      .status-dot { height: 8px; width: 8px; background-color: #f59e0b; border-radius: 50%; margin-right: 10px; }
+      .status-text { font-size: 13px; font-weight: 700; color: #b45309; text-transform: uppercase; letter-spacing: 1px; }
+      
+      /* Benefit List */
+      .benefit-item { margin-bottom: 14px; font-size: 14px; color: #475569; display: flex; align-items: center; }
+      .check { color: #6366f1; margin-right: 12px; font-weight: 800; }
+      
+      /* CTA */
+      .button { display: inline-block; background-color: #0f172a; color: #ffffff !important; padding: 18px 36px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 15px; box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.1); }
+      
+      /* Footer */
+      .footer { padding: 48px; background-color: #fafafa; border-top: 1px solid #f3f4f6; text-align: center; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #111827; margin-bottom: 8px; display: block; }
+      .footer-legal { font-size: 12px; color: #9ca3af; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <div class="brand-accent"></div>
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">Complete your verification, ${user.displayName || 'Builder'}.</h1>
+          <p class="subtext">
+            It’s been 48 hours since you joined the TopEdge community. To ensure the quality of our directory and unlock full visibility, we require a completed profile.
+          </p>
+          
+          <div class="status-container">
+            <div class="status-header">
+              <span class="status-dot"></span>
+              <span class="status-text">Account Status: Incomplete</span>
+            </div>
+            
+            <div style="margin-bottom: 24px;">
+              <div class="benefit-item"><span class="check">✓</span> Professional visibility in the Directory</div>
+              <div class="benefit-item"><span class="check">✓</span> Direct outreach from verified Founders</div>
+              <div class="benefit-item"><span class="check">✓</span> Access to restricted AI Workflows</div>
+            </div>
+            
+            <a href="https://topedgeai.com/community/promote-profile" class="button">Finalize Profile</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <p class="footer-legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Sent to registered members of @topedge_ai.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                             `
                         });
                         sentCount++;
@@ -1895,38 +2110,76 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                            subject: 'Last Reminder: Your Profile is Incomplete ⏳',
                            html: `
                                <!DOCTYPE html>
-                               <html>
-                               <head>
-                                   <meta charset="utf-8">
-                                   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                   <title>Final Reminder</title>
-                                   <style>${commonEmailStyles}</style>
-                               </head>
-                               <body>
-                                   <div class="container">
-                                   <div class="header">
-                                       <span class="logo-text">TopEdge AI</span>
-                                       <p class="header-subtitle">Final Reminder</p>
-                                   </div>
-                                   <div class="content">
-                                       <div class="section">
-                                       <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
-                                       <p class="text-regular">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
-                                       <div class="text-center mt-24">
-                                           <a href="https://topedgeai.com/community/promote-profile" class="button">Finish Setup</a>
-                                       </div>
-                                       </div>
-                                       <div class="footer">
-                                         <p>Best regards,</p>
-                                         <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                                         <div style="margin-top: 24px;">
-                                           <p>© 2026 TopEdge AI. All rights reserved.</p>
-                                         </div>
-                                       </div>
-                                   </div>
-                                   </div>
-                               </body>
-                               </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Setup Reminder | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #ffffff; padding: 64px 0; }
+      .container { max-width: 560px; margin: 0 auto; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.02); }
+      
+      /* Header */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 3px; }
+      
+      /* Content */
+      .content { padding: 48px; }
+      .headline { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px; }
+      .body-text { font-size: 16px; color: #64748b; line-height: 1.8; margin-bottom: 40px; }
+      
+      /* Visual "Progress" Divider */
+      .progress-bar { height: 2px; width: 100%; background: #f1f5f9; margin-bottom: 40px; position: relative; }
+      .progress-fill { height: 2px; width: 85%; background: #0f172a; position: absolute; left: 0; top: 0; }
+      .progress-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; display: block; }
+      
+      /* CTA */
+      .button { display: inline-block; background-color: #0f172a; color: #ffffff !important; padding: 18px 40px; border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 15px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15); transition: all 0.3s ease; }
+      
+      /* Footer */
+      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-legal { font-size: 12px; color: #cbd5e1; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">Don't lose your spot in the directory, ${user.displayName || 'Builder'}.</h1>
+          
+          <p class="body-text">
+            Your registration with TopEdge AI is nearly complete. However, without a finished profile, you remain invisible to founders and potential clients searching the community for top AI talent.
+          </p>
+          
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+            <span class="progress-label">Profile Completion: 85%</span>
+          </div>
+          
+          <div style="text-align: left;">
+            <a href="https://topedgeai.com/community/promote-profile" class="button">Finish My Setup</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <p class="footer-legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Official communication for @topedge_ai members.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                            `
                        });
                        sentCount++;
@@ -1954,41 +2207,96 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                         subject: 'Share Your First Resource! 🌟',
                                         html: `
                                             <!DOCTYPE html>
-                                            <html>
-                                            <head>
-                                                <meta charset="utf-8">
-                                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                                <title>Contribution Opportunity</title>
-                                                <style>${commonEmailStyles}</style>
-                                            </head>
-                                            <body>
-                                                <div class="container">
-                                                <div class="header">
-                                                    <span class="logo-text">TopEdge AI</span>
-                                                    <p class="header-subtitle">Contribution Opportunity</p>
-                                                </div>
-                                                <div class="content">
-                                                    <div class="section">
-                                                    <h2 class="section-title">Hello ${userData.fullName || 'Member'},</h2>
-                                                    <p class="text-regular">You've set up your profile - great job! Now it's time to showcase your expertise.</p>
-                                                    <div class="premium-box">
-                                                        <p class="text-regular" style="margin: 0;">Upload your first AI agent, template, or tool to the community.</p>
-                                                    </div>
-                                                    <div class="text-center mt-24">
-                                                        <a href="https://topedgeai.com/community/submit-resource" class="button">Upload Resource</a>
-                                                    </div>
-                                                    </div>
-                                                    <div class="footer">
-                                                      <p>Best regards,</p>
-                                                      <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                                                      <div style="margin-top: 24px;">
-                                                        <p>© 2026 TopEdge AI. All rights reserved.</p>
-                                                      </div>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </body>
-                                            </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Your First Asset | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.03); }
+      
+      /* Header: Elegant & Minimal */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .logo { font-size: 15px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
+      
+      /* Content: Bold Typography */
+      .content { padding: 48px; }
+      .hero-title { font-size: 34px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.8px; margin-bottom: 24px; }
+      .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 40px; }
+      
+      /* The "Creator" Feature Card */
+      .feature-card { 
+        background: #0f172a; 
+        border-radius: 28px; 
+        padding: 40px; 
+        color: #ffffff;
+        text-align: center;
+      }
+      .feature-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+      .feature-heading { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: block; color: #f8fafc; }
+      .feature-sub { font-size: 14px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+      
+      /* Button: High-End White */
+      .button { 
+        display: inline-block; 
+        background-color: #ffffff; 
+        color: #0f172a !important; 
+        padding: 16px 40px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 800; 
+        font-size: 15px; 
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+
+      /* Footer */
+      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; }
+      .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">Your profile is live. Now, lead the community.</h1>
+          <p class="body-text">
+            Excellent work on your profile, ${userData.fullName || 'Builder'}. The community is ready to see what you're building. Showcase your expertise by publishing your first digital asset today.
+          </p>
+          
+          <div class="feature-card">
+            <span class="feature-icon">💎</span>
+            <span class="feature-heading">Establish Your Authority</span>
+            <p class="feature-sub">
+              Upload your custom AI agents, automation templates, or scripts to become a verified contributor in the @topedge_ai ecosystem.
+            </p>
+            <a href="https://topedgeai.com/community/submit-resource" class="button">Publish My First Asset</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Dashboard</a>
+            <a href="https://topedgeai.com/community">Marketplace</a>
+          </div>
+          <p style="font-size: 12px; color: #cbd5e1; margin-top: 24px; line-height: 1.6;">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Designed for the next generation of AI Builders.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                                         `
                                     });
                                     // Mark as sent
@@ -2034,43 +2342,101 @@ app.post('/api/send-resource-notification', async (req, res) => {
                  subject: `New Resource: ${resourceTitle} 🚨`,
                  html: `
                     <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>New Resource Alert</title>
-                        <style>${commonEmailStyles}</style>
-                    </head>
-                    <body>
-                        <div class="container">
-                        <div class="header">
-                            <span class="logo-text">TopEdge AI</span>
-                            <p class="header-subtitle">New Community Drop</p>
-                        </div>
-                        <div class="content">
-                            <div class="section">
-                            <h2 class="section-title">New Resource Alert</h2>
-                            <p class="text-regular">
-                                <strong style="color: #F8FAFC;">${authorName}</strong> just uploaded a new resource to the community.
-                            </p>
-                            <div class="premium-box">
-                                <h3 class="subtitle" style="font-size: 20px;">${resourceTitle}</h3>
-                                <div class="text-center">
-                                    <a href="https://topedgeai.com/community/resource/${resourceId}" class="button">View Resource</a>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="footer">
-                              <p>Best regards,</p>
-                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                              <div style="margin-top: 24px;">
-                                <p>© 2026 TopEdge AI. All rights reserved.</p>
-                              </div>
-                            </div>
-                        </div>
-                        </div>
-                    </body>
-                    </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Resource | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 40px 80px -12px rgba(0,0,0,0.05); }
+      
+      /* Header: Exclusive & Tech-focused */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .drop-badge { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; display: block; }
+      
+      /* Content: Impactful Typography */
+      .content { padding: 40px 48px 48px; }
+      .headline { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px; }
+      .author-tag { font-size: 15px; color: #64748b; margin-bottom: 32px; }
+      .author-name { color: #0f172a; font-weight: 700; border-bottom: 2px solid #e0e7ff; }
+      
+      /* The Resource Card: Premium Dark Mode */
+      .resource-card { 
+        background: #0f172a; 
+        border-radius: 24px; 
+        padding: 40px; 
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+      }
+      .resource-title { 
+        font-size: 22px; 
+        font-weight: 700; 
+        color: #ffffff; 
+        margin-bottom: 28px; 
+        line-height: 1.4;
+        display: block;
+      }
+      
+      /* Button: Clean & High-Contrast */
+      .button { 
+        display: inline-block; 
+        background-color: #ffffff; 
+        color: #0f172a !important; 
+        padding: 16px 36px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 800; 
+        font-size: 15px; 
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+      }
+
+      /* Footer */
+      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+      .legal-text { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="drop-badge">New Drop</span>
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">A new asset has entered the community.</h1>
+          <p class="author-tag">
+            Contribution by <span class="author-name">${authorName}</span>
+          </p>
+          
+          <div class="resource-card">
+            <span class="resource-title">${resourceTitle}</span>
+            <a href="https://topedgeai.com/community/resource/${resourceId}" class="button">Access Resource</a>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com/community">Marketplace</a>
+            <a href="https://topedgeai.com/community/profiles">Directory</a>
+          </div>
+          <p class="legal-text">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Stay updated with the latest in AI automation and business solutions.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                  `
              });
              count++;
@@ -2109,45 +2475,89 @@ app.post('/api/send-request-notification', async (req, res) => {
                  subject: `New Request: ${finalTitle} 💡`,
                  html: `
                     <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Opportunity Alert</title>
-                        <style>${commonEmailStyles}</style>
-                    </head>
-                    <body>
-                        <div class="container">
-                        <div class="header">
-                            <span class="logo-text">TopEdge AI</span>
-                            <p class="header-subtitle">New Community Request</p>
-                        </div>
-                        <div class="content">
-                            <div class="section">
-                            <h2 class="section-title">Opportunity Alert</h2>
-                            <p class="text-regular">
-                                <strong style="color: #F8FAFC;">${requesterName}</strong> is looking for something. Can you help?
-                            </p>
-                            <div class="premium-box">
-                                <h3 class="subtitle" style="margin-bottom: 8px;">"${finalTitle}"</h3>
-                                ${budget ? `<p style="color: #818CF8; font-weight: 600; margin-bottom: 12px;">Budget: ${budget}</p>` : ''}
-                                ${description ? `<p class="text-muted" style="margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${description}</p>` : ''}
-                                <div class="text-center">
-                                    <a href="https://topedgeai.com/community/requests" class="button">View Request</a>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="footer">
-                              <p>Best regards,</p>
-                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                              <div style="margin-top: 24px;">
-                                <p>© 2026 TopEdge AI. All rights reserved.</p>
-                              </div>
-                            </div>
-                        </div>
-                        </div>
-                    </body>
-                    </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Opportunity Brief | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 40px 80px -12px rgba(0,0,0,0.06); }
+      
+      /* Header: Professional Labeling */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; display: block; }
+      
+      /* Content: Editorial Layout */
+      .content { padding: 40px 48px 48px; }
+      .headline { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px; }
+      .requester-tag { font-size: 15px; color: #64748b; margin-bottom: 32px; }
+      .requester-name { color: #0f172a; font-weight: 700; border-bottom: 2px solid #fef3c7; }
+      
+      /* The Brief Card: Premium & Focused */
+      .brief-card { 
+        background: #0f172a; 
+        border-radius: 24px; 
+        padding: 40px; 
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+      }
+      .brief-title { font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 16px; display: block; line-height: 1.4; }
+      .budget-badge { font-size: 14px; font-weight: 600; color: #818cf8; margin-bottom: 20px; display: block; }
+      .brief-desc { font-size: 14px; color: #94a3b8; line-height: 1.6; margin-bottom: 32px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      
+      /* Button: High-Contrast Action */
+      .button { display: inline-block; background-color: #ffffff; color: #0f172a !important; padding: 16px 36px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 15px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+
+      /* Footer */
+      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+      .legal-text { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="badge">Open Request</span>
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">A new project requires your expertise.</h1>
+          <p class="requester-tag">
+            Brief by <span class="requester-name">${requesterName}</span>
+          </p>
+          
+          <div class="brief-card">
+            <span class="brief-title">"${finalTitle}"</span>
+            ${budget ? `<span class="budget-badge">Estimated Budget: ${budget}</span>` : ''}
+            ${description ? `<p class="brief-desc">${description}</p>` : ''}
+            <div style="text-align: center;">
+                <a href="https://topedgeai.com/community/requests" class="button">Submit Proposal</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com/community/requests">View All Briefs</a>
+            <a href="https://topedgeai.com/community/profiles">My Builder Profile</a>
+          </div>
+          <p class="legal-text">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Connecting world-class AI builders with high-impact opportunities.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                  `
              });
              count++;
@@ -2183,42 +2593,91 @@ app.post('/api/admin/announcement', async (req, res) => {
                  subject: subject || 'Announcement from TopEdge AI 📢',
                  html: `
                     <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Community Announcement</title>
-                        <style>${commonEmailStyles}</style>
-                    </head>
-                    <body>
-                        <div class="container">
-                        <div class="header">
-                            <span class="logo-text">TopEdge AI</span>
-                            <p class="header-subtitle">Community Announcement</p>
-                        </div>
-                        <div class="content">
-                            <div class="section">
-                            <h2 class="section-title">${subject}</h2>
-                            <div class="text-regular" style="margin-bottom: 24px;">
-                                ${message}
-                            </div>
-                            ${actionUrl ? `
-                            <div class="text-center" style="margin-top: 32px;">
-                                <a href="${actionUrl}" class="button">${actionText || 'Learn More'}</a>
-                            </div>
-                            ` : ''}
-                            </div>
-                            <div class="footer">
-                              <p>Best regards,</p>
-                              <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                              <div style="margin-top: 24px;">
-                                <p>© 2026 TopEdge AI. All rights reserved.</p>
-                              </div>
-                            </div>
-                        </div>
-                        </div>
-                    </body>
-                    </html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${subject} | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 64px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); }
+      
+      /* Header: Clean & Minimalist */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .brand-line { height: 3px; width: 32px; background-color: #6366f1; border-radius: 2px; margin-bottom: 24px; }
+      .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
+      
+      /* Content: Bold Editorial Feel */
+      .content { padding: 40px 48px 48px; }
+      .headline { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.5px; margin-bottom: 28px; }
+      .message-body { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 40px; }
+      
+      /* Action Box: High-Contrast Focus */
+      .action-section { 
+        background-color: #f8fafc; 
+        border-radius: 24px; 
+        padding: 32px; 
+        text-align: center; 
+        border: 1px solid #f1f5f9;
+      }
+      .button { 
+        display: inline-block; 
+        background-color: #0f172a; 
+        color: #ffffff !important; 
+        padding: 16px 36px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 15px; 
+        box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1); 
+      }
+
+      /* Footer: Muted Professionalism */
+      .footer { padding: 48px; background-color: #fafbfc; border-top: 1px solid #f1f5f9; text-align: center; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 12px; }
+      .legal { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <div class="brand-line"></div>
+          <div class="logo">TopEdge AI</div>
+        </div>
+        
+        <div class="content">
+          <h1 class="headline">${subject}</h1>
+          <div class="message-body">
+            ${message}
+          </div>
+          
+          ${actionUrl ? `
+          <div class="action-section">
+            <a href="${actionUrl}" class="button">${actionText || 'Explore Update'}</a>
+          </div>
+          ` : ''}
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Official Site</a>
+            <a href="https://topedgeai.com/community">Community Dashboard</a>
+          </div>
+          <p class="legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Official announcement for the @topedge_ai community.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
                  `
              });
              count++;
