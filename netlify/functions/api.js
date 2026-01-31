@@ -1933,16 +1933,16 @@ app.post('/api/send-community-update', async (req, res) => {
     <title>${title} | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 48px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
       
       /* Header: Minimal & Brand-focused */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
       .update-label { font-size: 13px; font-weight: 500; color: #94a3b8; }
       
       /* Content: Editorial Typography */
-      .content { padding: 40px 48px 48px; }
+      .content { padding: 24px 48px 48px; }
       .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
       .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
       
@@ -2069,14 +2069,14 @@ app.post('/api/admin/broadcast-announcement', async (req, res) => {
                 <title>${title} | TopEdge AI</title>
                 <style>
                   body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
-                  .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 48px 0; }
+                  .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 10px 0; }
                   .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
                   
-                  .header { padding: 48px 48px 0; text-align: left; }
+                  .header { padding: 24px 24px 0; text-align: left; }
                   .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
                   .update-label { font-size: 13px; font-weight: 500; color: #94a3b8; }
                   
-                  .content { padding: 40px 48px 48px; }
+                  .content { padding: 24px 48px 48px; }
                   .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
                   .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
                   
@@ -2362,11 +2362,11 @@ app.post('/api/cron/engagement-check', async (req, res) => {
     <title>Action Required | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #f9fafb; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #f9fafb; padding: 48px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f9fafb; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 28px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
       
       /* Header */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .brand-accent { height: 4px; width: 40px; background-color: #6366f1; border-radius: 2px; margin-bottom: 24px; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
       
@@ -2458,15 +2458,15 @@ app.post('/api/cron/engagement-check', async (req, res) => {
     <title>Final Setup Reminder | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #ffffff; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #ffffff; padding: 10px 0; }
       .container { max-width: 560px; margin: 0 auto; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.02); }
       
       /* Header */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 3px; }
       
       /* Content */
-      .content { padding: 48px; }
+      .content { padding: 24px 48px 48px; }
       .headline { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 24px; }
       .body-text { font-size: 16px; color: #64748b; line-height: 1.8; margin-bottom: 40px; }
       
@@ -2479,7 +2479,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
       .button { display: inline-block; background-color: #0f172a; color: #ffffff !important; padding: 18px 40px; border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 15px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15); transition: all 0.3s ease; }
       
       /* Footer */
-      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; }
+      .footer { padding: 24px; text-align: center; border-top: 1px solid #f8fafc; }
       .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
       .footer-legal { font-size: 12px; color: #cbd5e1; line-height: 1.6; }
     </style>
@@ -2555,15 +2555,15 @@ app.post('/api/cron/engagement-check', async (req, res) => {
     <title>Launch Your First Asset | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.03); }
       
       /* Header: Elegant & Minimal */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .logo { font-size: 15px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
       
       /* Content: Bold Typography */
-      .content { padding: 48px; }
+      .content { padding: 24px 48px 48px; }
       .hero-title { font-size: 34px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.8px; margin-bottom: 24px; }
       .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 40px; }
       
@@ -2593,7 +2593,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
       }
 
       /* Footer */
-      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; }
+      .footer { padding: 24px; text-align: center; border-top: 1px solid #f8fafc; }
       .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
       .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
     </style>
@@ -2703,16 +2703,16 @@ app.post('/api/send-resource-notification', async (req, res) => {
     <title>New Resource | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 40px 80px -12px rgba(0,0,0,0.05); }
       
       /* Header: Exclusive & Tech-focused */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .drop-badge { display: inline-block; background: #e0e7ff; color: #4338ca; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; display: block; }
       
       /* Content: Impactful Typography */
-      .content { padding: 40px 48px 48px; }
+      .content { padding: 24px 48px 48px; }
       .headline { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px; }
       .author-tag { font-size: 15px; color: #64748b; margin-bottom: 32px; }
       .author-name { color: #0f172a; font-weight: 700; border-bottom: 2px solid #e0e7ff; }
@@ -2748,7 +2748,7 @@ app.post('/api/send-resource-notification', async (req, res) => {
       }
 
       /* Footer */
-      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
+      .footer { padding: 24px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
       .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
       .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
       .legal-text { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
@@ -2841,16 +2841,16 @@ app.post('/api/send-request-notification', async (req, res) => {
     <title>New Opportunity Brief | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #fcfcfc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fcfcfc; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 40px 80px -12px rgba(0,0,0,0.06); }
       
       /* Header: Professional Labeling */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; display: block; }
       
       /* Content: Editorial Layout */
-      .content { padding: 40px 48px 48px; }
+      .content { padding: 24px 48px 48px; }
       .headline { font-size: 30px; font-weight: 800; color: #0f172a; line-height: 1.1; letter-spacing: -1.5px; margin-bottom: 12px; }
       .requester-tag { font-size: 15px; color: #64748b; margin-bottom: 32px; }
       .requester-name { color: #0f172a; font-weight: 700; border-bottom: 2px solid #fef3c7; }
@@ -2870,7 +2870,7 @@ app.post('/api/send-request-notification', async (req, res) => {
       .button { display: inline-block; background-color: #ffffff; color: #0f172a !important; padding: 16px 36px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 15px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 
       /* Footer */
-      .footer { padding: 48px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
+      .footer { padding: 24px; text-align: center; border-top: 1px solid #f8fafc; background-color: #fafbfc; }
       .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
       .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
       .legal-text { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
@@ -2959,16 +2959,16 @@ app.post('/api/admin/announcement', async (req, res) => {
     <title>${subject} | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 10px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); }
       
       /* Header: Clean & Minimalist */
-      .header { padding: 48px 48px 0; text-align: left; }
+      .header { padding: 24px 24px 0; text-align: left; }
       .brand-line { height: 3px; width: 32px; background-color: #6366f1; border-radius: 2px; margin-bottom: 24px; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 2px; }
       
       /* Content: Bold Editorial Feel */
-      .content { padding: 40px 48px 48px; }
+      .content { padding: 24px 48px 48px; }
       .headline { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.5px; margin-bottom: 28px; }
       .message-body { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 40px; }
       
@@ -2993,7 +2993,7 @@ app.post('/api/admin/announcement', async (req, res) => {
       }
 
       /* Footer: Muted Professionalism */
-      .footer { padding: 48px; background-color: #fafbfc; border-top: 1px solid #f1f5f9; text-align: center; }
+      .footer { padding: 24px; background-color: #fafbfc; border-top: 1px solid #f1f5f9; text-align: center; }
       .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
       .footer-links a { color: #6366f1; text-decoration: none; font-size: 12px; font-weight: 600; margin: 0 12px; }
       .legal { font-size: 11px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
