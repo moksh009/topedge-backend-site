@@ -245,7 +245,7 @@ app.post('/api/send-user-email', async (req, res) => {
 
                 <div class="section">
                   <h3 class="section-title">What to Expect</h3>
-                  <div style="background: rgba(30, 41, 59, 0.5); padding: 24px; border-radius: 12px; border: 1px solid #334155;">
+                  <div class="list-box">
                     <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
                       <li style="margin-bottom: 16px; padding-left: 8px;">
                         <strong style="color: #F8FAFC;">Meeting Link</strong>
@@ -319,7 +319,7 @@ app.post('/api/send-admin-email', async (req, res) => {
               </div>
               
               <div class="content">
-                <div class="section" style="text-align: center; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 12px; margin: 24px 32px;">
+                <div class="alert-box">
                   <h3 class="section-title" style="color: #818CF8; margin-bottom: 8px;">New Booking Alert</h3>
                   <p class="text-muted" style="font-size: 18px; color: #F8FAFC;">${date} at ${time}</p>
                 </div>
@@ -360,7 +360,7 @@ app.post('/api/send-admin-email', async (req, res) => {
                   </div>
                 </div>
 
-                <div class="section" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; margin: 0 32px 24px;">
+                <div class="list-box" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
                   <h3 class="section-title" style="color: #F87171;">Required Actions</h3>
                   <div style="color: #CBD5E1;">
                     <p>Please complete the following tasks:</p>
@@ -489,7 +489,7 @@ app.post('/api/send-maintenance-user-email', async (req, res) => {
 
                 <div class="section">
                   <h3 class="section-title">Next Steps</h3>
-                  <div style="background: #1E293B; padding: 32px; border-radius: 16px; border: 1px solid #334155;">
+                  <div class="list-box">
                     <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
                       <li style="margin-bottom: 20px; padding-left: 8px;">
                         <strong style="color: #F8FAFC;">Initial Contact</strong>
@@ -1399,12 +1399,12 @@ app.post('/api/send-welcome-email', async (req, res) => {
                   </p>
                   
                   <div class="premium-box">
-                    <h3 style="color: #F8FAFC; font-size: 18px; margin-bottom: 16px; font-weight: 600;">Get Started Immediately</h3>
+                    <h3 class="subtitle">Get Started Immediately</h3>
                     <p class="text-regular" style="margin-bottom: 20px; font-size: 15px;">Complete these steps to maximize your visibility:</p>
                     
                     <a href="https://topedgeai.com/community/promote-profile" class="button" style="display: block; width: 100%; box-sizing: border-box;">Create Your Profile</a>
                     
-                    <div style="text-align: center; margin-top: 16px;">
+                    <div class="text-center" style="margin-top: 16px;">
                       <a href="https://topedgeai.com/community" style="color: #818CF8; text-decoration: none; font-size: 14px; font-weight: 500;">Explore Resources &rarr;</a>
                     </div>
                   </div>
@@ -1501,14 +1501,14 @@ app.post('/api/send-profile-reminder', async (req, res) => {
                 We noticed you joined ${daysAgo} days ago but haven't completed your profile yet. An incomplete profile is like a ghost town—nobody visits!
               </p>
               <div class="premium-box">
-                <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Why complete it?</h3>
-                <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
-                  <li style="margin-bottom: 8px;">Get discovered by potential clients</li>
-                  <li style="margin-bottom: 8px;">Unlock exclusive community resources</li>
+                <h3 class="subtitle">Why complete it?</h3>
+                <ul class="premium-list">
+                  <li>Get discovered by potential clients</li>
+                  <li>Unlock exclusive community resources</li>
                   <li>Earn trust badges on your profile</li>
                 </ul>
               </div>
-              <div style="text-align: center; margin-top: 24px;">
+              <div class="text-center mt-24">
                 <a href="https://topedgeai.com/community/profile/edit" class="button">Complete Profile Now</a>
               </div>
             </div>
@@ -1569,14 +1569,14 @@ app.post('/api/send-resource-nudge', async (req, res) => {
                 Did you know you can upload your automation scripts, templates, and workflows to our marketplace? You can offer them for free to build reputation or sell them to earn revenue.
               </p>
               <div class="premium-box">
-                <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Top Earnings:</h3>
-                <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
-                  <li style="margin-bottom: 8px;">Chatbot Templates</li>
-                  <li style="margin-bottom: 8px;">Automation Workflows</li>
+                <h3 class="subtitle">Top Earnings:</h3>
+                <ul class="premium-list">
+                  <li>Chatbot Templates</li>
+                  <li>Automation Workflows</li>
                   <li>AI Agent Configs</li>
                 </ul>
               </div>
-              <div style="text-align: center; margin-top: 24px;">
+              <div class="text-center mt-24">
                 <a href="https://topedgeai.com/community/upload" class="button">Upload Your First Resource</a>
               </div>
             </div>
@@ -1633,7 +1633,7 @@ app.post('/api/send-community-update', async (req, res) => {
               <p class="text-regular">
                 ${content.replace(/\n/g, '<br>')}
               </p>
-              <div style="text-align: center; margin-top: 32px;">
+              <div class="text-center" style="margin-top: 32px;">
                 <a href="${ctaLink}" class="button">${ctaText}</a>
               </div>
             </div>
@@ -1699,14 +1699,14 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
             <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
             <p class="text-regular">You are one of our founding members. Thank you for setting up your profile early.</p>
             <div class="premium-box">
-              <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">What's New:</h3>
-              <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
-                 <li style="margin-bottom: 8px;">Browse the new <strong style="color: #818CF8;">Automation Hub</strong> for AI agents.</li>
-                 <li style="margin-bottom: 8px;">Check out the <strong style="color: #818CF8;">Request Board</strong> for opportunities.</li>
+              <h3 class="subtitle">What's New:</h3>
+              <ul class="premium-list">
+                 <li>Browse the new <strong style="color: #818CF8;">Automation Hub</strong> for AI agents.</li>
+                 <li>Check out the <strong style="color: #818CF8;">Request Board</strong> for opportunities.</li>
                  <li>Connect with other members.</li>
               </ul>
             </div>
-            <div style="text-align: center; margin-top: 24px;">
+            <div class="text-center mt-24">
                <a href="https://topedgeai.com/community" class="button">Visit Community</a>
             </div>
           `;
@@ -1715,14 +1715,14 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
             <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
             <p class="text-regular">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
             <div class="premium-box">
-              <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Why Create a Profile?</h3>
-              <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
-                 <li style="margin-bottom: 8px;">Get discovered by clients and collaborators.</li>
-                 <li style="margin-bottom: 8px;">Showcase your AI skills and portfolio.</li>
+              <h3 class="subtitle">Why Create a Profile?</h3>
+              <ul class="premium-list">
+                 <li>Get discovered by clients and collaborators.</li>
+                 <li>Showcase your AI skills and portfolio.</li>
                  <li>Access exclusive community resources.</li>
               </ul>
             </div>
-            <div style="text-align: center; margin-top: 24px;">
+            <div class="text-center mt-24">
                <a href="https://topedgeai.com/community/promote-profile" class="button">Create Profile Now</a>
             </div>
           `;
@@ -1859,14 +1859,14 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                         <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
                                         <p class="text-regular">It's been 2 days since you joined, but your profile is incomplete. You are missing out on visibility within the community.</p>
                                         <div class="premium-box">
-                                            <h3 class="section-title" style="font-size: 18px; margin-bottom: 12px;">Unlock Benefits:</h3>
-                                            <ul style="color: #E2E8F0; padding-left: 20px; text-align: left;">
-                                                <li style="margin-bottom: 8px;">Showcase your skills</li>
-                                                <li style="margin-bottom: 8px;">Connect with clients</li>
+                                            <h3 class="subtitle">Unlock Benefits:</h3>
+                                            <ul class="premium-list">
+                                                <li>Showcase your skills</li>
+                                                <li>Connect with clients</li>
                                                 <li>Access premium resources</li>
                                             </ul>
                                         </div>
-                                        <div style="text-align: center; margin-top: 24px;">
+                                        <div class="text-center mt-24">
                                             <a href="https://topedgeai.com/community/promote-profile" class="button">Complete Profile Now</a>
                                         </div>
                                         </div>
@@ -1912,7 +1912,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                        <div class="section">
                                        <h2 class="section-title">Hello ${user.displayName || 'Member'},</h2>
                                        <p class="text-regular">This is a friendly reminder that your profile is still empty. To get the most out of TopEdge AI, please complete your setup.</p>
-                                       <div style="text-align: center; margin-top: 24px;">
+                                       <div class="text-center mt-24">
                                            <a href="https://topedgeai.com/community/promote-profile" class="button">Finish Setup</a>
                                        </div>
                                        </div>
@@ -1974,7 +1974,7 @@ app.post('/api/cron/engagement-check', async (req, res) => {
                                                     <div class="premium-box">
                                                         <p class="text-regular" style="margin: 0;">Upload your first AI agent, template, or tool to the community.</p>
                                                     </div>
-                                                    <div style="text-align: center; margin-top: 24px;">
+                                                    <div class="text-center mt-24">
                                                         <a href="https://topedgeai.com/community/submit-resource" class="button">Upload Resource</a>
                                                     </div>
                                                     </div>
@@ -2054,8 +2054,8 @@ app.post('/api/send-resource-notification', async (req, res) => {
                                 <strong style="color: #F8FAFC;">${authorName}</strong> just uploaded a new resource to the community.
                             </p>
                             <div class="premium-box">
-                                <h3 class="section-title" style="font-size: 20px; margin-bottom: 12px;">${resourceTitle}</h3>
-                                <div style="text-align: center;">
+                                <h3 class="subtitle" style="font-size: 20px;">${resourceTitle}</h3>
+                                <div class="text-center">
                                     <a href="https://topedgeai.com/community/resource/${resourceId}" class="button">View Resource</a>
                                 </div>
                             </div>
@@ -2129,10 +2129,10 @@ app.post('/api/send-request-notification', async (req, res) => {
                                 <strong style="color: #F8FAFC;">${requesterName}</strong> is looking for something. Can you help?
                             </p>
                             <div class="premium-box">
-                                <h3 class="section-title" style="font-size: 18px; margin-bottom: 8px;">"${finalTitle}"</h3>
+                                <h3 class="subtitle" style="margin-bottom: 8px;">"${finalTitle}"</h3>
                                 ${budget ? `<p style="color: #818CF8; font-weight: 600; margin-bottom: 12px;">Budget: ${budget}</p>` : ''}
                                 ${description ? `<p class="text-muted" style="margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${description}</p>` : ''}
-                                <div style="text-align: center;">
+                                <div class="text-center">
                                     <a href="https://topedgeai.com/community/requests" class="button">View Request</a>
                                 </div>
                             </div>
@@ -2203,7 +2203,7 @@ app.post('/api/admin/announcement', async (req, res) => {
                                 ${message}
                             </div>
                             ${actionUrl ? `
-                            <div style="text-align: center; margin-top: 32px;">
+                            <div class="text-center" style="margin-top: 32px;">
                                 <a href="${actionUrl}" class="button">${actionText || 'Learn More'}</a>
                             </div>
                             ` : ''}
