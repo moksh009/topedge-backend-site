@@ -38,14 +38,20 @@ try {
 
 const firestore = () => {
   if (!firebaseInitialized) {
-    throw new Error('Firebase admin not initialized');
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+      throw new Error('Firebase admin not initialized: FIREBASE_SERVICE_ACCOUNT_KEY is missing in environment variables');
+    }
+    throw new Error('Firebase admin not initialized (check server logs for initialization errors)');
   }
   return admin.firestore();
 };
 
 const authAdmin = () => {
   if (!firebaseInitialized) {
-    throw new Error('Firebase admin not initialized');
+    if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+      throw new Error('Firebase admin not initialized: FIREBASE_SERVICE_ACCOUNT_KEY is missing in environment variables');
+    }
+    throw new Error('Firebase admin not initialized (check server logs for initialization errors)');
   }
   return admin.auth();
 };
@@ -133,6 +139,152 @@ app.get('/', (req, res) => {
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// --- HELPER FOR REPUTATION (Backend Version) ---
+function calculateReputation(userProfile, resources) {
+  const resourcesCount = resources.length;
+  const totalUpvotes = resources.reduce((sum, r) => sum + (Number(r.upvotes || r.stars) || 0), 0);
+  const totalViews = resources.reduce((sum, r) => sum + (Number(r.views) || 0), 0);
+  const totalDownloads = resources.reduce((sum, r) => sum + (Number(r.downloads) || 0), 0);
+  const totalLinkClicks = resources.reduce((sum, r) => sum + (Number(r.linkClicks) || 0), 0);
+  const totalSales = resources.reduce((sum, r) => sum + (r.purchasers?.length || 0), 0);
+
+  const hasBio = !!userProfile?.bio;
+  const hasPhoto = !!userProfile?.photoURL;
+  const hasSocial = !!userProfile?.github || !!userProfile?.linkedin || !!userProfile?.websiteURL;
+
+  const profileScore = 
+    (hasBio ? 5 : 0) +
+    (hasPhoto ? 5 : 0) +
+    (hasSocial ? 5 : 0);
+
+  const score =
+    resourcesCount * 15 +
+    totalUpvotes * 2 +
+    Math.floor(totalViews * 0.1) +
+    totalDownloads * 1 +
+    totalLinkClicks * 1 +
+    totalSales * 5 +
+    profileScore;
+
+  let tier = 'Builder';
+  if (score >= 500) tier = 'Grandmaster';
+  else if (score >= 100) tier = 'Architect';
+
+  return { score: Math.floor(score), tier };
+}
+
+// --- PUBLIC DATA ENDPOINT (Bypass Firestore Rules for Guests) ---
+const handlePublicStats = async (req, res) => {
+  try {
+    const db = firestore();
+    
+    // Run in parallel for speed
+    const [profilesSnap, resourcesSnap, requestsSnap] = await Promise.all([
+      db.collection('public_profiles').get(),
+      db.collection('community_resources').get(),
+      db.collection('community_requests').get()
+    ]);
+
+    const profiles = [];
+    profilesSnap.forEach(doc => profiles.push({ id: doc.id, ...doc.data() }));
+
+    const resources = [];
+    resourcesSnap.forEach(doc => resources.push({ id: doc.id, ...doc.data() }));
+
+    const requests = [];
+    requestsSnap.forEach(doc => requests.push({ id: doc.id, ...doc.data() }));
+
+    // 1. Calculate Top Profiles
+    const scoredProfiles = profiles
+      .filter(p => p.fullName && p.fullName.trim().length > 0)
+      .map(p => {
+        const userResources = resources.filter(r => r.userId === p.id || (p.uid && r.userId === p.uid));
+        const { score, tier } = calculateReputation(
+          {
+            bio: p.description || p.bio,
+            photoURL: p.photoURL,
+            github: p.github,
+            linkedin: p.linkedin,
+            websiteURL: p.websiteURL
+          },
+          userResources
+        );
+        return { ...p, score, tier };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3);
+
+    // 2. Top Resources (Upvotes) - for Footer
+    const topResources = resources
+      .sort((a, b) => (Number(b.upvotes || b.stars || 0) - Number(a.upvotes || a.stars || 0)))
+      .slice(0, 5)
+      .map(r => ({ id: r.id, title: r.title || 'Untitled' }));
+
+    // 3. New Resources - for Home and Automation Hub Teaser
+    const newResources = resources
+      .sort((a, b) => {
+          // Handle Firestore Timestamp or Date string
+          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+          return dateB - dateA;
+      })
+      .slice(0, 12); // Increased to support teaser views (need 3, fetching more for safety)
+
+    // 4. Open Source Projects (Free Resources) - for Open Source Page
+    const openSourceProjects = resources
+      .filter(r => r.isPaid === false)
+      .sort((a, b) => {
+          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+          return dateB - dateA;
+      })
+      .slice(0, 6);
+
+    // 5. Recent Requests - for Request Board
+    const recentRequests = requests
+      .sort((a, b) => {
+          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+          return dateB - dateA;
+      })
+      .slice(0, 6);
+
+    res.json({
+      success: true,
+      stats: {
+        totalProfiles: profiles.length,
+        totalResources: resources.length,
+        totalRequests: requests.length,
+        totalOpenSource: resources.filter(r => r.isPaid === false).length
+      },
+      topProfiles: scoredProfiles,
+      topResourcesByUpvotes: topResources,
+      newResources: newResources,
+      openSourceProjects: openSourceProjects,
+      recentRequests: recentRequests
+    });
+
+  } catch (error) {
+    console.error('Public stats error:', error);
+    // If initialization fails, return empty stats to not break frontend
+    res.status(200).json({
+      success: false,
+      error: error.message,
+      stats: { totalProfiles: 0, totalResources: 0, totalRequests: 0, totalOpenSource: 0 },
+      topProfiles: [],
+      topResourcesByUpvotes: [],
+      newResources: [],
+      openSourceProjects: [],
+      recentRequests: []
+    });
+  }
+};
+
+// --- PUBLIC DATA ENDPOINT (Bypass Firestore Rules for Guests) ---
+// Register both with and without /api prefix to handle Netlify rewrites vs local dev
+app.get('/api/public-stats', handlePublicStats);
+app.get('/public-stats', handlePublicStats);
 
 // Create transporter with explicit SMTP configuration
 const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
@@ -1877,6 +2029,148 @@ app.post('/api/send-community-update', async (req, res) => {
   }
 });
 
+// 2. Broadcast: General Announcement (Dynamic)
+app.post('/api/admin/broadcast-announcement', async (req, res) => {
+  try {
+    const { secret, title, content, ctaText, ctaLink } = req.body;
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    if (!firebaseInitialized) {
+       return res.status(500).json({ message: 'Firebase not initialized' });
+    }
+
+    let sentCount = 0;
+    let errors = [];
+    let nextPageToken;
+    let totalProcessed = 0;
+
+    console.log(`[BROADCAST] Starting announcement: ${title}`);
+
+    do {
+      const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+      const users = listUsersResult.users;
+      nextPageToken = listUsersResult.pageToken;
+      totalProcessed += users.length;
+
+      console.log(`[BROADCAST] Processing batch of ${users.length} users... Total so far: ${totalProcessed}`);
+
+      for (const user of users) {
+        if (!user.email) continue;
+
+        try {
+          const html = `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>${title} | TopEdge AI</title>
+                <style>
+                  body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+                  .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 48px 0; }
+                  .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+                  
+                  .header { padding: 48px 48px 0; text-align: left; }
+                  .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
+                  .update-label { font-size: 13px; font-weight: 500; color: #94a3b8; }
+                  
+                  .content { padding: 40px 48px 48px; }
+                  .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
+                  .body-text { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
+                  
+                  .action-area { 
+                    background-color: #f8fafc; 
+                    border: 1px solid #f1f5f9; 
+                    border-radius: 24px; 
+                    padding: 32px; 
+                    text-align: center; 
+                  }
+                  .button { 
+                    display: inline-block; 
+                    background-color: #0f172a; 
+                    color: #ffffff !important; 
+                    padding: 16px 36px; 
+                    border-radius: 14px; 
+                    text-decoration: none; 
+                    font-weight: 700; 
+                    font-size: 15px; 
+                    box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2); 
+                  }
+
+                  .footer { padding: 48px; border-top: 1px solid #f1f5f9; background-color: #fafbfc; text-align: center; }
+                  .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+                  .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+                  .footer-legal { font-size: 12px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+                </style>
+              </head>
+              <body>
+                <div class="wrapper">
+                  <div class="container">
+                    <div class="header">
+                      <span class="brand">TopEdge AI</span>
+                      <span class="update-label">Community Bulletin</span>
+                    </div>
+                    
+                    <div class="content">
+                      <h1 class="hero-title">${title}</h1>
+                      <div class="body-text">
+                        ${content.replace(/\n/g, '<br>')}
+                      </div>
+                      
+                      <div class="action-area">
+                        <a href="${ctaLink}" class="button">${ctaText || 'View Details'}</a>
+                      </div>
+                    </div>
+
+                    <div class="footer">
+                      <span class="footer-brand">Team TopEdge AI</span>
+                      <div class="footer-links">
+                        <a href="https://topedgeai.com">Main Website</a>
+                        <a href="https://topedgeai.com/community">Builder Directory</a>
+                      </div>
+                      <p class="footer-legal">
+                        © 2026 TopEdge AI. All rights reserved.<br>
+                        Sent with care to our verified AI Builder community.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </body>
+            </html>
+          `;
+
+          await sendEmail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: title,
+            html: html
+          });
+
+          sentCount++;
+          // Rate limit: 100ms
+          await new Promise(r => setTimeout(r, 100));
+
+        } catch (err) {
+          console.error(`Failed to send to ${user.email}`, err);
+          errors.push({ email: user.email, error: err.message });
+        }
+      }
+    } while (nextPageToken);
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Broadcast completed. Processed ${totalProcessed} users. Sent ${sentCount} emails.`,
+      errors 
+    });
+
+  } catch (error) {
+    console.error('Error in broadcast:', error);
+    res.status(500).json({ message: 'Broadcast failed', error: error.message });
+  }
+});
+
 // 2. Broadcast: Community Live (One-Time / Manual)
 app.post('/api/admin/broadcast-live', async (req, res) => {
   try {
@@ -1889,107 +2183,114 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
        return res.status(500).json({ message: 'Firebase not initialized' });
     }
 
-    const listUsersResult = await authAdmin().listUsers(1000);
-    const users = listUsersResult.users;
     let sentCount = 0;
     let errors = [];
+    let nextPageToken;
+    let totalProcessed = 0;
 
-    console.log(`[BROADCAST] Found ${users.length} users. Starting broadcast...`);
+    do {
+      const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+      const users = listUsersResult.users;
+      nextPageToken = listUsersResult.pageToken;
+      totalProcessed += users.length;
 
-    for (const user of users) {
-      if (!user.email) continue;
+      console.log(`[BROADCAST] Processing batch of ${users.length} users... Total so far: ${totalProcessed}`);
 
-      try {
-        const profileDoc = await firestore().collection('users').doc(user.uid).get();
-        const hasProfile = profileDoc.exists;
-        const name = user.displayName || (hasProfile ? profileDoc.data().fullName : 'Member');
+      for (const user of users) {
+        if (!user.email) continue;
 
-        let subject = 'TopEdge AI Community is LIVE! 🚀';
-        let content = '';
+        try {
+          const profileDoc = await firestore().collection('users').doc(user.uid).get();
+          const hasProfile = profileDoc.exists;
+          const name = user.displayName || (hasProfile ? profileDoc.data().fullName : 'Member');
 
-        if (hasProfile) {
-          content = `
-            <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
-            <p class="text-regular">You are one of our founding members. Thank you for setting up your profile early.</p>
-            <div class="premium-box">
-              <h3 class="subtitle">What's New:</h3>
-              <ul class="premium-list">
-                 <li>Browse the new <strong style="color: #818CF8;">Automation Hub</strong> for AI agents.</li>
-                 <li>Check out the <strong style="color: #818CF8;">Request Board</strong> for opportunities.</li>
-                 <li>Connect with other members.</li>
-              </ul>
-            </div>
-            <div class="text-center mt-24">
-               <a href="https://topedgeai.com/community" class="button">Visit Community</a>
-            </div>
-          `;
-        } else {
-          content = `
-            <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
-            <p class="text-regular">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
-            <div class="premium-box">
-              <h3 class="subtitle">Why Create a Profile?</h3>
-              <ul class="premium-list">
-                 <li>Get discovered by clients and collaborators.</li>
-                 <li>Showcase your AI skills and portfolio.</li>
-                 <li>Access exclusive community resources.</li>
-              </ul>
-            </div>
-            <div class="text-center mt-24">
-               <a href="https://topedgeai.com/community/promote-profile" class="button">Create Profile Now</a>
-            </div>
-          `;
-        }
+          let subject = 'TopEdge AI Community is LIVE! 🚀';
+          let content = '';
 
-        await sendEmail({
-          from: process.env.EMAIL_USER,
-          to: user.email,
-          subject: subject,
-          html: `
-            <!DOCTYPE html>
-            <html>
-              <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Community Launch</title>
-                <style>${commonEmailStyles}</style>
-              </head>
-              <body>
-                <div class="container">
-                  <div class="header">
-                    <span class="logo-text">TopEdge AI</span>
-                    <p class="header-subtitle">Community Launch 🚀</p>
-                  </div>
-                  <div class="content">
-                    <div class="section">
-                      <h2 class="section-title">Hello ${name},</h2>
-                      ${content}
+          if (hasProfile) {
+            content = `
+              <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
+              <p class="text-regular">You are one of our founding members. Thank you for setting up your profile early.</p>
+              <div class="premium-box">
+                <h3 class="subtitle">What's New:</h3>
+                <ul class="premium-list">
+                   <li>Browse the new <strong style="color: #818CF8;">Automation Hub</strong> for AI agents.</li>
+                   <li>Check out the <strong style="color: #818CF8;">Request Board</strong> for opportunities.</li>
+                   <li>Connect with other members.</li>
+                </ul>
+              </div>
+              <div class="text-center mt-24">
+                 <a href="https://topedgeai.com/community" class="button">Visit Community</a>
+              </div>
+            `;
+          } else {
+            content = `
+              <p class="text-regular">The TopEdge AI Community is officially LIVE!</p>
+              <p class="text-regular">We noticed you haven't set up your profile yet. As one of our early members, your profile will get featured visibility.</p>
+              <div class="premium-box">
+                <h3 class="subtitle">Why Create a Profile?</h3>
+                <ul class="premium-list">
+                   <li>Get discovered by clients and collaborators.</li>
+                   <li>Showcase your AI skills and portfolio.</li>
+                   <li>Access exclusive community resources.</li>
+                </ul>
+              </div>
+              <div class="text-center mt-24">
+                 <a href="https://topedgeai.com/community/promote-profile" class="button">Create Profile Now</a>
+              </div>
+            `;
+          }
+
+          await sendEmail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: subject,
+            html: `
+              <!DOCTYPE html>
+              <html>
+                <head>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Community Launch</title>
+                  <style>${commonEmailStyles}</style>
+                </head>
+                <body>
+                  <div class="container">
+                    <div class="header">
+                      <span class="logo-text">TopEdge AI</span>
+                      <p class="header-subtitle">Community Launch 🚀</p>
                     </div>
-                    <div class="footer">
-                      <p>Best regards,</p>
-                      <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                      <div style="margin-top: 24px;">
-                        <p>© 2026 TopEdge AI. All rights reserved.</p>
+                    <div class="content">
+                      <div class="section">
+                        <h2 class="section-title">Hello ${name},</h2>
+                        ${content}
+                      </div>
+                      <div class="footer">
+                        <p>Best regards,</p>
+                        <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
+                        <div style="margin-top: 24px;">
+                          <p>© 2026 TopEdge AI. All rights reserved.</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </body>
-            </html>
-          `
-        });
-        sentCount++;
-        await new Promise(r => setTimeout(r, 500)); // Rate limit protection
+                </body>
+              </html>
+            `
+          });
+          sentCount++;
+          await new Promise(r => setTimeout(r, 200)); // Rate limit protection (reduced to 200ms for speed)
 
-      } catch (err) {
-        console.error(`[BROADCAST] Failed to send to ${user.email}:`, err);
-        errors.push({ email: user.email, error: err.message });
+        } catch (err) {
+          console.error(`[BROADCAST] Failed to send to ${user.email}:`, err);
+          errors.push({ email: user.email, error: err.message });
+        }
       }
-    }
+    } while (nextPageToken);
 
     res.status(200).json({ 
       success: true, 
-      message: `Broadcast completed. Sent to ${sentCount} users.`,
+      message: `Broadcast completed. Processed ${totalProcessed} users. Sent to ${sentCount} users.`,
       errors: errors
     });
 
@@ -2369,18 +2670,31 @@ app.post('/api/send-resource-notification', async (req, res) => {
              return res.status(403).json({ message: 'Unauthorized' });
          }
 
-         const listUsersResult = await authAdmin().listUsers(1000);
-         const users = listUsersResult.users;
-         
+         let nextPageToken;
          let count = 0;
-         for (const user of users) {
-             if (!user.email) continue;
+         let errors = [];
+
+         console.log(`[BROADCAST] Starting broadcast for resource: ${resourceTitle}`);
+
+         do {
+             const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+             const users = listUsersResult.users;
+             nextPageToken = listUsersResult.pageToken;
              
-             await sendEmail({
-                 from: process.env.EMAIL_USER,
-                 to: user.email,
-                 subject: `New Resource: ${resourceTitle} 🚨`,
-                 html: `
+             console.log(`[BROADCAST] Fetched batch of ${users.length} users. Next page: ${!!nextPageToken}`);
+
+             for (const user of users) {
+                 if (!user.email) {
+                     console.log(`[BROADCAST] Skipping user ${user.uid} - no email`);
+                     continue;
+                 }
+                 
+                 try {
+                     await sendEmail({
+                         from: process.env.EMAIL_USER,
+                         to: user.email,
+                         subject: `New Resource: ${resourceTitle} 🚨`,
+                         html: `
                     <!DOCTYPE html>
 <html>
   <head>
@@ -2478,13 +2792,18 @@ app.post('/api/send-resource-notification', async (req, res) => {
   </body>
 </html>
                  `
-             });
-             count++;
-             // Rate limiting check - 100ms
-             await new Promise(r => setTimeout(r, 100));
-         }
+                     });
+                     count++;
+                     // Rate limiting check - 100ms
+                     await new Promise(r => setTimeout(r, 100));
+                 } catch (err) {
+                    console.error(`Failed to send to ${user.email}`, err);
+                    errors.push({ email: user.email, error: err.message });
+                 }
+             }
+         } while (nextPageToken);
          
-         res.status(200).json({ success: true, sent: count });
+         res.status(200).json({ success: true, sent: count, errors });
 
     } catch (error) {
         console.error('Resource notification error:', error);
