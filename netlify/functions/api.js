@@ -286,6 +286,37 @@ const handlePublicStats = async (req, res) => {
 app.get('/api/public-stats', handlePublicStats);
 app.get('/public-stats', handlePublicStats);
 
+const handlePublicResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ error: 'Missing resource ID' });
+    }
+    
+    // Bypass rules using admin SDK
+    const db = firestore();
+    const docRef = db.collection('community_resources').doc(id);
+    const docSnap = await docRef.get();
+    
+    if (!docSnap.exists) {
+      return res.status(404).json({ error: 'Resource not found' });
+    }
+    
+    const data = docSnap.data();
+    
+    res.json({
+      id: docSnap.id,
+      ...data
+    });
+  } catch (error) {
+    console.error('Public resource fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch resource' });
+  }
+};
+
+app.get('/api/public-resource/:id', handlePublicResource);
+app.get('/public-resource/:id', handlePublicResource);
+
 // Create transporter with explicit SMTP configuration
 const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
 const smtpPort = Number(process.env.SMTP_PORT || 465);
