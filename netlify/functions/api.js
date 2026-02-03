@@ -1341,11 +1341,11 @@ app.post('/api/generate-otp', async (req, res) => {
     <title>Verification Code | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #fafafa; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 64px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #fafafa; padding: 20px 0; }
       .container { max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
       
       /* Header: Secure & Minimal */
-      .header { padding: 48px 48px 32px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+      .header { padding: 24px 24px 16px; text-align: center; border-bottom: 1px solid #f1f5f9; }
       .logo { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; letter-spacing: 3px; display: block; margin-bottom: 8px; }
       .security-label { font-size: 11px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; }
       
@@ -1620,7 +1620,7 @@ app.post('/api/send-welcome-email', async (req, res) => {
       .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #0f172a; text-transform: uppercase; }
       
       /* Content */
-      .content { padding: 0 40px 40px 40px; }
+      .content { padding: 0 24px 24px 24px; }
       .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; margin-bottom: 16px; letter-spacing: -1px; }
       .text-regular { font-size: 16px; line-height: 1.6; color: #475569; margin-bottom: 24px; }
 
@@ -1863,7 +1863,7 @@ app.post('/api/send-resource-nudge', async (req, res) => {
     <title>Monetize Your Expertise | TopEdge AI</title>
     <style>
       body { margin: 0; padding: 0; background-color: #f4f7f9; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; table-layout: fixed; background-color: #f4f7f9; padding: 40px 0; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f4f7f9; padding: 20px 0; }
       .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04); border: 1px solid #eef2f6; }
       
       /* Header */
