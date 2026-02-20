@@ -23,9 +23,12 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
-const API_BASE_URL = process.env.VITE_EMAIL_API_BASE_URL || 'https://topedge-backend.netlify.app';
+const API_BASE_URL =
+  process.env.VITE_EMAIL_API_BASE_URL ||
+  process.env.EMAIL_API_BASE_URL ||
+  'https://topedge-backend-site-1.onrender.com';
 
-const automationLogic = async (event, context) => {
+export const automationLogic = async (event, context) => {
   console.log('Starting scheduled email automation...');
   const logs = [];
   let emailsSent = 0;
@@ -124,7 +127,12 @@ const automationLogic = async (event, context) => {
       }
       
       const daysSinceJoined = (now.getTime() - createdAt.getTime()) / (1000 * 3600 * 24);
-      const isProfileComplete = Boolean(profile.bio && profile.aiSkills && profile.aiSkills.length > 0 && profile.location);
+      const isProfileComplete = Boolean(
+        (profile.description || profile.bio) &&
+        profile.aiSkills &&
+        profile.aiSkills.length > 0 &&
+        profile.location
+      );
       
       const updates = {};
       let needsUpdate = false;
@@ -234,5 +242,5 @@ const automationLogic = async (event, context) => {
   }
 };
 
-// Run every day at 10:00 AM UTC
-export const handler = schedule('0 10 * * *', automationLogic);
+// Run every day at 12:00 PM IST (06:30 AM UTC)
+export const handler = schedule('30 6 * * *', automationLogic);

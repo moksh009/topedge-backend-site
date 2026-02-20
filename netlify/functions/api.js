@@ -6,6 +6,7 @@ import serverless from 'serverless-http';
 import crypto from 'crypto';
 import admin from 'firebase-admin';
 import { commonEmailStyles } from '../../lib/emailStyles.js';
+import { automationLogic } from './scheduled-email-automation.js';
 
 dotenv.config();
 
@@ -2331,7 +2332,7 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
   }
 });
 
-// 3. Engagement Check (Daily Cron Job)
+// 3. Engagement Check (Daily Cron Job) - Legacy path for Netlify / Firebase Auth based flow
 // Logic: 
 // - If no profile after 2 days: Nudge 1
 // - If no profile after 4 days: Nudge 2 (Final)
@@ -2691,6 +2692,30 @@ app.post('/api/cron/engagement-check', async (req, res) => {
         console.error('Engagement check error:', error);
         res.status(500).json({ message: 'Failed', error: error.message });
     }
+});
+
+// 3b. Engagement Check via Render/HTTP (uses Firestore-based automationLogic)
+app.post('/api/admin/run-daily-automation', async (req, res) => {
+  try {
+    const { secret } = req.body || {};
+    if (secret !== OTP_SECRET) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+
+    const result = await automationLogic({}, {});
+    const statusCode = result?.statusCode || 200;
+    let body = {};
+    try {
+      body = result?.body ? JSON.parse(result.body) : {};
+    } catch {
+      body = { raw: result?.body };
+    }
+
+    return res.status(statusCode).json(body);
+  } catch (error) {
+    console.error('Error running daily automation via admin endpoint:', error);
+    return res.status(500).json({ message: 'Failed to run automation', error: error.message });
+  }
 });
 
 // 4. New Resource Notification (Broadcast)
