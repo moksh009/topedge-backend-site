@@ -318,43 +318,26 @@ const handlePublicResource = async (req, res) => {
 app.get('/api/public-resource/:id', handlePublicResource);
 app.get('/public-resource/:id', handlePublicResource);
 
-const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-const smtpPort = Number(process.env.SMTP_PORT || 587);
-const smtpSecure = process.env.SMTP_SECURE
-  ? process.env.SMTP_SECURE === 'true'
-  : smtpPort === 465;
-
-const isServerlessEnv =
-  !!process.env.NETLIFY ||
-  !!process.env.VERCEL ||
-  !!process.env.AWS_LAMBDA_FUNCTION_NAME;
-
-const transporterOptions = {
-  host: smtpHost,
-  port: smtpPort,
-  secure: smtpSecure,
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
+  connectionTimeout: 20000,
+  greetingTimeout: 20000,
+  socketTimeout: 20000,
   tls: {
     rejectUnauthorized: false
   }
-};
-
-if (!isServerlessEnv) {
-  transporterOptions.pool = true;
-  transporterOptions.maxConnections = 5;
-  transporterOptions.maxMessages = 100;
-}
-
-const transporter = nodemailer.createTransport(transporterOptions);
+});
 
 console.log('[MAIL] SMTP config:', {
-  host: smtpHost,
-  port: smtpPort,
-  secure: smtpSecure,
-  serverless: isServerlessEnv
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true
 });
 
 // Verify email configuration
@@ -373,10 +356,14 @@ const sendEmail = async (mailOptions, retries = 3) => {
   }
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`[MAIL] Attempt ${i + 1} send with options:`, {
-        ...mailOptions,
-        auth: { user: process.env.EMAIL_USER }
-      });
+      const sanitized = {
+        from: mailOptions.from,
+        to: mailOptions.to,
+        subject: mailOptions.subject,
+        hasHtml: typeof mailOptions.html === 'string',
+        htmlLength: typeof mailOptions.html === 'string' ? mailOptions.html.length : 0
+      };
+      console.log(`[MAIL] Attempt ${i + 1} send`, sanitized);
       
       const info = await transporter.sendMail(mailOptions);
       console.log('[MAIL] sent:', info.response);

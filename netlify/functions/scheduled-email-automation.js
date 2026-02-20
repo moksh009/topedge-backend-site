@@ -242,5 +242,5 @@ export const automationLogic = async (event, context) => {
   }
 };
 
-// Run every day at 12:00 PM IST (06:30 AM UTC)
-export const handler = schedule('30 6 * * *', automationLogic);
+// Run every day at 12:30 PM IST (07:00 AM UTC)
+export const handler = schedule('0 7 * * *', automationLogic);
