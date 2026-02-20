@@ -318,25 +318,43 @@ const handlePublicResource = async (req, res) => {
 app.get('/api/public-resource/:id', handlePublicResource);
 app.get('/public-resource/:id', handlePublicResource);
 
-// Create transporter with explicit SMTP configuration
 const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-const smtpPort = Number(process.env.SMTP_PORT || 465);
-const smtpSecure = process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true;
+const smtpPort = Number(process.env.SMTP_PORT || 587);
+const smtpSecure = process.env.SMTP_SECURE
+  ? process.env.SMTP_SECURE === 'true'
+  : smtpPort === 465;
 
-const transporter = nodemailer.createTransport({
+const isServerlessEnv =
+  !!process.env.NETLIFY ||
+  !!process.env.VERCEL ||
+  !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+
+const transporterOptions = {
   host: smtpHost,
   port: smtpPort,
   secure: smtpSecure,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS
   },
   tls: {
     rejectUnauthorized: false
-  },
-  pool: true,
-  maxConnections: 5,
-  maxMessages: 100
+  }
+};
+
+if (!isServerlessEnv) {
+  transporterOptions.pool = true;
+  transporterOptions.maxConnections = 5;
+  transporterOptions.maxMessages = 100;
+}
+
+const transporter = nodemailer.createTransport(transporterOptions);
+
+console.log('[MAIL] SMTP config:', {
+  host: smtpHost,
+  port: smtpPort,
+  secure: smtpSecure,
+  serverless: isServerlessEnv
 });
 
 // Verify email configuration
