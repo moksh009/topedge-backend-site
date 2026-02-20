@@ -326,9 +326,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
-  connectionTimeout: 20000,
-  greetingTimeout: 20000,
-  socketTimeout: 20000,
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
   tls: {
     rejectUnauthorized: false
   }
@@ -372,7 +372,12 @@ const sendEmail = async (mailOptions, retries = 3) => {
       const msg = error?.message || String(error);
       const code = error?.code || '';
       const resp = error?.response || '';
-      console.error(`[MAIL] send error attempt ${i + 1}:`, msg, code, resp);
+      console.error(`[MAIL] send error attempt ${i + 1}:`, {
+        attempt: i + 1,
+        message: msg,
+        code,
+        response: resp || null
+      });
       if (/Username and Password not accepted/i.test(msg) || /EAUTH/i.test(code)) {
         throw new Error('Invalid Gmail credentials. Use a Google App Password (requires 2-Step Verification).');
       }

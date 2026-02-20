@@ -26,7 +26,7 @@ const db = admin.firestore();
 const API_BASE_URL =
   process.env.VITE_EMAIL_API_BASE_URL ||
   process.env.EMAIL_API_BASE_URL ||
-  'https://topedge-backend-site-1.onrender.com';
+  'https://topedge-backend.netlify.app';
 
 export const automationLogic = async (event, context) => {
   console.log('Starting scheduled email automation...');
