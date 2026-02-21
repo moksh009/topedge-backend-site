@@ -123,7 +123,7 @@ app.use((req, res, next) => {
     try {
       const keys = Object.keys(req.body || {});
       console.log('[REQ] body keys:', keys);
-    } catch {}
+    } catch { }
   }
   next();
 });
@@ -154,7 +154,7 @@ function calculateReputation(userProfile, resources) {
   const hasPhoto = !!userProfile?.photoURL;
   const hasSocial = !!userProfile?.github || !!userProfile?.linkedin || !!userProfile?.websiteURL;
 
-  const profileScore = 
+  const profileScore =
     (hasBio ? 5 : 0) +
     (hasPhoto ? 5 : 0) +
     (hasSocial ? 5 : 0);
@@ -179,7 +179,7 @@ function calculateReputation(userProfile, resources) {
 const handlePublicStats = async (req, res) => {
   try {
     const db = firestore();
-    
+
     // Run in parallel for speed
     const [profilesSnap, resourcesSnap, requestsSnap] = await Promise.all([
       db.collection('public_profiles').get(),
@@ -225,10 +225,10 @@ const handlePublicStats = async (req, res) => {
     // 3. New Resources - for Home and Automation Hub Teaser
     const newResources = resources
       .sort((a, b) => {
-          // Handle Firestore Timestamp or Date string
-          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
-          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
-          return dateB - dateA;
+        // Handle Firestore Timestamp or Date string
+        const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+        const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+        return dateB - dateA;
       })
       .slice(0, 12); // Increased to support teaser views (need 3, fetching more for safety)
 
@@ -236,18 +236,18 @@ const handlePublicStats = async (req, res) => {
     const openSourceProjects = resources
       .filter(r => r.isPaid === false)
       .sort((a, b) => {
-          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
-          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
-          return dateB - dateA;
+        const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+        const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+        return dateB - dateA;
       })
       .slice(0, 6);
 
     // 5. Recent Requests - for Request Board
     const recentRequests = requests
       .sort((a, b) => {
-          const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
-          const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
-          return dateB - dateA;
+        const dateA = a.createdAt && a.createdAt._seconds ? a.createdAt._seconds * 1000 : new Date(a.createdAt || 0).getTime();
+        const dateB = b.createdAt && b.createdAt._seconds ? b.createdAt._seconds * 1000 : new Date(b.createdAt || 0).getTime();
+        return dateB - dateA;
       })
       .slice(0, 6);
 
@@ -293,18 +293,18 @@ const handlePublicResource = async (req, res) => {
     if (!id) {
       return res.status(400).json({ error: 'Missing resource ID' });
     }
-    
+
     // Bypass rules using admin SDK
     const db = firestore();
     const docRef = db.collection('community_resources').doc(id);
     const docSnap = await docRef.get();
-    
+
     if (!docSnap.exists) {
       return res.status(404).json({ error: 'Resource not found' });
     }
-    
+
     const data = docSnap.data();
-    
+
     res.json({
       id: docSnap.id,
       ...data
@@ -364,7 +364,7 @@ const sendEmail = async (mailOptions, retries = 3) => {
         htmlLength: typeof mailOptions.html === 'string' ? mailOptions.html.length : 0
       };
       console.log(`[MAIL] Attempt ${i + 1} send`, sanitized);
-      
+
       const info = await transporter.sendMail(mailOptions);
       console.log('[MAIL] sent:', info.response);
       return { success: true, message: 'Email sent successfully' };
@@ -750,7 +750,7 @@ app.post('/api/send-maintenance-admin-email', async (req, res) => {
     const isChatbot = plan.toLowerCase().includes('chatbot');
     const planType = isChatbot ? 'Chatbot' : 'AI Voice Agent';
     const planColor = isChatbot ? '#4D07E3' : '#0A84FF';
-    const planGradient = isChatbot 
+    const planGradient = isChatbot
       ? 'linear-gradient(135deg, #4D07E3 0%, #7A0BC0 100%)'
       : 'linear-gradient(135deg, #0A84FF 0%, #3B82F6 100%)';
 
@@ -1331,7 +1331,7 @@ app.post('/api/generate-otp', async (req, res) => {
 
     // Generate 4-digit OTP
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    
+
     // Create hash for verification
     const ttl = 10 * 60 * 1000; // 10 minutes
     const expires = Date.now() + ttl;
@@ -1576,10 +1576,10 @@ app.post('/api/get-protected-resource-link', async (req, res) => {
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok', 
-    message: 'TopEdge Backend API is healthy', 
-    timestamp: new Date().toISOString() 
+  res.status(200).json({
+    status: 'ok',
+    message: 'TopEdge Backend API is healthy',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -1591,7 +1591,7 @@ app.get('/', (req, res) => {
 // Add error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Something went wrong!',
     message: err.message,
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
@@ -2080,7 +2080,7 @@ app.post('/api/admin/broadcast-announcement', async (req, res) => {
     }
 
     if (!firebaseInitialized) {
-       return res.status(500).json({ message: 'Firebase not initialized' });
+      return res.status(500).json({ message: 'Firebase not initialized' });
     }
 
     let sentCount = 0;
@@ -2201,10 +2201,10 @@ app.post('/api/admin/broadcast-announcement', async (req, res) => {
       }
     } while (nextPageToken);
 
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       message: `Broadcast completed. Processed ${totalProcessed} users. Sent ${sentCount} emails.`,
-      errors 
+      errors
     });
 
   } catch (error) {
@@ -2222,7 +2222,7 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
     }
 
     if (!firebaseInitialized) {
-       return res.status(500).json({ message: 'Firebase not initialized' });
+      return res.status(500).json({ message: 'Firebase not initialized' });
     }
 
     let sentCount = 0;
@@ -2330,8 +2330,8 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
       }
     } while (nextPageToken);
 
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       message: `Broadcast completed. Processed ${totalProcessed} users. Sent to ${sentCount} users.`,
       errors: errors
     });
@@ -2348,54 +2348,54 @@ app.post('/api/admin/broadcast-live', async (req, res) => {
 // - If no profile after 4 days: Nudge 2 (Final)
 // - If profile exists but no resources after 2 days: Nudge Resource (One-time)
 app.post('/api/cron/engagement-check', async (req, res) => {
-    try {
-        const { secret } = req.body;
-        if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
-             return res.status(403).json({ message: 'Unauthorized' });
-        }
+  try {
+    const { secret } = req.body;
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-        if (!firebaseInitialized) {
-            return res.status(500).json({ message: 'Firebase not initialized' });
-        }
+    if (!firebaseInitialized) {
+      return res.status(500).json({ message: 'Firebase not initialized' });
+    }
 
-        const now = new Date();
-        const twoDays = 2 * 24 * 60 * 60 * 1000;
-        const threeDays = 3 * 24 * 60 * 60 * 1000;
-        const fourDays = 4 * 24 * 60 * 60 * 1000;
-        const fiveDays = 5 * 24 * 60 * 60 * 1000;
+    const now = new Date();
+    const twoDays = 2 * 24 * 60 * 60 * 1000;
+    const threeDays = 3 * 24 * 60 * 60 * 1000;
+    const fourDays = 4 * 24 * 60 * 60 * 1000;
+    const fiveDays = 5 * 24 * 60 * 60 * 1000;
 
-        let sentCount = 0;
-        let emailsSent = [];
-        let nextPageToken;
-        let processedCount = 0;
+    let sentCount = 0;
+    let emailsSent = [];
+    let nextPageToken;
+    let processedCount = 0;
 
-        // Pagination loop to fetch all users
-        do {
-            const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
-            const users = listUsersResult.users;
-            nextPageToken = listUsersResult.pageToken;
-            processedCount += users.length;
+    // Pagination loop to fetch all users
+    do {
+      const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+      const users = listUsersResult.users;
+      nextPageToken = listUsersResult.pageToken;
+      processedCount += users.length;
 
-            console.log(`[CRON] Processing batch of ${users.length} users...`);
+      console.log(`[CRON] Processing batch of ${users.length} users...`);
 
-            for (const user of users) {
-                if (!user.email) continue;
+      for (const user of users) {
+        if (!user.email) continue;
 
-                try {
-                    const creationTime = new Date(user.metadata.creationTime);
-                    const diffTime = now.getTime() - creationTime.getTime();
+        try {
+          const creationTime = new Date(user.metadata.creationTime);
+          const diffTime = now.getTime() - creationTime.getTime();
 
-                    // Fetch profile
-                    const profileDoc = await firestore().collection('users').doc(user.uid).get();
-                    const hasProfile = profileDoc.exists;
+          // Fetch profile
+          const profileDoc = await firestore().collection('users').doc(user.uid).get();
+          const hasProfile = profileDoc.exists;
 
-                    // --- Logic 1: Profile Nudge (Day 2) ---
-                    if (!hasProfile && diffTime >= twoDays && diffTime < threeDays) {
-                         await sendEmail({
-                            from: process.env.EMAIL_USER,
-                            to: user.email,
-                            subject: 'Action Required: Complete Your Profile ⚠️',
-                            html: `
+          // --- Logic 1: Profile Nudge (Day 2) ---
+          if (!hasProfile && diffTime >= twoDays && diffTime < threeDays) {
+            await sendEmail({
+              from: process.env.EMAIL_USER,
+              to: user.email,
+              subject: 'Action Required: Complete Your Profile ⚠️',
+              html: `
                                 <!DOCTYPE html>
 <html>
   <head>
@@ -2480,18 +2480,18 @@ app.post('/api/cron/engagement-check', async (req, res) => {
   </body>
 </html>
                             `
-                        });
-                        sentCount++;
-                        emailsSent.push({ email: user.email, type: 'Profile Nudge 1' });
-                    }
+            });
+            sentCount++;
+            emailsSent.push({ email: user.email, type: 'Profile Nudge 1' });
+          }
 
-                    // --- Logic 2: Profile Nudge (Day 4 - Final) ---
-                    else if (!hasProfile && diffTime >= fourDays && diffTime < fiveDays) {
-                        await sendEmail({
-                           from: process.env.EMAIL_USER,
-                           to: user.email,
-                           subject: 'Last Reminder: Your Profile is Incomplete ⏳',
-                           html: `
+          // --- Logic 2: Profile Nudge (Day 4 - Final) ---
+          else if (!hasProfile && diffTime >= fourDays && diffTime < fiveDays) {
+            await sendEmail({
+              from: process.env.EMAIL_USER,
+              to: user.email,
+              subject: 'Last Reminder: Your Profile is Incomplete ⏳',
+              html: `
                                <!DOCTYPE html>
 <html>
   <head>
@@ -2564,31 +2564,31 @@ app.post('/api/cron/engagement-check', async (req, res) => {
   </body>
 </html>
                            `
-                       });
-                       sentCount++;
-                       emailsSent.push({ email: user.email, type: 'Profile Nudge 2' });
-                   }
+            });
+            sentCount++;
+            emailsSent.push({ email: user.email, type: 'Profile Nudge 2' });
+          }
 
-                   // --- Logic 3: Resource Nudge (Day 2 after Profile Creation) ---
-                   else if (hasProfile) {
-                       // Check if we should send resource nudge
-                       // 1. Check if already sent
-                       const userData = profileDoc.data();
-                       if (!userData.resourceNudgeSent) {
-                           // 2. Check time since profile creation (fallback to user creation if not stored)
-                           const profileCreatedAt = userData.createdAt ? new Date(userData.createdAt.toDate()) : creationTime;
-                           const profileDiff = now.getTime() - profileCreatedAt.getTime();
+          // --- Logic 3: Resource Nudge (Day 2 after Profile Creation) ---
+          else if (hasProfile) {
+            // Check if we should send resource nudge
+            // 1. Check if already sent
+            const userData = profileDoc.data();
+            if (!userData.resourceNudgeSent) {
+              // 2. Check time since profile creation (fallback to user creation if not stored)
+              const profileCreatedAt = userData.createdAt ? new Date(userData.createdAt.toDate()) : creationTime;
+              const profileDiff = now.getTime() - profileCreatedAt.getTime();
 
-                           if (profileDiff >= twoDays && profileDiff < threeDays) {
-                               // 3. Check if they have resources
-                               const resourcesSnap = await firestore().collection('resources').where('userId', '==', user.uid).limit(1).get();
-                               if (resourcesSnap.empty) {
-                                   // Send Nudge
-                                   await sendEmail({
-                                        from: process.env.EMAIL_USER,
-                                        to: user.email,
-                                        subject: 'Share Your First Resource! 🌟',
-                                        html: `
+              if (profileDiff >= twoDays && profileDiff < threeDays) {
+                // 3. Check if they have resources
+                const resourcesSnap = await firestore().collection('resources').where('userId', '==', user.uid).limit(1).get();
+                if (resourcesSnap.empty) {
+                  // Send Nudge
+                  await sendEmail({
+                    from: process.env.EMAIL_USER,
+                    to: user.email,
+                    subject: 'Share Your First Resource! 🌟',
+                    html: `
                                             <!DOCTYPE html>
 <html>
   <head>
@@ -2681,27 +2681,27 @@ app.post('/api/cron/engagement-check', async (req, res) => {
   </body>
 </html>
                                         `
-                                    });
-                                    // Mark as sent
-                                    await firestore().collection('users').doc(user.uid).update({ resourceNudgeSent: true });
-                                    sentCount++;
-                                    emailsSent.push({ email: user.email, type: 'Resource Nudge' });
-                               }
-                           }
-                       }
-                   }
-                } catch (err) {
-                    console.error(`[CRON] Error processing user ${user.email}:`, err);
+                  });
+                  // Mark as sent
+                  await firestore().collection('users').doc(user.uid).update({ resourceNudgeSent: true });
+                  sentCount++;
+                  emailsSent.push({ email: user.email, type: 'Resource Nudge' });
                 }
+              }
             }
-        } while (nextPageToken);
+          }
+        } catch (err) {
+          console.error(`[CRON] Error processing user ${user.email}:`, err);
+        }
+      }
+    } while (nextPageToken);
 
-        res.status(200).json({ success: true, processed: processedCount, sent: sentCount, details: emailsSent });
+    res.status(200).json({ success: true, processed: processedCount, sent: sentCount, details: emailsSent });
 
-    } catch (error) {
-        console.error('Engagement check error:', error);
-        res.status(500).json({ message: 'Failed', error: error.message });
-    }
+  } catch (error) {
+    console.error('Engagement check error:', error);
+    res.status(500).json({ message: 'Failed', error: error.message });
+  }
 });
 
 // 3b. Engagement Check via Render/HTTP (uses Firestore-based automationLogic)
@@ -2730,37 +2730,37 @@ app.post('/api/admin/run-daily-automation', async (req, res) => {
 
 // 4. New Resource Notification (Broadcast)
 app.post('/api/send-resource-notification', async (req, res) => {
-    try {
-         const { secret, resourceTitle, authorName, resourceId } = req.body;
-         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
-             return res.status(403).json({ message: 'Unauthorized' });
-         }
+  try {
+    const { secret, resourceTitle, authorName, resourceId } = req.body;
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-         let nextPageToken;
-         let count = 0;
-         let errors = [];
+    let nextPageToken;
+    let count = 0;
+    let errors = [];
 
-         console.log(`[BROADCAST] Starting broadcast for resource: ${resourceTitle}`);
+    console.log(`[BROADCAST] Starting broadcast for resource: ${resourceTitle}`);
 
-         do {
-             const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
-             const users = listUsersResult.users;
-             nextPageToken = listUsersResult.pageToken;
-             
-             console.log(`[BROADCAST] Fetched batch of ${users.length} users. Next page: ${!!nextPageToken}`);
+    do {
+      const listUsersResult = await authAdmin().listUsers(1000, nextPageToken);
+      const users = listUsersResult.users;
+      nextPageToken = listUsersResult.pageToken;
 
-             for (const user of users) {
-                 if (!user.email) {
-                     console.log(`[BROADCAST] Skipping user ${user.uid} - no email`);
-                     continue;
-                 }
-                 
-                 try {
-                     await sendEmail({
-                         from: process.env.EMAIL_USER,
-                         to: user.email,
-                         subject: `New Resource: ${resourceTitle} 🚨`,
-                         html: `
+      console.log(`[BROADCAST] Fetched batch of ${users.length} users. Next page: ${!!nextPageToken}`);
+
+      for (const user of users) {
+        if (!user.email) {
+          console.log(`[BROADCAST] Skipping user ${user.uid} - no email`);
+          continue;
+        }
+
+        try {
+          await sendEmail({
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: `New Resource: ${resourceTitle} 🚨`,
+            html: `
                     <!DOCTYPE html>
 <html>
   <head>
@@ -2858,47 +2858,47 @@ app.post('/api/send-resource-notification', async (req, res) => {
   </body>
 </html>
                  `
-                     });
-                     count++;
-                     // Rate limiting check - 100ms
-                     await new Promise(r => setTimeout(r, 100));
-                 } catch (err) {
-                    console.error(`Failed to send to ${user.email}`, err);
-                    errors.push({ email: user.email, error: err.message });
-                 }
-             }
-         } while (nextPageToken);
-         
-         res.status(200).json({ success: true, sent: count, errors });
+          });
+          count++;
+          // Rate limiting check - 100ms
+          await new Promise(r => setTimeout(r, 100));
+        } catch (err) {
+          console.error(`Failed to send to ${user.email}`, err);
+          errors.push({ email: user.email, error: err.message });
+        }
+      }
+    } while (nextPageToken);
 
-    } catch (error) {
-        console.error('Resource notification error:', error);
-        res.status(500).json({ message: 'Failed', error: error.message });
-    }
+    res.status(200).json({ success: true, sent: count, errors });
+
+  } catch (error) {
+    console.error('Resource notification error:', error);
+    res.status(500).json({ message: 'Failed', error: error.message });
+  }
 });
 
 // 5. New Request Notification (Broadcast)
 app.post('/api/send-request-notification', async (req, res) => {
-    try {
-         const { secret, title, requestTitle, requesterName, requestId, description, budget } = req.body;
-         const finalTitle = title || requestTitle;
+  try {
+    const { secret, title, requestTitle, requesterName, requestId, description, budget } = req.body;
+    const finalTitle = title || requestTitle;
 
-         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
-             return res.status(403).json({ message: 'Unauthorized' });
-         }
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-         const listUsersResult = await authAdmin().listUsers(1000);
-         const users = listUsersResult.users;
-         
-         let count = 0;
-         for (const user of users) {
-             if (!user.email) continue;
-             
-             await sendEmail({
-                 from: process.env.EMAIL_USER,
-                 to: user.email,
-                 subject: `New Request: ${finalTitle} 💡`,
-                 html: `
+    const listUsersResult = await authAdmin().listUsers(1000);
+    const users = listUsersResult.users;
+
+    let count = 0;
+    for (const user of users) {
+      if (!user.email) continue;
+
+      await sendEmail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: `New Request: ${finalTitle} 💡`,
+        html: `
                     <!DOCTYPE html>
 <html>
   <head>
@@ -2984,39 +2984,39 @@ app.post('/api/send-request-notification', async (req, res) => {
   </body>
 </html>
                  `
-             });
-             count++;
-             await new Promise(r => setTimeout(r, 100));
-         }
-         
-         res.status(200).json({ success: true, sent: count });
-
-    } catch (error) {
-        console.error('Request notification error:', error);
-        res.status(500).json({ message: 'Failed', error: error.message });
+      });
+      count++;
+      await new Promise(r => setTimeout(r, 100));
     }
+
+    res.status(200).json({ success: true, sent: count });
+
+  } catch (error) {
+    console.error('Request notification error:', error);
+    res.status(500).json({ message: 'Failed', error: error.message });
+  }
 });
 
 // 6. Admin Announcement (Manual Broadcast)
 app.post('/api/admin/announcement', async (req, res) => {
-    try {
-         const { secret, subject, message, actionUrl, actionText } = req.body;
-         if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
-             return res.status(403).json({ message: 'Unauthorized' });
-         }
+  try {
+    const { secret, subject, message, actionUrl, actionText } = req.body;
+    if (secret !== (process.env.OTP_SECRET || 'topedge-secret-key-change-in-prod')) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
 
-         const listUsersResult = await authAdmin().listUsers(1000);
-         const users = listUsersResult.users;
-         
-         let count = 0;
-         for (const user of users) {
-             if (!user.email) continue;
-             
-             await sendEmail({
-                 from: process.env.EMAIL_USER,
-                 to: user.email,
-                 subject: subject || 'Announcement from TopEdge AI 📢',
-                 html: `
+    const listUsersResult = await authAdmin().listUsers(1000);
+    const users = listUsersResult.users;
+
+    let count = 0;
+    for (const user of users) {
+      if (!user.email) continue;
+
+      await sendEmail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: subject || 'Announcement from TopEdge AI 📢',
+        html: `
                     <!DOCTYPE html>
 <html>
   <head>
@@ -3104,23 +3104,37 @@ app.post('/api/admin/announcement', async (req, res) => {
   </body>
 </html>
                  `
-             });
-             count++;
-             await new Promise(r => setTimeout(r, 100));
-         }
-         
-         res.status(200).json({ success: true, sent: count });
-
-    } catch (error) {
-        console.error('Announcement error:', error);
-        res.status(500).json({ message: 'Failed', error: error.message });
+      });
+      count++;
+      await new Promise(r => setTimeout(r, 100));
     }
+
+    res.status(200).json({ success: true, sent: count });
+
+  } catch (error) {
+    console.error('Announcement error:', error);
+    res.status(500).json({ message: 'Failed', error: error.message });
+  }
 });
 
 // Add request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
+});
+
+// Test endpoint for email automation
+app.get('/api/test-automation', async (req, res) => {
+  try {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    const host = req.headers['x-forwarded-host'] || req.get('host');
+    const baseUrl = `${protocol}://${host}`;
+    const result = await automationLogic(null, null, baseUrl);
+    res.json(result);
+  } catch (error) {
+    console.error('Test automation error:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Export the serverless handler
