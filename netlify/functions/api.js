@@ -398,85 +398,110 @@ app.post('/api/send-user-email', async (req, res) => {
     await sendEmail({
       from: process.env.EMAIL_USER,
       to: email,
-      subject: 'Booking Confirmation - TopEdge AI Consultation',
+      subject: 'Strategy Session Locked In 🚀 | TopEdge AI',
       html: `
         <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Booking Confirmation - TopEdge AI</title>
-            <style>${commonEmailStyles}</style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <span class="logo-text">TopEdge AI</span>
-                <p class="header-subtitle">Booking Confirmed</p>
-              </div>
-              
-              <div class="content">
-                <div class="section">
-                  <h2 class="section-title">Hello ${name},</h2>
-                  <p class="text-regular">
-                    Thank you for booking a consultation with TopEdge AI. We're looking forward to discussing how we can help transform your business.
-                  </p>
-                  
-                  <div class="premium-box">
-                    <h3 style="color: #818CF8; font-size: 20px; margin-bottom: 16px;">Your Meeting Details</h3>
-                    <div class="info-grid">
-                      <div class="info-item">
-                        <p class="info-label">Date & Time</p>
-                        <p class="info-value">${date} at ${time}</p>
-                      </div>
-                      <div class="info-item">
-                        <p class="info-label">Company</p>
-                        <p class="info-value">${companyName}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 20px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+      
+      /* Header */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
+      .subtitle { font-size: 13px; font-weight: 500; color: #94a3b8; }
+      
+      /* Content */
+      .content { padding: 48px; }
+      .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
+      .description { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
+      
+      /* Info Block */
+      .info-area { 
+        background-color: #f8fafc; 
+        border: 1px solid #f1f5f9; 
+        border-radius: 24px; 
+        padding: 32px; 
+      }
+      
+      .info-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
+      .info-value { font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 20px; display: block; }
+      .info-value:last-child { margin-bottom: 0; }
+      
+      .button { 
+        display: inline-block; 
+        background-color: #0f172a; 
+        color: #ffffff !important; 
+        padding: 16px 36px; 
+        border-radius: 14px; 
+        text-decoration: none; 
+        font-weight: 700; 
+        font-size: 15px; 
+        margin-top: 24px;
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.2); 
+      }
 
-                <div class="section">
-                  <h3 class="section-title">What to Expect</h3>
-                  <div class="list-box">
-                    <ol style="margin: 0; padding-left: 24px; color: #E2E8F0;">
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #F8FAFC;">Meeting Link</strong>
-                        <p style="margin-top: 4px; color: #94A3B8;">We'll send you a Google Meet link shortly</p>
-                      </li>
-                      <li style="margin-bottom: 16px; padding-left: 8px;">
-                        <strong style="color: #F8FAFC;">Duration</strong>
-                        <p style="margin-top: 4px; color: #94A3B8;">The consultation typically lasts 30-45 minutes</p>
-                      </li>
-                      <li style="padding-left: 8px;">
-                        <strong style="color: #F8FAFC;">Preparation</strong>
-                        <p style="margin-top: 4px; color: #94A3B8;">Please bring any specific questions or requirements</p>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
+      /* Footer */
+      .footer { padding: 48px; border-top: 1px solid #f1f5f9; background-color: #fafbfc; text-align: center; }
+      .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+      .footer-legal { font-size: 12px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="brand">TopEdge AI</span>
+          <span class="subtitle">Booking Confirmation • 2026</span>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">Your strategy session is confirmed.</h1>
+          <p class="description">
+            Hello ${name}, we've locked in your consultation. Our team is now preparing a tailored ROI roadmap to show exactly how AI can scale your current lead handling.
+          </p>
+          
+          <div class="info-area">
+            <span class="info-label">Scheduled Time</span>
+            <span class="info-value">${date} at ${time}</span>
+            
+            <span class="info-label">Organization</span>
+            <span class="info-value">${companyName || 'N/A'}</span>
 
-                <div class="section" style="text-align: center;">
-                  <h3 class="section-title">
-                    Need to Reschedule?
-                  </h3>
-                  <p class="text-regular">
-                    If you need to change your appointment time, please reply to this email.
-                  </p>
-                </div>
-
-                <div class="footer">
-                  <p>Best regards,</p>
-                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                  <div style="margin-top: 24px;">
-                    <p>© 2026 TopEdge AI. All rights reserved.</p>
-                  </div>
-                </div>
-              </div>
+            <span class="info-label">Duration</span>
+            <span class="info-value">30-45 Minute Deep Dive</span>
+            
+            <div style="text-align: center; margin-top: 12px;">
+              <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+                A meeting invite with the link has been sent to your calendar.
+              </p>
             </div>
-          </body>
-        </html>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Website</a>
+            <a href="mailto:acctopedge@gmail.com">Contact Support</a>
+          </div>
+          <p class="footer-legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Sent to our verified AI Builder community.
+          </p>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
       `
     });
 
@@ -495,90 +520,77 @@ app.post('/api/send-admin-email', async (req, res) => {
     await sendEmail({
       from: process.env.EMAIL_USER,
       to: 'acctopedge@gmail.com',
-      subject: `New Booking Request: ${companyName || ''} - ${name}`,
+      subject: `🚨 Booking Request: ${companyName || name}`,
       html: `
         <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>New Booking Request - TopEdge</title>
-            <style>${commonEmailStyles}</style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <span class="logo-text">TopEdge AI</span>
-                <p class="header-subtitle">New Consultation Booking</p>
-              </div>
-              
-              <div class="content">
-                <div class="alert-box">
-                  <h3 class="section-title" style="color: #818CF8; margin-bottom: 8px;">New Booking Alert</h3>
-                  <p class="text-muted" style="font-size: 18px; color: #F8FAFC;">${date} at ${time}</p>
-                </div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal: New Booking Alert</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 20px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+      
+      .content { padding: 48px; }
+      .hero-title { font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: -0.5px; margin-bottom: 24px; }
+      .badge { display: inline-block; background: #fee2e2; color: #ef4444; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 100px; margin-bottom: 24px; }
+      
+      /* Info Block */
+      .info-area { 
+        background-color: #f8fafc; 
+        border: 1px solid #f1f5f9; 
+        border-radius: 24px; 
+        padding: 32px; 
+      }
+      
+      .info-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
+      .info-value { font-size: 15px; font-weight: 600; color: #0f172a; margin-bottom: 16px; display: block; }
+      .info-value:last-child { margin-bottom: 0; }
+      .info-value a { color: #6366f1; text-decoration: none; }
+      
+      .footer { padding: 48px; border-top: 1px solid #f1f5f9; text-align: center; background: #fafafa; }
+      .footer-brand { font-size: 13px; font-weight: 700; color: #0f172a; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <div class="content">
+          <span class="badge">Action Required</span>
+          <h1 class="hero-title">New Strategy Session Booking</h1>
+          
+          <div class="info-area">
+            <span class="info-label">Strategist</span>
+            <span class="info-value">${name}</span>
 
-                <div class="section">
-                  <h3 class="section-title">Client Information</h3>
-                  <div class="info-grid">
-                    <div class="info-item">
-                      <p class="info-label">Name</p>
-                      <p class="info-value">${name}</p>
-                    </div>
-                    <div class="info-item">
-                      <p class="info-label">Email</p>
-                      <p class="info-value">
-                        <a href="mailto:${email}" style="color: #818CF8; text-decoration: none;">${email}</a>
-                      </p>
-                    </div>
-                    ${phone ? `
-                    <div class="info-item">
-                      <p class="info-label">Phone</p>
-                      <p class="info-value">
-                        <a href="tel:${phone}" style="color: #818CF8; text-decoration: none;">${phone}</a>
-                      </p>
-                    </div>
-                    ` : ''}
-                    ${companyName ? `
-                    <div class="info-item">
-                      <p class="info-label">Company</p>
-                      <p class="info-value">${companyName}</p>
-                    </div>
-                    ` : ''}
-                    ${additionalInfo ? `
-                    <div class="info-item" style="grid-column: 1 / -1;">
-                      <p class="info-label">Additional Notes</p>
-                      <p class="info-value">${additionalInfo}</p>
-                    </div>
-                    ` : ''}
-                  </div>
-                </div>
+            <span class="info-label">Time Slot</span>
+            <span class="info-value" style="color: #6366f1;">${date} @ ${time}</span>
+            
+            <span class="info-label">Organization</span>
+            <span class="info-value">${companyName || 'N/A'}</span>
 
-                <div class="list-box" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2);">
-                  <h3 class="section-title" style="color: #F87171;">Required Actions</h3>
-                  <div style="color: #CBD5E1;">
-                    <p>Please complete the following tasks:</p>
-                    <ol style="margin: 15px 0 0 20px;">
-                      <li style="margin-bottom: 10px;">Add the meeting to your calendar</li>
-                      <li style="margin-bottom: 10px;">Send a calendar invite with meeting link to the client</li>
-                      <li style="margin-bottom: 10px;">Review any additional notes or requirements</li>
-                      <li style="margin-bottom: 10px;">Prepare consultation materials</li>
-                      <li>Update CRM with booking details</li>
-                    </ol>
-                  </div>
-                </div>
+            <span class="info-label">Contact</span>
+            <span class="info-value"><a href="mailto:${email}">${email}</a></span>
 
-                <div class="footer">
-                  <p>Best regards,</p>
-                  <p style="color: #F8FAFC; font-weight: 600;">Team TopEdge AI</p>
-                  <div style="margin-top: 24px;">
-                    <p>© 2026 TopEdge AI. All rights reserved.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </body>
-        </html>
+            <span class="info-label">Phone</span>
+            <span class="info-value">${phone || 'N/A'}</span>
+
+            ${additionalInfo ? `
+            <span class="info-label">Additional Context</span>
+            <span class="info-value" style="font-style: italic; font-weight: 400; color: #64748b;">"${additionalInfo}"</span>
+            ` : ''}
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-brand">Team TopEdge AI</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
       `
     });
 
