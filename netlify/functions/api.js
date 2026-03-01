@@ -652,15 +652,20 @@ app.get('/api/available-slots', async (req, res) => {
 // OAuth2 Callback route for initial token generation
 app.get('/api/oauth2callback', async (req, res) => {
   const code = req.query.code;
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+  const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/api/oauth2callback');
+
   if (!code) {
-    return res.status(400).send('No authorization code provided.');
+    const authUrl = auth.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/calendar.events', 'https://www.googleapis.com/auth/calendar.readonly'],
+      prompt: 'consent'
+    });
+    return res.redirect(authUrl);
   }
 
   try {
-    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
-    const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/api/oauth2callback');
-
     const { tokens } = await auth.getToken(code);
 
     res.send(`
