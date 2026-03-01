@@ -521,7 +521,7 @@ async function syncGoogleCalendar(bookingData) {
 
     if (!refreshToken) {
       console.warn('Google Calendar Sync skipped: GOOGLE_OAUTH_REFRESH_TOKEN not found in environment. Please obtain a refresh token via OAuth Flow.');
-      return;
+      return null;
     }
 
     const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/oauth2callback');
@@ -559,18 +559,95 @@ async function syncGoogleCalendar(bookingData) {
           { method: 'popup', minutes: 10 },
         ],
       },
+      conferenceData: {
+        createRequest: {
+          requestId: `topedge-${Date.now()}`,
+          conferenceSolutionKey: { type: 'hangoutsMeet' }
+        }
+      }
     };
 
     const res = await calendar.events.insert({
       calendarId: calendarId,
       resource: event,
-      sendUpdates: 'all'
+      sendUpdates: 'all',
+      conferenceDataVersion: 1
     });
     console.log('[CALENDAR] Event created successfully: %s', res.data.htmlLink);
+    return res.data.hangoutLink || '';
   } catch (err) {
     console.error('[CALENDAR] Error syncing to Google Calendar:', err.message);
+    return '';
   }
 }
+
+// Get Available Slots
+app.get('/api/available-slots', async (req, res) => {
+  try {
+    const { date, timezone } = req.query;
+    if (!date || !timezone) {
+      return res.status(400).json({ error: 'Missing date or timezone' });
+    }
+
+    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+    const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN;
+
+    if (!refreshToken) {
+      // Fallback: return default if not configured so frontend doesn't break
+      return res.json({ slots: ['10:00 AM', '11:00 AM', '01:00 PM', '02:00 PM'] });
+    }
+
+    const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/oauth2callback');
+    auth.setCredentials({ refresh_token: refreshToken });
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    // Enforce 10 AM to 10 PM IST
+    const timeMin = new Date(`${date}T10:00:00+05:30`).toISOString();
+    const timeMax = new Date(`${date}T22:00:00+05:30`).toISOString();
+
+    const freebusy = await calendar.freebusy.query({
+      requestBody: {
+        timeMin,
+        timeMax,
+        timeZone: 'Asia/Kolkata',
+        items: [{ id: process.env.GOOGLE_CALENDAR_ID || 'primary' }]
+      }
+    });
+
+    const busySlots = freebusy.data.calendars[process.env.GOOGLE_CALENDAR_ID || 'primary'].busy;
+    const availableSlots = [];
+
+    let currentSlotStart = new Date(`${date}T10:00:00+05:30`).getTime();
+    const endOfDay = new Date(`${date}T22:00:00+05:30`).getTime();
+
+    while (currentSlotStart + 30 * 60 * 1000 <= endOfDay) {
+      const currentSlotEnd = currentSlotStart + 30 * 60 * 1000;
+
+      const isBusy = busySlots.some(busy => {
+        const bStart = new Date(busy.start).getTime();
+        const bEnd = new Date(busy.end).getTime();
+        return currentSlotStart < bEnd && currentSlotEnd > bStart;
+      });
+
+      if (!isBusy) {
+        // Enforce user's requested timezone for display format
+        const dt = new Date(currentSlotStart);
+        const timeString = new Intl.DateTimeFormat('en-US', {
+          hour: '2-digit', minute: '2-digit', timeZone: timezone
+        }).format(dt);
+        // Avoid duplicate times like returning two "10:00 AM" if DayLightSavings edge case
+        if (!availableSlots.includes(timeString)) availableSlots.push(timeString);
+      }
+      currentSlotStart += 30 * 60 * 1000;
+    }
+
+    res.json({ slots: availableSlots });
+  } catch (error) {
+    console.error('Available slots error:', error.message);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // OAuth2 Callback route for initial token generation
 app.get('/api/oauth2callback', async (req, res) => {
@@ -598,18 +675,21 @@ app.get('/api/oauth2callback', async (req, res) => {
   }
 });
 
-// Booking - Admin Email
-app.post('/api/send-admin-email', async (req, res) => {
+// Unified Booking Session
+app.post('/api/book-session', async (req, res) => {
   try {
     const { name, email, phone, companyName, date, time, isoDate, channel, model, additionalInfo } = req.body;
 
-    // AWAIT calendar sync synchronously so AWS Lambda (Netlify) doesn't terminate the 
-    // background process mid-flight as soon as the email finishes sending. 
-    // We catch and log any errors inside syncGoogleCalendar so a calendar failure 
-    // doesn't block the email from sending.
-    await syncGoogleCalendar(req.body);
+    // Create Calendar Event & Get Meet Link
+    const meetLink = await syncGoogleCalendar(req.body);
 
-    await sendEmail({
+    const meetLinkHtmlAdmin = meetLink ? `
+      <span class="info-label">Google Meet</span>
+      <span class="info-value"><a href="${meetLink}">${meetLink}</a></span>
+    ` : '';
+
+    // 1. Send Admin Email
+    const adminEmailPromise = sendEmail({
       from: process.env.EMAIL_USER,
       to: 'acctopedge@gmail.com',
       subject: `🚨 Booking Request: ${companyName || name}`,
@@ -660,6 +740,8 @@ app.post('/api/send-admin-email', async (req, res) => {
             <span class="info-label">Time Slot</span>
             <span class="info-value" style="color: #6366f1;">${date} @ ${time}</span>
             
+            ${meetLinkHtmlAdmin}
+            
             <span class="info-label">Organization</span>
             <span class="info-value">${companyName || 'N/A'}</span>
 
@@ -692,14 +774,118 @@ app.post('/api/send-admin-email', async (req, res) => {
       `
     });
 
-    res.status(200).json({ message: 'Admin notification sent successfully' });
+    const meetLinkHtmlUser = meetLink ? `
+      <span class="info-label">Google Meet</span>
+      <span class="info-value"><a href="${meetLink}">${meetLink}</a></span>
+    ` : '';
+
+    // 2. Send User Email
+    const userEmailPromise = sendEmail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Strategy Session Locked In 🚀 | TopEdge AI',
+      html: `
+        <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation | TopEdge AI</title>
+    <style>
+      body { margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; table-layout: fixed; background-color: #f8fafc; padding: 20px 0; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 32px; overflow: hidden; border: 1px solid #e2e8f0; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04); }
+      
+      /* Header */
+      .header { padding: 48px 48px 0; text-align: left; }
+      .brand { font-size: 14px; font-weight: 800; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: block; }
+      .subtitle { font-size: 13px; font-weight: 500; color: #94a3b8; }
+      
+      /* Content */
+      .content { padding: 48px; }
+      .hero-title { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.2; letter-spacing: -1.2px; margin-bottom: 24px; }
+      .description { font-size: 16px; color: #475569; line-height: 1.8; margin-bottom: 32px; }
+      
+      /* Info Block */
+      .info-area { 
+        background-color: #f8fafc; 
+        border: 1px solid #f1f5f9; 
+        border-radius: 24px; 
+        padding: 32px; 
+      }
+      
+      .info-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: block; }
+      .info-value { font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 20px; display: block; }
+      .info-value:last-child { margin-bottom: 0; }
+      .info-value a { color: #6366f1; text-decoration: none; }
+      
+      .footer { padding: 48px; border-top: 1px solid #f1f5f9; background-color: #fafbfc; text-align: center; }
+      .footer-brand { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px; display: block; }
+      .footer-links a { color: #6366f1; text-decoration: none; font-size: 13px; font-weight: 600; margin: 0 12px; }
+      .footer-legal { font-size: 12px; color: #94a3b8; margin-top: 24px; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        
+        <div class="header">
+          <span class="brand">TopEdge AI</span>
+          <span class="subtitle">Booking Confirmation • 2026</span>
+        </div>
+        
+        <div class="content">
+          <h1 class="hero-title">Your strategy session is confirmed.</h1>
+          <p class="description">
+            Hello ${name}, we've locked in your consultation. Our team is now preparing a tailored ROI roadmap to show exactly how AI can scale your current lead handling.
+          </p>
+          
+          <div class="info-area">
+            <span class="info-label">Scheduled Time</span>
+            <span class="info-value">${date} at ${time}</span>
+            
+            ${meetLinkHtmlUser}
+
+            <span class="info-label">Organization</span>
+            <span class="info-value">${companyName || 'N/A'}</span>
+
+            <span class="info-label">Duration</span>
+            <span class="info-value">30-45 Minute Deep Dive</span>
+            
+            <div style="text-align: center; margin-top: 12px;">
+              <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+                A meeting invite with the link has been sent to your calendar.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <span class="footer-brand">Team TopEdge AI</span>
+          <div class="footer-links">
+            <a href="https://topedgeai.com">Website</a>
+            <a href="mailto:acctopedge@gmail.com">Contact Support</a>
+          </div>
+          <p class="footer-legal">
+            © 2026 TopEdge AI. All rights reserved.<br>
+            Sent to our verified AI Builder community.
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+      `
+    });
+
+    await Promise.all([adminEmailPromise, userEmailPromise]);
+
+    res.status(200).json({ message: 'Session booked successfully' });
   } catch (error) {
-    console.error('Error sending admin notification:', error, error?.message, error?.response, error?.stack);
+    console.error('Error booking session:', error);
     res.status(500).json({
-      message: 'Failed to send admin notification',
-      error: error.message,
-      details: error.response || null,
-      stack: error.stack || null
+      message: 'Failed to book session',
+      error: error.message
     });
   }
 });
