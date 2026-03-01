@@ -7,6 +7,7 @@ import crypto from 'crypto';
 import admin from 'firebase-admin';
 import { commonEmailStyles } from '../../lib/emailStyles.js';
 import { automationLogic } from './scheduled-email-automation.js';
+import { google } from 'googleapis';
 
 dotenv.config();
 
@@ -512,10 +513,98 @@ app.post('/api/send-user-email', async (req, res) => {
   }
 });
 
+async function syncGoogleCalendar(bookingData) {
+  try {
+    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+    const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN;
+
+    if (!refreshToken) {
+      console.warn('Google Calendar Sync skipped: GOOGLE_OAUTH_REFRESH_TOKEN not found in environment. Please obtain a refresh token via OAuth Flow.');
+      return;
+    }
+
+    const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/oauth2callback');
+    auth.setCredentials({ refresh_token: refreshToken });
+
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    const calendarId = process.env.GOOGLE_CALENDAR_ID || 'primary';
+
+    const startTime = bookingData.isoDate || new Date().toISOString();
+    let endTime = bookingData.isoEndDate;
+    if (!endTime) {
+      const startDt = new Date(startTime);
+      endTime = new Date(startDt.getTime() + 30 * 60000).toISOString();
+    }
+
+    const event = {
+      summary: `Coffee Chat: ${bookingData.companyName || bookingData.name}`,
+      description: `Name: ${bookingData.name}\nEmail: ${bookingData.email}\nPhone: ${bookingData.phone || 'N/A'}\nChannel: ${bookingData.channel || 'N/A'}\nModel: ${bookingData.model || 'N/A'}\nVolume: ${bookingData.monthlyInquiry || 'N/A'}\n\nNotes:\n${bookingData.additionalInfo || ''}`,
+      start: {
+        dateTime: startTime,
+        timeZone: bookingData.selectedTimezone || 'Asia/Kolkata', // Localized dynamically
+      },
+      end: {
+        dateTime: endTime,
+        timeZone: bookingData.selectedTimezone || 'Asia/Kolkata',
+      },
+      attendees: [
+        { email: bookingData.email }
+      ],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'email', minutes: 24 * 60 },
+          { method: 'popup', minutes: 10 },
+        ],
+      },
+    };
+
+    const res = await calendar.events.insert({
+      calendarId: calendarId,
+      resource: event,
+      sendUpdates: 'all'
+    });
+    console.log('[CALENDAR] Event created successfully: %s', res.data.htmlLink);
+  } catch (err) {
+    console.error('[CALENDAR] Error syncing to Google Calendar:', err.message);
+  }
+}
+
+// OAuth2 Callback route for initial token generation
+app.get('/api/oauth2callback', async (req, res) => {
+  const code = req.query.code;
+  if (!code) {
+    return res.status(400).send('No authorization code provided.');
+  }
+
+  try {
+    const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID;
+    const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
+    const auth = new google.auth.OAuth2(clientId, clientSecret, 'http://localhost:3001/api/oauth2callback');
+
+    const { tokens } = await auth.getToken(code);
+
+    res.send(`
+      <h1>OAuth setup successful!</h1>
+      <p>Please copy the token below and save it as your <strong>GOOGLE_OAUTH_REFRESH_TOKEN</strong> environment variable:</p>
+      <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; word-break: break-all;">${tokens.refresh_token}</pre>
+      <p><em>Note: If the refresh token is undefined, you may need to revoke access to the app in your Google Account settings and try again to force a new refresh token.</em></p>
+    `);
+  } catch (error) {
+    console.error('Error retrieving OAuth tokens:', error);
+    res.status(500).send('Error retrieving oauth tokens: ' + error.message);
+  }
+});
+
 // Booking - Admin Email
 app.post('/api/send-admin-email', async (req, res) => {
   try {
-    const { name, email, phone, companyName, date, time, additionalInfo } = req.body;
+    const { name, email, phone, companyName, date, time, isoDate, channel, model, additionalInfo } = req.body;
+
+    // Trigger calendar sync asynchronously
+    syncGoogleCalendar(req.body).catch(err => console.error('Background calendar sync failed', err));
 
     await sendEmail({
       from: process.env.EMAIL_USER,
@@ -570,6 +659,12 @@ app.post('/api/send-admin-email', async (req, res) => {
             
             <span class="info-label">Organization</span>
             <span class="info-value">${companyName || 'N/A'}</span>
+
+            <span class="info-label">Channel</span>
+            <span class="info-value">${channel || 'N/A'}</span>
+
+            <span class="info-label">Model</span>
+            <span class="info-value">${model || 'N/A'}</span>
 
             <span class="info-label">Contact</span>
             <span class="info-value"><a href="mailto:${email}">${email}</a></span>
