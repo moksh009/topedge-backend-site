@@ -477,7 +477,7 @@ app.post('/api/send-user-email', async (req, res) => {
             <span class="info-value">${companyName || 'N/A'}</span>
 
             <span class="info-label">Duration</span>
-            <span class="info-value">30-45 Minute Deep Dive</span>
+            <span class="info-value">1 Hour Deep Dive</span>
             
             <div style="text-align: center; margin-top: 12px;">
               <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
@@ -535,7 +535,7 @@ async function syncGoogleCalendar(bookingData) {
     let endTime = bookingData.isoEndDate;
     if (!endTime) {
       const startDt = new Date(startTime);
-      endTime = new Date(startDt.getTime() + 30 * 60000).toISOString();
+      endTime = new Date(startDt.getTime() + 60 * 60000).toISOString();
     }
 
     const event = {
@@ -621,8 +621,8 @@ app.get('/api/available-slots', async (req, res) => {
     let currentSlotStart = new Date(`${date}T10:00:00+05:30`).getTime();
     const endOfDay = new Date(`${date}T22:00:00+05:30`).getTime();
 
-    while (currentSlotStart + 30 * 60 * 1000 <= endOfDay) {
-      const currentSlotEnd = currentSlotStart + 30 * 60 * 1000;
+    while (currentSlotStart + 60 * 60 * 1000 <= endOfDay) {
+      const currentSlotEnd = currentSlotStart + 60 * 60 * 1000;
 
       const isBusy = busySlots.some(busy => {
         const bStart = new Date(busy.start).getTime();
@@ -639,7 +639,7 @@ app.get('/api/available-slots', async (req, res) => {
         // Avoid duplicate times like returning two "10:00 AM" if DayLightSavings edge case
         if (!availableSlots.includes(timeString)) availableSlots.push(timeString);
       }
-      currentSlotStart += 30 * 60 * 1000;
+      currentSlotStart += 60 * 60 * 1000;
     }
 
     res.json({ slots: availableSlots });
@@ -855,7 +855,7 @@ app.post('/api/book-session', async (req, res) => {
             <span class="info-value">${companyName || 'N/A'}</span>
 
             <span class="info-label">Duration</span>
-            <span class="info-value">30-45 Minute Deep Dive</span>
+            <span class="info-value">1 Hour Deep Dive</span>
             
             <div style="text-align: center; margin-top: 12px;">
               <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
