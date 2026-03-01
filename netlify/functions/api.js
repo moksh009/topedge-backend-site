@@ -603,8 +603,11 @@ app.post('/api/send-admin-email', async (req, res) => {
   try {
     const { name, email, phone, companyName, date, time, isoDate, channel, model, additionalInfo } = req.body;
 
-    // Trigger calendar sync asynchronously
-    syncGoogleCalendar(req.body).catch(err => console.error('Background calendar sync failed', err));
+    // AWAIT calendar sync synchronously so AWS Lambda (Netlify) doesn't terminate the 
+    // background process mid-flight as soon as the email finishes sending. 
+    // We catch and log any errors inside syncGoogleCalendar so a calendar failure 
+    // doesn't block the email from sending.
+    await syncGoogleCalendar(req.body);
 
     await sendEmail({
       from: process.env.EMAIL_USER,
